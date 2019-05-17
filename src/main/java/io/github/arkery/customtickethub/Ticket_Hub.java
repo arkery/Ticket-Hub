@@ -128,13 +128,16 @@ public class Ticket_Hub {
 
     //Param: player - the specific person's UUID
     //Purp: get all ticket made by a specific player OR all tickets involving a specific player
-    public ArrayList<Ticket> ticketsIncludingPerson(UUID player, boolean Creator){
+    public ArrayList<Ticket> ticketsIncludingPerson(UUID player, boolean Creator, boolean Assigned){
         ArrayList<Ticket> displayTicket = new ArrayList<Ticket>();
         for(val entry: Hub.entrySet()){
             if((entry.getValue().getCreator()).equals(player) && Creator){
                 displayTicket.add(entry.getValue());
             }
             else if((entry.getValue().getAdditionalContacts().contains(player) && !Creator)){
+                displayTicket.add(entry.getValue());
+            }
+            else if((entry.getValue().getAssignedTo()).equals(player) && Assigned){
                 displayTicket.add(entry.getValue());
             }
 
