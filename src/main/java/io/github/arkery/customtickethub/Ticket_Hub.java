@@ -10,7 +10,7 @@ import java.util.*;
 
 
 public class Ticket_Hub {
-    private Map<String, Ticket> Hub = new HashMap<String, Ticket>();
+    private Map<String, Ticket> Hub = new HashMap<>();
     @Getter @Setter private File ticketFolderPath;
 
     @Getter @Setter
@@ -83,6 +83,10 @@ public class Ticket_Hub {
 
     }
 
+    public int getTotalTickets(){
+        return Hub.size();
+    }
+
     //Params: TicketID - the Ticket ID
     //Purp: get an individual Ticket in the Hub
     public Ticket getTicketInHub(String TicketID) {
@@ -92,6 +96,68 @@ public class Ticket_Hub {
     //Param: updatedTicket - the updated ticket
     //Purp: update a pre-existing ticket on the hub.
     public void updateTicketInHub(Ticket updatedTicket) throws IOException{
+        if(Hub.get(updatedTicket.getID()).getPriority() != updatedTicket.getPriority()){
+            switch(Hub.get(updatedTicket.getID()).getPriority()){
+                case LOW:
+                    lowPriorityTickets--;
+                    break;
+                case MEDIUM:
+                    mediumPriorityTickets--;
+                    break;
+                case HIGH:
+                    highPriorityTickets--;
+                    break;
+                case CRITICAL:
+                    criticalPriorityTickets--;
+                    break;
+            }
+            switch(updatedTicket.getPriority()){
+                case LOW:
+                    lowPriorityTickets++;
+                    break;
+                case MEDIUM:
+                    mediumPriorityTickets++;
+                    break;
+                case HIGH:
+                    highPriorityTickets++;
+                    break;
+                case CRITICAL:
+                    criticalPriorityTickets++;
+                    break;
+            }
+        }
+
+        if(Hub.get(updatedTicket.getID()).getStatus() != updatedTicket.getStatus()){
+            switch(Hub.get(updatedTicket.getID()).getStatus()){
+                case CLOSED:
+                    closedTickets--;
+                    break;
+                case RESOLVED:
+                    resolvedTickets--;
+                    break;
+                case ASSIGNED:
+                    assignedTickets--;
+                    break;
+                case OPEN:
+                    openedTickets--;
+                    break;
+            }
+            switch(updatedTicket.getStatus()){
+                case CLOSED:
+                    closedTickets++;
+                    break;
+                case RESOLVED:
+                    resolvedTickets++;
+                    break;
+                case ASSIGNED:
+                    assignedTickets++;
+                    break;
+                case OPEN:
+                    openedTickets++;
+                    break;
+            }
+        }
+
         Hub.replace(updatedTicket.getID(),updatedTicket);
         saveTicketOffline(updatedTicket);
     }
@@ -99,6 +165,35 @@ public class Ticket_Hub {
     //Param: newTicket - the ticket to be added
     //Purp: add the ticket/new ticket to the Hub
     public void addTicketToHub(Ticket newTicket) throws IOException{
+        switch(newTicket.getPriority()){
+            case LOW:
+                lowPriorityTickets++;
+                break;
+            case MEDIUM:
+                mediumPriorityTickets++;
+                break;
+            case HIGH:
+                highPriorityTickets++;
+                break;
+            case CRITICAL:
+                criticalPriorityTickets++;
+                break;
+        }
+        switch(newTicket.getStatus()){
+            case CLOSED:
+                closedTickets++;
+                break;
+            case RESOLVED:
+                resolvedTickets++;
+                break;
+            case ASSIGNED:
+                assignedTickets++;
+                break;
+            case OPEN:
+                openedTickets++;
+                break;
+        }
+
         Hub.put(newTicket.getID(), newTicket);
         saveTicketOffline(newTicket);
     }
@@ -106,8 +201,8 @@ public class Ticket_Hub {
     //Param: StatusProperty - If the user is searching for Status of ticket, String should be filled in
     //Param: PriorityProperty - If the user is searching for Priority of ticket, String should be filled in
     //Purp: Shoves everything from Hub HashMap into Array to display on screen and order it by date of created.
-    public ArrayList<Ticket> filterTickets(Status_Properties StatusProperty, Priority_Properties PriorityProperty){
-        ArrayList<Ticket> displayTicket = new ArrayList<Ticket>();
+    public List<Ticket> filterTickets(Status_Properties StatusProperty, Priority_Properties PriorityProperty){
+        List<Ticket> displayTicket = new ArrayList<Ticket>();
         for(val entry : Hub.entrySet()){
             if((entry.getValue().getStatus().equals(StatusProperty)) && PriorityProperty == Priority_Properties.EMPTY){
                 displayTicket.add(entry.getValue());
@@ -127,9 +222,9 @@ public class Ticket_Hub {
     }
 
     //Param: player - the specific person's UUID
-    //Purp: get all ticket made by a specific player OR all tickets involving a specific player
-    public ArrayList<Ticket> ticketsIncludingPerson(UUID player, boolean Creator, boolean Assigned){
-        ArrayList<Ticket> displayTicket = new ArrayList<Ticket>();
+    //Purp: get all ticket made by a specific player OR all tickets involving a specific player OR all tickets Assigned to a specific player
+    public List<Ticket> ticketsConcerningPerson(UUID player, boolean Creator, boolean Assigned){
+        List<Ticket> displayTicket = new ArrayList<Ticket>();
         for(val entry: Hub.entrySet()){
             if((entry.getValue().getCreator()).equals(player) && Creator){
                 displayTicket.add(entry.getValue());
