@@ -22,13 +22,15 @@ Additional Contact - player UUID
 Description
 Assigned To - player UUID
 Creator - player UUID
-Date Created
+Date Created - the date the ticket was made
+Date Updated - the last time the ticket was updated/edited
 */
 
 @Getter @Setter
-public class Ticket implements Comparable<Ticket>, Serializable {
+public class Ticket implements Serializable {
 
-    private Date dateCreated = new Date();
+    private Date dateCreated;
+    private Date dateUpdated;
     private String ID;
     private UUID Creator, assignedTo;
     private ArrayList<String> ticketComments;
@@ -38,10 +40,6 @@ public class Ticket implements Comparable<Ticket>, Serializable {
                     Description;
     private Status_Properties Status;
     private Priority_Properties Priority;
-
-    public int compareTo(Ticket anotherTicket) {
-        return dateCreated.compareTo(anotherTicket.dateCreated);
-    }
 
     public Ticket(String Title, String Category, Status_Properties Status, Priority_Properties Priority,
                   ArrayList<UUID> additionalContacts, String Description, UUID Creator){
@@ -53,6 +51,9 @@ public class Ticket implements Comparable<Ticket>, Serializable {
         this.Creator = Creator;
         this.Status = Status;
         this.Priority = Priority;
+
+        dateCreated = new Date();
+        dateUpdated = new Date();
 
         DateFormat dateFormat = new SimpleDateFormat("MMddyyyyHHmmss");
         this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated);
