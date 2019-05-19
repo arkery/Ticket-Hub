@@ -31,11 +31,12 @@ public class Ticket implements Serializable {
 
     private Date dateCreated;
     private Date dateUpdated;
-    private String ID;
-    private UUID Creator, assignedTo;
+    private UUID Creator,
+                 assignedTo;
     private ArrayList<String> ticketComments;
     private ArrayList<UUID> additionalContacts;
-    private String  Title,
+    private String  ID,
+                    Title,
                     Category,
                     Description;
     private Status_Properties Status;
@@ -52,11 +53,10 @@ public class Ticket implements Serializable {
         this.Status = Status;
         this.Priority = Priority;
 
-        dateCreated = new Date();
-        dateUpdated = new Date();
+        dateCreated = dateUpdated = new Date();
 
         DateFormat dateFormat = new SimpleDateFormat("MMddyyyyHHmmss");
-        this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated);
+        this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated); //not sure if this will work
 
     }
 }

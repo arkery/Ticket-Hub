@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+//Backbone of entire plugin. Responsible for storing, accessing and sorting all tickets.
 public class Ticket_Hub {
     private Map<String, Ticket> Hub = new HashMap<>();
     @Getter @Setter private static File ticketFolderPath;
@@ -249,7 +250,7 @@ public class Ticket_Hub {
                     DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                     if(dateFormat.format(entry.getValue().getDateCreated()).equals(nonPersonCondition)){
                         displayTicket.add(entry.getValue());
-                    }
+                    }break;
                 default:
                     displayTickets.add(entry.getValue());
                     break;
@@ -260,7 +261,7 @@ public class Ticket_Hub {
         if(byCreationDate){
             displayTickets.sort(Comparator.comparing(Ticket::getDateCreated));
         }
-        if(!byCreationDate){
+        else if(!byCreationDate){
             displayTickets.sort(Comparator.comparing(Ticket::getDateUpdated));
         }
 
