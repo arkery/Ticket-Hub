@@ -1,5 +1,7 @@
-package io.github.arkery.customtickethub;
+package io.github.arkery.customtickethub.Ticket_Backend_System;
 
+import io.github.arkery.customtickethub.Enums.Priority_Properties;
+import io.github.arkery.customtickethub.Enums.Status_Properties;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
