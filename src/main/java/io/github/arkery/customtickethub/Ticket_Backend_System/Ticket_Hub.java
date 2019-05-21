@@ -279,4 +279,12 @@ public class Ticket_Hub {
         saveTicket.writeObject(ticket);
         saveTicket.close();
     }
+
+    public List<Ticket> getAllTickets(){
+        List<Ticket> displayTickets = new ArrayList<>();
+        for(val entry: Hub.entrySet()) {
+                displayTickets.add(entry.getValue());
+        }
+        return displayTickets;
+    }
 }

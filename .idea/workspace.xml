@@ -19,26 +19,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket_Hub.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="276" column="66" selection-start-line="276" selection-start-column="66" selection-end-line="276" selection-end-column="66" />
-              <folding>
-                <element signature="method#getTotalTickets#0;class#Ticket_Hub#0" />
-                <element signature="method#getTicketInHub#0;class#Ticket_Hub#0" />
-                <element signature="method#updateTicketInHub#0;class#Ticket_Hub#0" />
-                <element signature="method#filterViewTickets#0;class#Ticket_Hub#0" />
-              </folding>
+            <state relative-caret-position="428">
+              <caret line="290" lean-forward="true" selection-start-line="290" selection-end-line="290" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/CustomTicketHub.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="63" column="5" lean-forward="true" selection-start-line="63" selection-start-column="5" selection-end-line="63" selection-end-column="5" />
+            <state relative-caret-position="406">
+              <caret line="64" column="1" lean-forward="true" selection-start-line="64" selection-start-column="1" selection-end-line="64" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -46,8 +49,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Test_Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="24" column="16" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
+            <state relative-caret-position="392">
+              <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
             </state>
           </provider>
         </entry>
@@ -87,9 +90,9 @@
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Enums/Priority_Properties.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Enums/Filter_Conditions.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket_Hub.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Test_Main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket.java" />
       </list>
     </option>
   </component>
@@ -108,22 +111,33 @@
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="PackagesPane" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope">
-        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+      <pane id="PackagesPane">
+        <subPane>
           <expand>
             <path>
-              <item name="CustomTicketHub" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="CustomTicketHub" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="CustomTicketHub" type="58d84e3e:PackageViewProjectNode" />
+              <item name="CustomTicketHub" type="616d4139:PackageViewModuleNode" />
+            </path>
+            <path>
+              <item name="CustomTicketHub" type="58d84e3e:PackageViewProjectNode" />
+              <item name="CustomTicketHub" type="616d4139:PackageViewModuleNode" />
+              <item name="io.github.arkery.customtickethub" type="1f31426a:PackageElementNode" />
+            </path>
+            <path>
+              <item name="CustomTicketHub" type="58d84e3e:PackageViewProjectNode" />
+              <item name="CustomTicketHub" type="616d4139:PackageViewModuleNode" />
+              <item name="io.github.arkery.customtickethub" type="1f31426a:PackageElementNode" />
+              <item name="Enums" type="1f31426a:PackageElementNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -165,15 +179,6 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="customtickethub" type="462c0819:PsiDirectoryNode" />
               <item name="Ticket_Backend_System" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="CustomTicketHub" type="b2602c69:ProjectViewProjectNode" />
-              <item name="CustomTicketHub" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="customtickethub" type="462c0819:PsiDirectoryNode" />
-              <item name="Ticket_Menu" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -355,13 +360,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/CustomTicketHub.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Menu/Menu_Prompt.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
@@ -376,30 +374,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket_Hub.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="63" column="5" lean-forward="true" selection-start-line="63" selection-start-column="5" selection-end-line="63" selection-end-column="5" />
+        <state relative-caret-position="428">
+          <caret line="290" lean-forward="true" selection-start-line="290" selection-end-line="290" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Test_Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="24" column="16" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
+        <state relative-caret-position="392">
+          <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket_Hub.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/CustomTicketHub.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="276" column="66" selection-start-line="276" selection-start-column="66" selection-end-line="276" selection-end-column="66" />
-          <folding>
-            <element signature="method#getTotalTickets#0;class#Ticket_Hub#0" />
-            <element signature="method#getTicketInHub#0;class#Ticket_Hub#0" />
-            <element signature="method#updateTicketInHub#0;class#Ticket_Hub#0" />
-            <element signature="method#filterViewTickets#0;class#Ticket_Hub#0" />
-          </folding>
+        <state relative-caret-position="288">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Backend_System/Ticket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="64" column="1" lean-forward="true" selection-start-line="64" selection-start-column="1" selection-end-line="64" selection-end-column="1" />
         </state>
       </provider>
     </entry>

@@ -60,7 +60,7 @@ public class Ticket implements Serializable {
 
         DateFormat dateFormat = new SimpleDateFormat("MMddyyyyHHmmss");
         //this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated); //not sure if this will work
-        this.ID = Creator;
+        this.ID = Creator + dateFormat.format(dateCreated);
     }
 }
 
