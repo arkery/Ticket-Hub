@@ -276,5 +276,6 @@ public class Ticket_Hub {
     public void saveTicketOffline(Ticket ticket) throws IOException{
         @Cleanup ObjectOutputStream saveTicket= new ObjectOutputStream(new FileOutputStream(ticketFolderPath + "/" + ticket.getID() + ".ser"));
         saveTicket.writeObject(ticket);
+        saveTicket.close();
     }
 }

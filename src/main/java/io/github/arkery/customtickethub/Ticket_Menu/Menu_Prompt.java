@@ -1,4 +1,4 @@
-package io.github.arkery.customtickethub;
+package io.github.arkery.customtickethub.Ticket_Menu;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
