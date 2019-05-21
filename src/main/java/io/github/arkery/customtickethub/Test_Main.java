@@ -20,7 +20,7 @@ public class Test_Main {
             //UUID ticketCreator = Bukkit.getOfflinePlayer("arkery").getUniqueId();
 
             Ticket testTicket = new Ticket("Test Title", "Test Category", Status_Properties.OPEN, Priority_Properties.CRITICAL,
-                    null, "Test Description of this ticket", null);
+                    null, "Test Description of this ticket", "Arkery");
 
             Hub.addTicketToHub(testTicket);
 

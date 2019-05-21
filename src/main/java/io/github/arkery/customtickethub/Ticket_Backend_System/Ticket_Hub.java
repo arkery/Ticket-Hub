@@ -34,6 +34,7 @@ public class Ticket_Hub {
 
         if(!serverTicketFolder.exists()){
             System.out.println("No Folder Found: Creating Folder");
+            serverTicketFolder.mkdir();
         }
         else if(serverTicketFolder.isDirectory()){
 
@@ -208,7 +209,7 @@ public class Ticket_Hub {
     //Param: status - if they are looking for something involving status, use this. || Same applies to Priority
     //Param: byCreationDate - sort by creation date or by updated date?
     //Purp: Filter tickets in Hub to display certain information in array.
-    public List<Ticket> filterViewTickets(Filter_Conditions condition, String nonPersonCondition, UUID personCondition,
+    public List<Ticket> filterViewTickets(Filter_Conditions condition, String nonPersonCondition, String personCondition,
                                           Status_Properties status, Priority_Properties priority, boolean byCreationDate)throws NullPointerException{
         if(condition.equals(Filter_Conditions.EMPTY)){
             return null;
@@ -274,7 +275,7 @@ public class Ticket_Hub {
     //Param: ticket - ticket to be serialized
     //Purp: serialize and store ticket offline in directory
     public void saveTicketOffline(Ticket ticket) throws IOException{
-        @Cleanup ObjectOutputStream saveTicket= new ObjectOutputStream(new FileOutputStream(ticketFolderPath + "/" + ticket.getID() + ".ser"));
+        ObjectOutputStream saveTicket= new ObjectOutputStream(new FileOutputStream(ticketFolderPath + "/" + ticket.getID() + ".ser"));
         saveTicket.writeObject(ticket);
         saveTicket.close();
     }

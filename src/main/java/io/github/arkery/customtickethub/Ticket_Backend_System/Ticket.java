@@ -33,10 +33,11 @@ public class Ticket implements Serializable {
 
     private Date dateCreated;
     private Date dateUpdated;
-    private UUID Creator,
-                 assignedTo;
+   // private UUID Creator,
+   //              assignedTo;
+    private String Creator, assignedTo; //This is created for testing purposes - replacing UUID above
     private ArrayList<String> ticketComments;
-    private ArrayList<UUID> additionalContacts;
+    private ArrayList<String> additionalContacts;
     private String  ID,
                     Title,
                     Category,
@@ -45,7 +46,7 @@ public class Ticket implements Serializable {
     private Priority_Properties Priority;
 
     public Ticket(String Title, String Category, Status_Properties Status, Priority_Properties Priority,
-                  ArrayList<UUID> additionalContacts, String Description, UUID Creator){
+                  ArrayList<String> additionalContacts, String Description, String Creator){
 
         this.Title = Title;
         this.Category = Category;
@@ -58,8 +59,8 @@ public class Ticket implements Serializable {
         dateCreated = dateUpdated = new Date();
 
         DateFormat dateFormat = new SimpleDateFormat("MMddyyyyHHmmss");
-        this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated); //not sure if this will work
-
+        //this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated); //not sure if this will work
+        this.ID = Creator;
     }
 }
 
