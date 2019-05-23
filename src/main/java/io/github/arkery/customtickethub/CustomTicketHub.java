@@ -10,7 +10,6 @@ public class CustomTicketHub extends JavaPlugin {
 
     }
 
-
     @Override
     public void onEnable(){
         System.out.println("Starting Plugin: Ticket Hub | By Arkery");

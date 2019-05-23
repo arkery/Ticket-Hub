@@ -1,8 +1,9 @@
-package io.github.arkery.customtickethub.Ticket_Backend_System;
+package io.github.arkery.customtickethub.Backend_System;
 
 import io.github.arkery.customtickethub.Enums.Priority_Properties;
 import io.github.arkery.customtickethub.Enums.Status_Properties;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 
@@ -28,8 +29,8 @@ Date Created - the date the ticket was made
 Date Updated - the last time the ticket was updated/edited
 */
 
-@Getter @Setter
-public class Ticket implements Serializable {
+@Getter @Setter @NoArgsConstructor
+public class Ticket{
 
     private Date dateCreated;
     private Date dateUpdated;
@@ -48,6 +49,10 @@ public class Ticket implements Serializable {
     public Ticket(String Title, String Category, Status_Properties Status, Priority_Properties Priority,
                   ArrayList<String> additionalContacts, String Description, String Creator){
 
+        DateFormat dateFormat = new SimpleDateFormat("MMddyyyyHHmmss");
+        this.dateCreated = this.dateUpdated = new Date();
+        //this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated); //not sure if this will work
+        this.ID = Creator + dateFormat.format(dateCreated);
         this.Title = Title;
         this.Category = Category;
         this.additionalContacts = additionalContacts;
@@ -56,11 +61,5 @@ public class Ticket implements Serializable {
         this.Status = Status;
         this.Priority = Priority;
 
-        dateCreated = dateUpdated = new Date();
-
-        DateFormat dateFormat = new SimpleDateFormat("MMddyyyyHHmmss");
-        //this.ID = Bukkit.getPlayer(Creator).getName() + dateFormat.format(dateCreated); //not sure if this will work
-        this.ID = Creator + dateFormat.format(dateCreated);
     }
 }
-
