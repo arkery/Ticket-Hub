@@ -33,7 +33,7 @@ public class Test_Main {
 
             System.out.println("\n Number of Tickets in Hub: " + t.getTotalTickets() + "\n" + t.getClosedTickets());
 
-            List<Ticket> t2 = t.masterFilter(null, null, "", "","","Test Category",
+            List<Ticket> t2 = t.masterFilter(null, null, "", "","","",
                     Status_Properties.EMPTY,Priority_Properties.EMPTY);
 
             System.out.println("\n Number of matches: " + t2.size() + "\n");

@@ -36,7 +36,7 @@ public class Ticket{
     private Date dateUpdated;
    // private UUID Creator,
    //              assignedTo;
-    private String Creator, assignedTo; //This is created for testing purposes - replacing UUID above
+    private String Creator, whoLookedAtItLast, assignedTo; //This is created for testing purposes - replacing UUID above
     private ArrayList<String> ticketComments;
     private ArrayList<String> additionalContacts;
     private String  ID,
@@ -58,6 +58,7 @@ public class Ticket{
         this.additionalContacts = additionalContacts;
         this.Description = Description;
         this.Creator = Creator;
+        this.whoLookedAtItLast = Creator;
         this.Status = Status;
         this.Priority = Priority;
 

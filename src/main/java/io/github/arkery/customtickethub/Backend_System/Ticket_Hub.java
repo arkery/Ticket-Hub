@@ -146,11 +146,7 @@ public class Ticket_Hub implements Serializable {
 
     //Purp: Get All Tickets in the Hub - shove back and return a List.
     public List<Ticket> getAllTickets(){
-        List<Ticket> displayTickets = new ArrayList<>();
-        for(val entry: Hub.entrySet()) {
-            displayTickets.add(entry.getValue());
-        }
-        return displayTickets;
+        return Hub.values().parallelStream().collect(Collectors.toList());
     }
 
     //Parameters - all parameters are filtering conditions.
@@ -158,6 +154,9 @@ public class Ticket_Hub implements Serializable {
     public List<Ticket> masterFilter(Date dateCreated, Date dateUpdated, String ticketCreator, String personInvolved,
                                      String assignedTo, String category, Status_Properties status, Priority_Properties priority){
 
+        //Predicates, essentially conditions
+        //ex. Predicate<int> t = (a -> a > 9000)
+        //Condition, if integer is greater than 9000
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
 
         //add the date the ticket was created to filter criteria
@@ -195,10 +194,15 @@ public class Ticket_Hub implements Serializable {
         }
         //precaution: returns all tickets in hub.
         else{
-            return getAllTickets();
+           return getAllTickets();
         }
 
-        Predicate<Ticket> allActiveConditions = activeConditions.stream().reduce(w -> true, Predicate::and);
-        return getAllTickets().parallelStream().filter(allActiveConditions).collect(Collectors.toList());
+        //Predicate<Ticket> allActiveConditions = activeConditions.stream().reduce(x -> true, Predicate::and);
+        //displayTickets.sort(Comparator.comparing(Ticket::getDateUpdated))
+        //Reduce(action) - combine | orElse - Optional - if reduce is empty - AND identity to get all
+        return getAllTickets()
+                .parallelStream()
+                .filter(activeConditions.stream().reduce(Predicate::and).orElse(x -> true))
+                .collect(Collectors.toList());
     }
 }
