@@ -1,13 +1,15 @@
 package io.github.arkery.customtickethub.Backend_System;
 
-import io.github.arkery.customtickethub.Enums.Priority_Properties;
-import io.github.arkery.customtickethub.Enums.Status_Properties;
+import io.github.arkery.customtickethub.Enum.Priority_Properties;
+import io.github.arkery.customtickethub.Enum.Status_Properties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.val;
+import org.joda.time.DateTime;
+
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -17,7 +19,8 @@ import java.util.stream.Collectors;
 // This is because the two tickets would have identical ID's since the ID is based on the time of creation.
 @NoArgsConstructor
 public class Ticket_Hub implements Serializable {
-    private Map<String, Ticket> Hub = new HashMap<>();
+    @Getter
+    private ConcurrentHashMap<String, Ticket> Hub = new ConcurrentHashMap<>();
 
     @Getter @Setter
     private int criticalPriorityTickets,
@@ -28,11 +31,14 @@ public class Ticket_Hub implements Serializable {
                         assignedTickets,
                         resolvedTickets,
                         closedTickets;
+    @Getter
+    private int totalTickets;
 
-    //Purp: Get total number of tickets in hub.
+    /*Jackson doesn't play nice with this
+
     public int getTotalTickets(){
         return Hub.size();
-    }
+    }*/
 
     //Params: TicketID - the Ticket ID
     //Purp: get an individual Ticket in the Hub
@@ -41,7 +47,8 @@ public class Ticket_Hub implements Serializable {
     }
 
     //Param: updatedTicket - the updated ticket
-    //Purp: update a pre-existing ticket on the hub. Also updates that last updated date.
+    //Purp: update a pre-existing ticket on the hub - this is so it can record statistics instead of using getTicketInHub
+    //Also updates that last updated date.
     public void updateTicketInHub(Ticket updatedTicket) throws IOException{
 
         if(Hub.get(updatedTicket.getID()).getPriority() != updatedTicket.getPriority()){
@@ -95,6 +102,7 @@ public class Ticket_Hub implements Serializable {
                     break;
                 case RESOLVED:
                     resolvedTickets++;
+                    updatedTicket.setResolvedDate(new DateTime());
                     break;
                 case ASSIGNED:
                     assignedTickets++;
@@ -105,7 +113,8 @@ public class Ticket_Hub implements Serializable {
             }
         }
 
-        updatedTicket.setDateUpdated(new Date());
+        updatedTicket.setDateUpdated(new DateTime());
+        this.totalTickets = lowPriorityTickets + mediumPriorityTickets + highPriorityTickets + criticalPriorityTickets;
         Hub.replace(updatedTicket.getID(),updatedTicket);
     }
 
@@ -131,6 +140,7 @@ public class Ticket_Hub implements Serializable {
                 closedTickets++;
                 break;
             case RESOLVED:
+                newTicket.setResolvedDate(new DateTime());
                 resolvedTickets++;
                 break;
             case ASSIGNED:
@@ -140,18 +150,23 @@ public class Ticket_Hub implements Serializable {
                 openedTickets++;
                 break;
         }
-
+        this.totalTickets = lowPriorityTickets + mediumPriorityTickets + highPriorityTickets + criticalPriorityTickets;
         Hub.put(newTicket.getID(), newTicket);
     }
 
     //Purp: Get All Tickets in the Hub - shove back and return a List.
     public List<Ticket> getAllTickets(){
-        return Hub.values().parallelStream().collect(Collectors.toList());
+        List<Ticket> displayTicket = new ArrayList<>();
+        for(Map.Entry<String, Ticket> i: Hub.entrySet()){
+            displayTicket.add(i.getValue());
+        }
+        return displayTicket;
+        //return Hub.values().parallelStream().collect(Collectors.toList());
     }
 
     //Parameters - all parameters are filtering conditions.
     //Purp: filters the entire hub based on the criteria(method parameters) and returns a filtered array based on said criteria
-    public List<Ticket> masterFilter(Date dateCreated, Date dateUpdated, String ticketCreator, String personInvolved,
+    public List<Ticket> masterFilter(DateTime dateCreated, DateTime dateUpdated, String ticketCreator, String personInvolved,
                                      String assignedTo, String category, Status_Properties status, Priority_Properties priority){
 
         //Predicates, essentially conditions
