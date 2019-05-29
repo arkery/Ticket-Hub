@@ -60,12 +60,16 @@ public class TicketMenuInterface{
     }
 
     //Purp: Save the entire Hub offline
-    public synchronized void saveHub(){
+    public synchronized void saveHub(String s){
+        if(s.equals("")){
+            s = "ticketHub";
+        }
+
         try{
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
             mapper.registerModule(new AfterburnerModule());
-            mapper.writeValue(new File(ticketFolder + "/" + "ticketHub.json"), ticketHub);
+            mapper.writeValue(new File(ticketFolder + "/" + s + ".json"), ticketHub);
         }catch(IOException e) {e.printStackTrace();}
     }
 
@@ -95,7 +99,7 @@ public class TicketMenuInterface{
     //      Runs on another thread
     public void dailyMaintenance(){
         Runnable job = () -> {
-            saveHub();
+            saveHub("");
             checkResolvedTickets();
         };
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
@@ -103,6 +107,7 @@ public class TicketMenuInterface{
     }
 
     public void showTickets(Player player, String requiredInfo){
+
     }
 
     public void editTicket(Player player){
