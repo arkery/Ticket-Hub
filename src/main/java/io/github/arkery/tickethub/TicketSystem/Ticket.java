@@ -32,6 +32,7 @@ public class Ticket implements Serializable {
    private String ticketID;
    private String ticketTitle;
    private Status ticketStatus;
+   private Status ticketCategory;
    private Priority ticketPriority;
    private List<UUID> ticketContacts;
    private String ticketDescription;
@@ -39,5 +40,6 @@ public class Ticket implements Serializable {
    private UUID ticketCreator;
    private Date ticketDateCreated;
    private Date ticketDateLastUpdated;
+   private List<String> ticketComments;
 }
 

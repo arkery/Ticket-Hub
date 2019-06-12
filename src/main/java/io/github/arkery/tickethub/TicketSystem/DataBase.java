@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
@@ -26,8 +25,9 @@ public class DataBase implements Serializable {
 
     /*
     Updates Priority Count by decrementing old value and incrementing new value
-    @Param oldValue - the old Priority Value
-    @Param newValue - the new Priority Value
+
+    @param oldValue the old Priority Value
+    @param newValue the new Priority Value
      */
     public void updatePriorityStats(Priority oldValue, Priority newValue){
         switch(oldValue){
@@ -56,8 +56,9 @@ public class DataBase implements Serializable {
 
     /*
     Updates Status Count by decrementing old value and incrementing new value
-    @Param oldValue - the old Status Value
-    @Param newValue - the new Status Value
+
+    @Param oldValue the old Status Value
+    @Param newValue the new Status Value
     */
     public void updateStatusStats(Status oldValue, Status newValue){
         switch(oldValue){
@@ -86,7 +87,8 @@ public class DataBase implements Serializable {
 
     /*
     Updates Priority Statistics based on a new ticket being created
-    @Param value - the priority to be added
+
+    @param value - the priority to be added
      */
     public void addNewPriorityStats(Priority value){
         switch(value){
@@ -104,7 +106,8 @@ public class DataBase implements Serializable {
 
     /*
     Updates Status Statistics based on a new ticket being created
-    @Param value - the priority to be added
+
+    @param value the priority to be added
      */
     public void addnewStatusStats(Status value){
         switch(value){
@@ -120,7 +123,42 @@ public class DataBase implements Serializable {
         }
     }
 
+    /*
+    Creates a copy of all tickets that exist into a single UNSORTED list
 
+    @return A single list containing all tickets that are stored
+     */
+    public synchronized List<Ticket> convertTicketDataMapToList(){
+        List<Ticket> allTicketsAsList = new ArrayList<>();
+
+        for(Map.Entry<UUID, List<Ticket>> i: this.allTickets.entrySet()){
+            for(Ticket ticket: i.getValue()){
+                allTicketsAsList.add(ticket);
+            }
+        }
+
+        return allTicketsAsList;
+    }
+
+/*
+
+    Removes Hours, Minutes and Seconds from a date object
+
+    @param dateToRemove the date object that Hours, Minutes and Seconds will be removed from
+    @return             Date Object without Hours, Minutes and Seconds
+
+    public Date removeHourMinuteSeconds(Date dateToRemove){
+    Calendar modifyDate = Calendar.getInstance();
+
+    modifyDate.setTime(dateToRemove);
+    modifyDate.set(Calendar.HOUR_OF_DAY, 0);
+    modifyDate.set(Calendar.MINUTE, 0);
+    modifyDate.set(Calendar.SECOND, 0);
+    modifyDate.set(Calendar.MILLISECOND, 0);
+
+    return modifyDate.getTime();
+}
+ */
 
 
 
