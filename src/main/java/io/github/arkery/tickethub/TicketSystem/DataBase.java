@@ -1,24 +1,25 @@
-package io.github.arkery.customtickethub.TicketSystem;
+package io.github.arkery.tickethub.TicketSystem;
 
-import io.github.arkery.customtickethub.Enums.Priority;
-import io.github.arkery.customtickethub.Enums.Status;
+import io.github.arkery.tickethub.Enums.Priority;
+import io.github.arkery.tickethub.Enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
-@Setter
-@Getter
-public class Core {
+public class DataBase implements Serializable {
 
-    private ConcurrentHashMap<String, Ticket> storedTickets;
-    private int highPriority, mediumPriority, lowPriority;
-    private int opened, inProgress, resolved;
+    @Setter @Getter private ConcurrentHashMap<UUID, List<Ticket>> allTickets;
+    @Getter private int highPriority, mediumPriority, lowPriority;
+    @Getter private int opened, inProgress, resolved;
 
-    public Core(){
-        this.storedTickets = new ConcurrentHashMap<>();
+    public DataBase(){
+        this.allTickets = new ConcurrentHashMap<>();
         this.highPriority = this.mediumPriority = this.lowPriority = 0;
         this.opened = this.inProgress = this.resolved = 0;
     }
@@ -117,10 +118,6 @@ public class Core {
                 this.resolved++;
                 break;
         }
-    }
-
-    public void saveTickets(String name){
-
     }
 
 

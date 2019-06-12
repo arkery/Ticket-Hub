@@ -1,4 +1,4 @@
-package io.github.arkery.customtickethub.Enums;
+package io.github.arkery.tickethub.Enums;
 
 public enum Status {
 

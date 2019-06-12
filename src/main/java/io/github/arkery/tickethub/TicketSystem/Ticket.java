@@ -1,7 +1,7 @@
-package io.github.arkery.customtickethub.TicketSystem;
+package io.github.arkery.tickethub.TicketSystem;
 
-import io.github.arkery.customtickethub.Enums.Priority;
-import io.github.arkery.customtickethub.Enums.Status;
+import io.github.arkery.tickethub.Enums.Priority;
+import io.github.arkery.tickethub.Enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
