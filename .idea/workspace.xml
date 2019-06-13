@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="edc848c2-4519-4234-90e7-7fb96eb327a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/CommandCenter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketHub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketHub.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Core.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Core.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -21,46 +19,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Core.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="771">
-              <caret line="122" lean-forward="true" selection-start-line="122" selection-end-line="122" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketHub.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="504">
-              <caret line="39" column="75" lean-forward="true" selection-start-line="39" selection-start-column="75" selection-end-line="39" selection-end-column="75" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Ticket.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="713">
-              <caret line="45" lean-forward="true" selection-start-line="45" selection-end-line="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataBase.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2862">
-              <caret line="159" column="1" lean-forward="true" selection-start-line="159" selection-start-column="1" selection-end-line="159" selection-end-column="1" />
+              <caret line="39" column="53" selection-start-line="39" selection-start-column="53" selection-end-line="39" selection-end-column="53" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/CommandCenter.java">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1141">
-              <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
+            <state relative-caret-position="144">
+              <caret line="8" column="5" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -112,6 +83,7 @@
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Core.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketHub.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/CommandCenter.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/plugin.yml" />
       </list>
     </option>
   </component>
@@ -191,18 +163,6 @@
               <item name="TicketHub" type="616d4139:PackageViewModuleNode" />
               <item name="io.github.arkery.tickethub" type="1f31426a:PackageElementNode" />
             </path>
-            <path>
-              <item name="Ticket-Hub" type="58d84e3e:PackageViewProjectNode" />
-              <item name="TicketHub" type="616d4139:PackageViewModuleNode" />
-              <item name="io.github.arkery.tickethub" type="1f31426a:PackageElementNode" />
-              <item name="Commands" type="1f31426a:PackageElementNode" />
-            </path>
-            <path>
-              <item name="Ticket-Hub" type="58d84e3e:PackageViewProjectNode" />
-              <item name="TicketHub" type="616d4139:PackageViewModuleNode" />
-              <item name="io.github.arkery.tickethub" type="1f31426a:PackageElementNode" />
-              <item name="Enums" type="1f31426a:PackageElementNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -225,21 +185,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="Ticket-Hub" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Ticket-Hub" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Ticket-Hub" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Ticket-Hub" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="tickethub" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -257,6 +202,9 @@
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="io.github.arkery.customtickethub.TicketSystem" />
       <recent name="io.github.arkery.customtickethub.Enums" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\resources" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -286,6 +234,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1519" height="977" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19412167" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -375,13 +324,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/plugin.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Menu_Prompt.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Ticket_Hub.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/customtickethub/Properties.java" />
@@ -437,14 +379,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketHub.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
-          <caret line="39" column="75" lean-forward="true" selection-start-line="39" selection-start-column="75" selection-end-line="39" selection-end-column="75" />
+          <caret line="39" column="53" selection-start-line="39" selection-start-column="53" selection-end-line="39" selection-end-column="53" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/CommandCenter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/CommandCenter.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1141">
-          <caret line="106" lean-forward="true" selection-start-line="106" selection-end-line="106" />
+        <state relative-caret-position="144">
+          <caret line="8" column="5" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -498,7 +441,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>CustomTicketHub</last-edited>
+          <last-edited>TicketHub</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
