@@ -6,7 +6,6 @@ import com.google.gson.JsonIOException;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.*;
@@ -18,21 +17,21 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class Core{
+public class Hub {
 
-    private DataBase storedTickets;
+    private DataCore storedTickets;
     private File ticketFolder;
     private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-    public Core(File pluginFolder){
+    public Hub(File pluginFolder){
         this.ticketFolder = new File(pluginFolder + "/Tickets");
-        this.storedTickets = new DataBase();
+        this.storedTickets = new DataCore();
     }
 
-    /*
-    saves the tickets offline
-
-    @param name if manually saving, json file will saved as this name
+    /**
+     * saves the tickets offline
+     *
+     * @param name
      */
     public synchronized void saveTickets(String name){
         if(name.equalsIgnoreCase("")){
@@ -40,33 +39,40 @@ public class Core{
         }
         try{
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            FileWriter save = new FileWriter(new File(ticketFolder + "/" + name + ".json"));
-            save.write(gson.toJson(storedTickets));
-        }catch(IOException e) {e.printStackTrace();}
-    }
-
-    /*
-    Loads any existing tickets into the plugin
-     */
-    public void loadTickets(){
-        try{
             if(!ticketFolder.isDirectory()){
                 System.out.println("TicketHub: Creating the Ticket Folder");
                 ticketFolder.mkdir();
             }
 
-            File storedTickets = new File(ticketFolder + "/" + "tickets.json");
-            if(!storedTickets.isFile()){
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            FileWriter save = new FileWriter(new File(ticketFolder + "/" + name + ".json"));
+            save.write(gson.toJson(storedTickets));
+            save.close();
+        }catch(IOException e) {e.printStackTrace();}
+    }
+
+    /**
+     * Loads any existing tickets into the plugin
+     */
+    public void loadTickets(){
+        try{
+
+            if(!ticketFolder.isDirectory()){
+                System.out.println("TicketHub: Creating the Ticket Folder");
+                ticketFolder.mkdir();
+            }
+
+            File storedTicketsFile = new File(ticketFolder + "/" + "tickets.json");
+            if(!storedTicketsFile.isFile()){
                 System.out.println("TicketHub: No Pre-existing Tickets Found");
                 return;
             }
 
             //Deserialize the ticketHub
             System.out.println("TicketHub: Loading in Ticket Data");
-            FileReader resolvedTicket = new FileReader(storedTickets);
+            FileReader resolvedTicket = new FileReader(storedTicketsFile);
             Gson gson = new Gson();
-            this.storedTickets = gson.fromJson(resolvedTicket, DataBase.class);
+            this.storedTickets = gson.fromJson(resolvedTicket, DataCore.class);
 
         }catch(FileNotFoundException e) {
             System.out.println("TicketHub: Folder not found, creating Folder");
@@ -77,14 +83,15 @@ public class Core{
         }
     }
 
-    /*
-    Checks all tickets that are stored and deletes the ones that have been resolved for more than a week
-    If the user has no tickets belonging to them after deletion, user is deleted from the hashmap
 
-    Note - For future reference, adding another conditional check in the nested for loop will not work.
-         - Currently, method can only remove one condition at a time, will need to run through the loop again or make
-           a second nested loop for another condition. This is because after deletion, the size of i.getValue is shortened
-           which will potentially cause Exception Errors (ie. OutOfBounds) if it attempts to find and delete another value.
+    /**
+     * Checks all tickets that are stored and deletes the ones that have been resolved for more than a week
+     * If the user has no tickets belonging to them after deletion, user is deleted from the hashmap
+     *
+     * Note - For future reference, adding another conditional check in the nested for loop will not work.
+     *      - Currently, method can only remove one condition at a time, will need to run through the loop again or make
+     *        a second nested loop for another condition. This is because after deletion, the size of i.getValue is shortened
+     *        which will potentially cause Exception Errors (ie. OutOfBounds) if it attempts to find and delete another value.
      */
     public synchronized void deletePastOneWeek(){
         //all values in the hashmap
@@ -107,12 +114,12 @@ public class Core{
         }
     }
 
-    /*
-    Filters all stored tickets based on conditions that user inputs
-
-    @param  conditions               Filtering conditions added by the user
-    @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
-    @throws IllegalArgumentException This is thrown when there are no conditions (conditions is empty)
+    /**
+     * Filters tickets based on conditions inputted by user
+     *
+     * @param conditions                Filtering conditions added by the user
+     * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
+     * @throws IllegalArgumentException This is thrown when there are no conditions (conditions is empty)
      */
     public List<Ticket> filterTickets(Map conditions){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();

@@ -11,6 +11,10 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Commands implements CommandExecutor {
@@ -76,11 +80,11 @@ public class Commands implements CommandExecutor {
         return false;
     }
 
-    /*
-    Main command if player only does /th
-    Shows all available commands.
-
-    @param player the player who's sending this command
+    /**
+     * Main command if player only does /th
+     * Shows all available commands.
+     *
+     * @param player the player who's sending this command
      */
     public void mainCommand(Player player){
         player.sendMessage(ChatColor.AQUA + "TicketHub by arkery");
@@ -101,11 +105,10 @@ public class Commands implements CommandExecutor {
         }
     }
 
-    /*
-    Create a new ticket
-    - this is usable by everyone
-
-     @param player the player who's sending this command
+     /**
+     *  Create a new ticket  - this is usable by everyone
+     *
+     * @param player the player who's sending this command
      */
     public void createNewTicket(Player player){
         if(player.hasPermission("tickethub.player")){
@@ -122,17 +125,17 @@ public class Commands implements CommandExecutor {
         }
     }
 
-    /*
-    View all tickets belonging to the player who invoked this method
-    /th allmytickets <page> <created/updated>
-    - usable by everyone
-
-     @param player the player who's sending this command
-     @param args   the command input
+    /**
+     * View all tickets belonging to the player who invoked this method - usable by everyone
+     * /th allmytickets <page> <created/updated>
+     *
+     * @param player the player who's sending this command
+     * @param args   the command input
      */
     public void myTicketsAll(Player player, String[] args){
         if(player.hasPermission("tickethub.player")){
             try{
+                //Check if player has tickets
                 if(!plugin.getTicketSystem().getStoredTickets().getAllTickets().containsKey(player.getUniqueId())){
                     player.sendMessage(ChatColor.RED + "You have no tickets!");
                     return;
@@ -140,11 +143,22 @@ public class Commands implements CommandExecutor {
 
                 List<Ticket> playerTickets = plugin.getTicketSystem().getStoredTickets().getAllTickets().get(player.getUniqueId());
 
+                //Check if player stated if they wanted it sorted by date created
+                if(args.length == 3 && args[2].equalsIgnoreCase("created")){
+                    playerTickets.sort(Comparator.comparing(Ticket::getTicketDateCreated));
+                }
+
+                //By Default, sort by date Updated
+                playerTickets.sort(Comparator.comparing(Ticket::getTicketDateLastUpdated));
+                Collections.reverse(playerTickets);
+
+                //Second check if player has no tickets
                 if(playerTickets.isEmpty()){
                     player.sendMessage(ChatColor.RED + "You have no tickets!");
                     return;
                 }
 
+                //Check if player inputted a page
                 if(args.length == 1){
                     this.ticketPageView(player, 1, playerTickets);
                 }
@@ -161,101 +175,90 @@ public class Commands implements CommandExecutor {
         }
     }
 
-    /*
-    View all details of an individual ticket belonging to the player who invoked this method
-    - usable by everyone
-
-    If player has staff permissions, they can access other tickets belonging to other players
-
-     @param player the player who's sending this command
-     @param args   the command input
+    /**
+     * View all details of an individual ticket belonging to the player who invoked this method - usable by everyone
+     * If player has staff permissions, they can access other tickets belonging to other players
+     *
+     * @param player the player who's sending this command
+     * @param args   the command input
      */
     public void ticketFullDetails(Player player, String[] args){
 
     }
 
-    /*
-    Add a comment to a ticket that belongs to the player who invoked this method
-    - usable by everyone
 
-    If player has staff permissions, they can add comments to all tickets
-
-     @param player the player who's sending this command
-     @param args   the command input
+    /**
+     * Add a comment to a ticket that belongs to the player who invoked this method - usable by everyone
+     * If player has staff permissions, they can add comments to all tickets
+     *
+     * @param player the player who's sending this command
+     * @param args   the command input
      */
     public void ticketAddComment(Player player, String[] args){
 
     }
 
-    /*
-    Show current statistics about all tickets saved
-    - usable by staff
-
-     @param player the player who's sending this command
-     @param args   the command input
+    /**
+     * Show current statistics about all tickets saved - usable by staff
+     *
+     * @param player the player who's sending this command
      */
     public void statistics(Player player){
 
         player.sendMessage(ChatColor.AQUA   + "PRIORITY");
-        player.sendMessage(ChatColor.GOLD   + "  High        "  + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
-        player.sendMessage(ChatColor.YELLOW + "  Medium     "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getMediumPriority());
-        player.sendMessage(ChatColor.GREEN  + "  Low         "  + " = " + this.plugin.getTicketSystem().getStoredTickets().getLowPriority());
+        player.sendMessage(ChatColor.GOLD   + "     " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority() + "  High " );
+        player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getMediumPriority() + "  Medium ");
+        player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getLowPriority() + "  Low ");
         player.sendMessage(ChatColor.AQUA   + "STATUS");
-        player.sendMessage(ChatColor.RED    + "  Open         " + " = " + this.plugin.getTicketSystem().getStoredTickets().getOpened());
-        player.sendMessage(ChatColor.YELLOW + "  In Progress" + " = " + this.plugin.getTicketSystem().getStoredTickets().getInProgress());
-        player.sendMessage(ChatColor.GREEN  + "  Resolved    "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getResolved());
+        player.sendMessage(ChatColor.RED    + "     " + this.plugin.getTicketSystem().getStoredTickets().getOpened() + "  Open ");
+        player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getInProgress() + "  In Progress ");
+        player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getResolved() + "  Resolved ");
     }
 
-    /*
-     Show current statistics about all tickets saved
-     - usable by staff
-
-      @param player the player who's sending this command
+    /**
+     * edit an existing ticket - usable by staff
+     *
+     * @param player the player who's sending this command
      */
     public void editTicket(Player player){
 
     }
 
-    /*
-    Show current statistics about all tickets saved
-    - usable by staff
-
-     @param player the player who's sending this command
-     @param args   the command input
-    */
+    /**
+     * Shows all tickets that are filed - usable by staff
+     *
+     * @param player the player who's sending this command
+     * @param args   the command input
+     */
     public void listAllTickets(Player player, String[] args){
 
     }
 
-    /*
-    Show current statistics about all tickets saved
-    - usable by staff
-
-     @param player the player who's sending this command
-     @param args   the command input
-    */
+    /**
+     * filter all tickets based on user input - usable by staff
+     *
+     * @param player the player who's sending this command
+     */
     public void filterAllTickets(Player player){
 
     }
 
-    /*
-    Show current statistics about all tickets saved
-    - usable by staff
-
-     @param player the player who's sending this command
-     @param args   the command input
-    */
+    /**
+     * display All tickets that are assigned to the player who calls this command - usable by staff
+     *
+     * @param player the player who's sending this command
+     * @param args   the command input
+     */
     public void myAssignedTickets(Player player, String[] args){
 
     }
 
-    /*
-    Show current statistics about all tickets saved
-    - usable by staff
-
-     @param player the player who's sending this command
-     @param args   the command input
-    */
+    /**
+     * Save all tickets into a .json file with player inputting the name of the file - usable by staff
+     *
+     * @param player the player who's sending this command
+     * @param args   the command input
+     */
     public void saveAllTickets(Player player, String[] args){
         //If they didn't add a name to save it as
         if(args.length == 1){
@@ -270,14 +273,14 @@ public class Commands implements CommandExecutor {
         }
     }
 
-    /*
-     Displays a List into player friendly page view
-     - To be used by other command methods in this class
-
-     @param player         the player who's sending this command
-     @param page           the page to view
-     @param displayTickets the List containing tickets to be viewed
-    */
+    /**
+     * Displays list in player friendly page format
+     * To be used by other methods
+     *
+     * @param player         the player who's sending this command
+     * @param page           the command input
+     * @param displayTickets list to display as
+     */
     public void ticketPageView(Player player, int page, List<Ticket> displayTickets) {
 
         //9 entries per page
@@ -285,14 +288,17 @@ public class Commands implements CommandExecutor {
         int topOfPage = (page - 1) * 9;
         int bottomOfPage = 9 * page - 1;
 
-        player.sendMessage(ChatColor.GOLD + "[" + page + "/" + totalPages + "]");
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
         if (page > 0 && page <= totalPages) {
+            player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + "]");
             if (displayTickets.size() < topOfPage + 9) {
                 bottomOfPage = displayTickets.size();
             }
 
+            player.sendMessage(ChatColor.BLUE + "Ticket ID - Date Updated");
             for (int i = topOfPage; i < bottomOfPage; i++) {
-                player.sendMessage(ChatColor.GRAY + displayTickets.get(i).getTicketID());
+                player.sendMessage(ChatColor.GRAY + displayTickets.get(i).getTicketID() + " | " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()));
             }
         } else {
             player.sendMessage(ChatColor.RED + "Invalid Page");

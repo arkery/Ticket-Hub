@@ -1,7 +1,7 @@
 package io.github.arkery.tickethub;
 
 import io.github.arkery.tickethub.Commands.Commands;
-import io.github.arkery.tickethub.TicketSystem.Core;
+import io.github.arkery.tickethub.TicketSystem.Hub;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,13 +22,13 @@ import java.util.concurrent.TimeUnit;
 @Setter
 public class TicketHub extends JavaPlugin {
 
-    private Core TicketSystem;
+    private Hub TicketSystem;
     private List<String> customCategories;
 
     @Override
     public void onEnable(){
         System.out.println("Starting Plugin: TicketHub | By Arkery");
-        this.TicketSystem = new Core(this.getDataFolder());
+        this.TicketSystem = new Hub(this.getDataFolder());
         this.customCategories = new ArrayList<>();
         this.createOrLoadConfig();
         this.TicketSystem.loadTickets();

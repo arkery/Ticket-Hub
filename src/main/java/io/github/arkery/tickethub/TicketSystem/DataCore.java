@@ -11,23 +11,23 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
-public class DataBase implements Serializable {
+public class DataCore implements Serializable {
 
     @Setter @Getter private ConcurrentHashMap<UUID, List<Ticket>> allTickets;
     @Getter private int highPriority, mediumPriority, lowPriority;
     @Getter private int opened, inProgress, resolved;
 
-    public DataBase(){
+    public DataCore(){
         this.allTickets = new ConcurrentHashMap<>();
         this.highPriority = this.mediumPriority = this.lowPriority = 0;
         this.opened = this.inProgress = this.resolved = 0;
     }
 
-    /*
-    Updates Priority Count by decrementing old value and incrementing new value
-
-    @param oldValue the old Priority Value
-    @param newValue the new Priority Value
+    /**
+     * Updates Priority Count by decrementing old value and incrementing new value
+     *
+     * @param oldValue the old Priority Value
+     * @param newValue the new Priority Value
      */
     public void updatePriorityStats(Priority oldValue, Priority newValue){
         switch(oldValue){
@@ -54,12 +54,12 @@ public class DataBase implements Serializable {
         }
     }
 
-    /*
-    Updates Status Count by decrementing old value and incrementing new value
-
-    @Param oldValue the old Status Value
-    @Param newValue the new Status Value
-    */
+    /**
+     * Updates Status Count by decrementing old value and incrementing new value
+     *
+     * @param oldValue the old Status Value
+     * @param newValue the new Status Value
+     */
     public void updateStatusStats(Status oldValue, Status newValue){
         switch(oldValue){
             case OPENED:
@@ -85,10 +85,10 @@ public class DataBase implements Serializable {
         }
     }
 
-    /*
-    Updates Priority Statistics based on a new ticket being created
-
-    @param value - the priority to be added
+    /**
+     * Updates Priority Statistics based on a new ticket being created
+     *
+     * @param value the priority to be added
      */
     public void addNewPriorityStats(Priority value){
         switch(value){
@@ -104,10 +104,10 @@ public class DataBase implements Serializable {
         }
     }
 
-    /*
-    Updates Status Statistics based on a new ticket being created
-
-    @param value the priority to be added
+    /**
+     * Updates Status Statistics based on a new ticket being created
+     *
+     * @param value the priority to be added
      */
     public void addnewStatusStats(Status value){
         switch(value){
@@ -123,10 +123,10 @@ public class DataBase implements Serializable {
         }
     }
 
-    /*
-    Creates a copy of all tickets that exist into a single UNSORTED list
-
-    @return A single list containing all tickets that are stored
+    /**
+     * Creates a copy of all tickets that exist into a single UNSORTED list
+     *
+     * @return A single list containing all tickets that are stored
      */
     public synchronized List<Ticket> convertTicketDataMapToList(){
         List<Ticket> allTicketsAsList = new ArrayList<>();
