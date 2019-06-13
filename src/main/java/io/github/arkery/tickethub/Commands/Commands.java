@@ -3,6 +3,7 @@ package io.github.arkery.tickethub.Commands;
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,11 +17,13 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 public class Commands implements CommandExecutor {
 
     private TicketHub plugin;
     private ConversationFactory conversationFactory;
+    private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     public Commands(TicketHub plugin){
         this.plugin = plugin;
@@ -45,7 +48,7 @@ public class Commands implements CommandExecutor {
                     case "allmytickets":
                         this.myTicketsAll(player, args);
                         return false;
-                    case "myticket":
+                    case "ticketdetails":
                         this.ticketFullDetails(player, args);
                         return false;
                     case "addcomment":
@@ -166,7 +169,7 @@ public class Commands implements CommandExecutor {
                     this.ticketPageView(player, Integer.parseInt(args[1]), playerTickets);
                 }
             }catch(NumberFormatException e){
-                player.sendMessage(ChatColor.RED + "Invalid page | Please enter in the format of "
+                player.sendMessage(ChatColor.RED + "Please enter in the format of "
                         + ChatColor.DARK_GREEN + "/th allmytickets <page> <created/updated>");
             }
         }
@@ -183,7 +186,87 @@ public class Commands implements CommandExecutor {
      * @param args   the command input
      */
     public void ticketFullDetails(Player player, String[] args){
+        if(player.hasPermission("tickethub.player")){
+            try{
+                int page = 0;
 
+                //If they forgot to enter the ticketid when calling the command
+                if(args.length == 1){
+                    player.sendMessage(ChatColor.RED + "Please enter in the format of "
+                            + ChatColor.DARK_GREEN + "/th ticketdetails <ticketid> <page>");
+                    return;
+                }
+                //If they only entered the ticket ID
+                else if(args.length == 2){
+                    page = 1;
+
+                }
+                //If they also included a page number
+                else if(args.length == 3){
+                    page = Integer.parseInt(args[2]);
+                }
+
+                //Get the ticket
+                Ticket displayTicket = this.plugin.getTicketSystem().searchForTicket(args[1]);
+
+                //Combine contacts to single line
+                String ticketContacts = "";
+                for(UUID i: displayTicket.getTicketContacts()){
+                    ticketContacts += " " + Bukkit.getOfflinePlayer(i).getName();
+                }
+
+
+                if(page == 1) {
+                    player.sendMessage(ChatColor.AQUA + "Details for Ticket " + displayTicket.getTicketID() + ": ");
+
+                    player.sendMessage(ChatColor.GOLD + "     Title        " + displayTicket.getTicketTitle());
+                    player.sendMessage(ChatColor.GOLD + "     Status       " + displayTicket.getTicketStatus().toString());
+                    player.sendMessage(ChatColor.GOLD + "     Category     " + displayTicket.getTicketCategory());
+                    player.sendMessage(ChatColor.GOLD + "     Priority     " + displayTicket.getTicketPriority().toString());
+                    player.sendMessage(ChatColor.GOLD + "     Contacts     " + ticketContacts);
+                    player.sendMessage(ChatColor.GOLD + "     Description  " + displayTicket.getTicketDescription());
+                    player.sendMessage(ChatColor.GOLD + "     Assigned To  " + Bukkit.getOfflinePlayer(displayTicket.getTicketAssignedTo()).getName());
+                    player.sendMessage(ChatColor.GOLD + "     Creator      " + Bukkit.getOfflinePlayer(displayTicket.getTicketCreator()).getName());
+                    player.sendMessage(ChatColor.GOLD + "     Last Updated " + dateFormat.format(displayTicket.getTicketDateLastUpdated()));
+                    player.sendMessage(ChatColor.GOLD + "     Date Created " + dateFormat.format(displayTicket.getTicketDateCreated()));
+                }
+                else{
+
+                    if(displayTicket.getTicketComments().isEmpty()){
+                        player.sendMessage(ChatColor.GOLD + "This ticket doesn't have any comments!");
+                        return;
+                    }
+
+                    int totalPages = (int) Math.ceil((double) displayTicket.getTicketComments().size() / 9);
+                    int topOfPage = (page - 1) * 9;
+                    int bottomOfPage = 9 * page - 1;
+
+                    if (page > 0 && page <= totalPages) {
+                        player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + "]");
+                        if (displayTicket.getTicketComments().size() < topOfPage + 9) {
+                            bottomOfPage = displayTicket.getTicketComments().size();
+                        }
+
+                        player.sendMessage(ChatColor.BLUE + "Comments");
+                        for (int i = topOfPage; i < bottomOfPage; i++) {
+                            player.sendMessage(ChatColor.GRAY + displayTicket.getTicketComments().get(i)
+                                    + " | " + dateFormat.format(displayTicket.getTicketComments().get(i)));
+                        }
+                    } else {
+                        player.sendMessage(ChatColor.RED + "Invalid Page");
+                    }
+                }
+
+            }catch(NumberFormatException e){
+                player.sendMessage(ChatColor.RED + "Please enter in the format of "
+                        + ChatColor.DARK_GREEN + "/th ticketdetails <ticketid> <page>");
+            }catch(IllegalArgumentException e){
+                player.sendMessage(ChatColor.RED + "Could not find Ticket!");
+            }
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
 
@@ -205,14 +288,20 @@ public class Commands implements CommandExecutor {
      */
     public void statistics(Player player){
 
-        player.sendMessage(ChatColor.AQUA   + "PRIORITY");
-        player.sendMessage(ChatColor.GOLD   + "     " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority() + "  High " );
-        player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getMediumPriority() + "  Medium ");
-        player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getLowPriority() + "  Low ");
-        player.sendMessage(ChatColor.AQUA   + "STATUS");
-        player.sendMessage(ChatColor.RED    + "     " + this.plugin.getTicketSystem().getStoredTickets().getOpened() + "  Open ");
-        player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getInProgress() + "  In Progress ");
-        player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getResolved() + "  Resolved ");
+        if(player.hasPermission("tickethub.staff")){
+            player.sendMessage(ChatColor.AQUA   + "PRIORITY");
+            player.sendMessage(ChatColor.GOLD   + "     " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority() + "  High " );
+            player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getMediumPriority() + "  Medium ");
+            player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getLowPriority() + "  Low ");
+            player.sendMessage(ChatColor.AQUA   + "STATUS");
+            player.sendMessage(ChatColor.RED    + "     " + this.plugin.getTicketSystem().getStoredTickets().getOpened() + "  Open ");
+            player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getInProgress() + "  In Progress ");
+            player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getResolved() + "  Resolved ");
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
+
     }
 
     /**
@@ -260,16 +349,22 @@ public class Commands implements CommandExecutor {
      * @param args   the command input
      */
     public void saveAllTickets(Player player, String[] args){
-        //If they didn't add a name to save it as
-        if(args.length == 1){
-            player.sendMessage(ChatColor.DARK_GREEN + "/th save <name>");
-            player.sendMessage(ChatColor.DARK_GREEN + "Please enter a name to save the ticket file as");
-            return;
+
+        if(player.hasPermission("tickethub.staff")){
+            //If they didn't add a name to save it as
+            if(args.length == 1){
+                player.sendMessage(ChatColor.DARK_GREEN + "/th save <name>");
+                player.sendMessage(ChatColor.DARK_GREEN + "Please enter a name to save the ticket file as");
+                return;
+            }
+            else{
+                player.sendMessage(ChatColor.GRAY + "Saving tickets as: " + args[1]);
+                this.plugin.getTicketSystem().saveTickets(args[1]);
+                player.sendMessage(ChatColor.GREEN + "Tickets saved!");
+            }
         }
         else{
-            player.sendMessage(ChatColor.GRAY + "Saving tickets as: " + args[1]);
-            this.plugin.getTicketSystem().saveTickets(args[1]);
-            player.sendMessage(ChatColor.GREEN + "Tickets saved!");
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
         }
     }
 
@@ -287,8 +382,6 @@ public class Commands implements CommandExecutor {
         int totalPages = (int) Math.ceil((double) displayTickets.size() / 9);
         int topOfPage = (page - 1) * 9;
         int bottomOfPage = 9 * page - 1;
-
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
         if (page > 0 && page <= totalPages) {
             player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + "]");

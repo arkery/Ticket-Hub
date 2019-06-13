@@ -4,6 +4,7 @@ import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ Date Created - the date the ticket was made
 Date Updated - the last time the ticket was updated/edited
 */
 
-@Getter @Setter @AllArgsConstructor
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Ticket implements Serializable {
 
    private String ticketID;

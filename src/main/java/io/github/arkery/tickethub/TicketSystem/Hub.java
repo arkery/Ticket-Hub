@@ -8,6 +8,7 @@ import io.github.arkery.tickethub.Enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -122,9 +123,9 @@ public class Hub {
     /**
      * Filters tickets based on conditions inputted by user
      *
+     * @throws IllegalArgumentException This is thrown when there are no conditions (conditions is empty)
      * @param conditions                Filtering conditions added by the user
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
-     * @throws IllegalArgumentException This is thrown when there are no conditions (conditions is empty)
      */
     public List<Ticket> filterTickets(Map conditions){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
@@ -166,6 +167,36 @@ public class Hub {
                 .stream()
                 .filter(activeConditions.stream().reduce(Predicate::and).orElse(x -> true))
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Searches for a single ticket within all the stored Tickets
+     *
+     * @throws IllegalArgumentException Thrown if the ticket creator isn't found or doesn't have any tickets
+     * @param TicketID                  The ticket ID
+     * @return                          The ticket that the player is looking for
+     */
+    public Ticket searchForTicket(String TicketID){
+        Ticket ticket = new Ticket();
+        String playerName = TicketID.substring(0, TicketID.length() - 12);
+        Player getPlayer = Bukkit.getOfflinePlayer(playerName).getPlayer();
+
+        if(!this.storedTickets.getAllTickets().containsKey(getPlayer.getUniqueId())){
+            throw new IllegalArgumentException();
+        }
+        else if(this.storedTickets.getAllTickets().get(getPlayer.getUniqueId()).isEmpty()){
+            throw new IllegalArgumentException();
+        }
+
+        for(Ticket i: this.storedTickets.getAllTickets().get(getPlayer.getUniqueId())){
+            if(i.getTicketID().equalsIgnoreCase(TicketID)){
+                ticket = i;
+                break;
+            }
+        }
+
+        return ticket;
     }
 
 }

@@ -34,10 +34,10 @@ public class createNewTicket extends MessagePrompt {
                 conv.getAllSessionData().containsKey(Options.TICKETTITLE)
             ){
                 Player player = (Player) conv.getForWhom();
-                DateFormat dateFormat = new SimpleDateFormat("MMddyyHHmmss");
+                DateFormat dateFormat = new SimpleDateFormat("MMddyyHHmmss"); // player IGN + 12 numbers
 
                 Ticket newTicket = new Ticket(
-                         player.getName() + dateFormat.format(new Date()),   //ID
+                         player.getName() + dateFormat.format(new Date()),           //ID
                         (String) conv.getSessionData(Options.TICKETTITLE),                  //TITLE
                         Status.OPENED,                                                      //Status
                         (String) conv.getSessionData(Options.TICKETCATEGORY),               //Category
