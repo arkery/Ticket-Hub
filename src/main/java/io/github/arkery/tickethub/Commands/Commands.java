@@ -1,13 +1,17 @@
 package io.github.arkery.tickethub.Commands;
 
+import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
 import io.github.arkery.tickethub.TicketHub;
+import io.github.arkery.tickethub.TicketSystem.Ticket;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class Commands implements CommandExecutor {
 
@@ -104,18 +108,57 @@ public class Commands implements CommandExecutor {
      @param player the player who's sending this command
      */
     public void createNewTicket(Player player){
-
+        if(player.hasPermission("tickethub.player")){
+            Conversation conv = conversationFactory
+                    .withFirstPrompt(new titleNewTicket(plugin))
+                    .withLocalEcho(false)
+                    .withEscapeSequence("cancel")
+                    .withTimeout(120)
+                    .buildConversation(player);
+            conv.begin();
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
     /*
     View all tickets belonging to the player who invoked this method
+    /th allmytickets <page> <created/updated>
     - usable by everyone
 
      @param player the player who's sending this command
      @param args   the command input
      */
     public void myTicketsAll(Player player, String[] args){
+        if(player.hasPermission("tickethub.player")){
+            try{
+                if(!plugin.getTicketSystem().getStoredTickets().getAllTickets().containsKey(player.getUniqueId())){
+                    player.sendMessage(ChatColor.RED + "You have no tickets!");
+                    return;
+                }
 
+                List<Ticket> playerTickets = plugin.getTicketSystem().getStoredTickets().getAllTickets().get(player.getUniqueId());
+
+                if(playerTickets.isEmpty()){
+                    player.sendMessage(ChatColor.RED + "You have no tickets!");
+                    return;
+                }
+
+                if(args.length == 1){
+                    this.ticketPageView(player, 1, playerTickets);
+                }
+                else{
+                    this.ticketPageView(player, Integer.parseInt(args[1]), playerTickets);
+                }
+            }catch(NumberFormatException e){
+                player.sendMessage(ChatColor.RED + "Invalid page | Please enter in the format of "
+                        + ChatColor.DARK_GREEN + "/th allmytickets <page> <created/updated>");
+            }
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
     /*
@@ -155,12 +198,12 @@ public class Commands implements CommandExecutor {
 
         player.sendMessage(ChatColor.AQUA   + "PRIORITY");
         player.sendMessage(ChatColor.GOLD   + "  High        "  + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
-        player.sendMessage(ChatColor.YELLOW + "  Medium     "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
-        player.sendMessage(ChatColor.GREEN  + "  Low         "  + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
+        player.sendMessage(ChatColor.YELLOW + "  Medium     "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getMediumPriority());
+        player.sendMessage(ChatColor.GREEN  + "  Low         "  + " = " + this.plugin.getTicketSystem().getStoredTickets().getLowPriority());
         player.sendMessage(ChatColor.AQUA   + "STATUS");
-        player.sendMessage(ChatColor.RED    + "  Open         " + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
-        player.sendMessage(ChatColor.YELLOW + "  In Progress" + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
-        player.sendMessage(ChatColor.GREEN  + "  Resolved    "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
+        player.sendMessage(ChatColor.RED    + "  Open         " + " = " + this.plugin.getTicketSystem().getStoredTickets().getOpened());
+        player.sendMessage(ChatColor.YELLOW + "  In Progress" + " = " + this.plugin.getTicketSystem().getStoredTickets().getInProgress());
+        player.sendMessage(ChatColor.GREEN  + "  Resolved    "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getResolved());
     }
 
     /*
@@ -227,5 +270,33 @@ public class Commands implements CommandExecutor {
         }
     }
 
+    /*
+     Displays a List into player friendly page view
+     - To be used by other command methods in this class
+
+     @param player         the player who's sending this command
+     @param page           the page to view
+     @param displayTickets the List containing tickets to be viewed
+    */
+    public void ticketPageView(Player player, int page, List<Ticket> displayTickets) {
+
+        //9 entries per page
+        int totalPages = (int) Math.ceil((double) displayTickets.size() / 9);
+        int topOfPage = (page - 1) * 9;
+        int bottomOfPage = 9 * page - 1;
+
+        player.sendMessage(ChatColor.GOLD + "[" + page + "/" + totalPages + "]");
+        if (page > 0 && page <= totalPages) {
+            if (displayTickets.size() < topOfPage + 9) {
+                bottomOfPage = displayTickets.size();
+            }
+
+            for (int i = topOfPage; i < bottomOfPage; i++) {
+                player.sendMessage(ChatColor.GRAY + displayTickets.get(i).getTicketID());
+            }
+        } else {
+            player.sendMessage(ChatColor.RED + "Invalid Page");
+        }
+    }
 
 }

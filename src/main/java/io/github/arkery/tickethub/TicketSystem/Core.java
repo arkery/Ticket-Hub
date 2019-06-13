@@ -56,7 +56,7 @@ public class Core{
                 ticketFolder.mkdir();
             }
 
-            File storedTickets = new File(ticketFolder + "/" + "ticketHub.json");
+            File storedTickets = new File(ticketFolder + "/" + "tickets.json");
             if(!storedTickets.isFile()){
                 System.out.println("TicketHub: No Pre-existing Tickets Found");
                 return;

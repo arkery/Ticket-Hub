@@ -32,7 +32,7 @@ public class Ticket implements Serializable {
    private String ticketID;
    private String ticketTitle;
    private Status ticketStatus;
-   private Status ticketCategory;
+   private String ticketCategory;
    private Priority ticketPriority;
    private List<UUID> ticketContacts;
    private String ticketDescription;

@@ -27,7 +27,7 @@ public class TicketHub extends JavaPlugin {
 
     @Override
     public void onEnable(){
-        System.out.println("Starting Plugin: Ticket DataBase | By Arkery");
+        System.out.println("Starting Plugin: TicketHub | By Arkery");
         this.TicketSystem = new Core(this.getDataFolder());
         this.customCategories = new ArrayList<>();
         this.createOrLoadConfig();
@@ -38,8 +38,9 @@ public class TicketHub extends JavaPlugin {
 
     @Override
     public void onDisable(){
-        System.out.println("Stopping Plugin: Ticket DataBase | By Arkery");
+        System.out.println("Stopping Plugin: TicketHub | By Arkery");
         this.saveConfig();
+        System.out.println("TicketHub: Saving Tickets");
         this.TicketSystem.saveTickets("");
     }
 
