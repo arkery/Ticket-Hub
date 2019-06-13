@@ -2,6 +2,7 @@ package io.github.arkery.tickethub.Commands;
 
 import io.github.arkery.tickethub.TicketHub;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -65,7 +66,7 @@ public class Commands implements CommandExecutor {
 
         }
         else{
-            commandSender.sendMessage("TicketHub: This command is only supported by players");
+            commandSender.sendMessage( "TicketHub: This command is only supported by players");
         }
 
         return false;
@@ -95,7 +96,6 @@ public class Commands implements CommandExecutor {
             player.sendMessage(ChatColor.GOLD + "   /th save " + ChatColor.GRAY + "Save all tickets");
         }
     }
-
 
     /*
     Create a new ticket
@@ -153,6 +153,14 @@ public class Commands implements CommandExecutor {
      */
     public void statistics(Player player){
 
+        player.sendMessage(ChatColor.AQUA   + "PRIORITY");
+        player.sendMessage(ChatColor.GOLD   + "  High        "  + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
+        player.sendMessage(ChatColor.YELLOW + "  Medium     "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
+        player.sendMessage(ChatColor.GREEN  + "  Low         "  + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
+        player.sendMessage(ChatColor.AQUA   + "STATUS");
+        player.sendMessage(ChatColor.RED    + "  Open         " + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
+        player.sendMessage(ChatColor.YELLOW + "  In Progress" + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
+        player.sendMessage(ChatColor.GREEN  + "  Resolved    "   + " = " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority());
     }
 
     /*
@@ -213,14 +221,11 @@ public class Commands implements CommandExecutor {
             return;
         }
         else{
-            player.sendMessage(ChatColor.GRAY + "Saving tickets as" + args[1]);
+            player.sendMessage(ChatColor.GRAY + "Saving tickets as: " + args[1]);
             this.plugin.getTicketSystem().saveTickets(args[1]);
             player.sendMessage(ChatColor.GREEN + "Tickets saved!");
         }
     }
-
-
-
 
 
 }
