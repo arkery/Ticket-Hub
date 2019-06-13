@@ -1,0 +1,5 @@
+#TicketHub Configuration File
+
+#Categories are separated by a space and are all treated as lowercase in the plugin
+#Example: bugs suggestions complaints
+categories:
