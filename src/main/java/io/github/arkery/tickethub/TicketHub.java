@@ -28,9 +28,10 @@ public class TicketHub extends JavaPlugin {
     @Override
     public void onEnable(){
         System.out.println("Starting Plugin: Ticket DataBase | By Arkery");
-        this.TicketSystem = new Core();
+        this.TicketSystem = new Core(this.getDataFolder());
         this.customCategories = new ArrayList<>();
         this.createOrLoadConfig();
+        this.TicketSystem.loadTickets();
         this.dailyMaintenance();
         this.getCommand("th").setExecutor(new Commands(this));
     }

@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class Core{
 
     private DataBase storedTickets;
@@ -40,6 +39,7 @@ public class Core{
             name = "tickets";
         }
         try{
+
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             FileWriter save = new FileWriter(new File(ticketFolder + "/" + name + ".json"));
             save.write(gson.toJson(storedTickets));

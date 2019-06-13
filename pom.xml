@@ -20,8 +20,8 @@
 
 
     <groupId>io.github.arkery</groupId>
-    <artifactId>CustomTicketHub</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>TicketHub</artifactId>
+    <version>1.1</version>
 
     <repositories>
         <repository>
