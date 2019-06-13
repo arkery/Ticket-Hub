@@ -112,6 +112,7 @@ public class Commands implements CommandExecutor {
     - usable by everyone
 
      @param player the player who's sending this command
+     @param args   the command input
      */
     public void myTicketsAll(Player player, String[] args){
 
@@ -124,6 +125,7 @@ public class Commands implements CommandExecutor {
     If player has staff permissions, they can access other tickets belonging to other players
 
      @param player the player who's sending this command
+     @param args   the command input
      */
     public void ticketFullDetails(Player player, String[] args){
 
@@ -136,6 +138,7 @@ public class Commands implements CommandExecutor {
     If player has staff permissions, they can add comments to all tickets
 
      @param player the player who's sending this command
+     @param args   the command input
      */
     public void ticketAddComment(Player player, String[] args){
 
@@ -146,6 +149,7 @@ public class Commands implements CommandExecutor {
     - usable by staff
 
      @param player the player who's sending this command
+     @param args   the command input
      */
     public void statistics(Player player){
 
@@ -166,6 +170,7 @@ public class Commands implements CommandExecutor {
     - usable by staff
 
      @param player the player who's sending this command
+     @param args   the command input
     */
     public void listAllTickets(Player player, String[] args){
 
@@ -176,6 +181,7 @@ public class Commands implements CommandExecutor {
     - usable by staff
 
      @param player the player who's sending this command
+     @param args   the command input
     */
     public void filterAllTickets(Player player){
 
@@ -186,6 +192,7 @@ public class Commands implements CommandExecutor {
     - usable by staff
 
      @param player the player who's sending this command
+     @param args   the command input
     */
     public void myAssignedTickets(Player player, String[] args){
 
@@ -196,9 +203,20 @@ public class Commands implements CommandExecutor {
     - usable by staff
 
      @param player the player who's sending this command
+     @param args   the command input
     */
     public void saveAllTickets(Player player, String[] args){
-
+        //If they didn't add a name to save it as
+        if(args.length == 1){
+            player.sendMessage(ChatColor.DARK_GREEN + "/th save <name>");
+            player.sendMessage(ChatColor.DARK_GREEN + "Please enter a name to save the ticket file as");
+            return;
+        }
+        else{
+            player.sendMessage(ChatColor.GRAY + "Saving tickets as" + args[1]);
+            this.plugin.getTicketSystem().saveTickets(args[1]);
+            player.sendMessage(ChatColor.GREEN + "Tickets saved!");
+        }
     }
 
 
