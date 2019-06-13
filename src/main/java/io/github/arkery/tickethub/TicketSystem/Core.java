@@ -83,10 +83,13 @@ public class Core{
 
     Note - For future reference, adding another conditional check in the nested for loop will not work.
          - Currently, method can only remove one condition at a time, will need to run through the loop again or make
-           a second nested loop for another condition
+           a second nested loop for another condition. This is because after deletion, the size of i.getValue is shortened
+           which will potentially cause Exception Errors (ie. OutOfBounds) if it attempts to find and delete another value.
      */
-    public synchronized void canDelete(){
+    public synchronized void deletePastOneWeek(){
+        //all values in the hashmap
         for(Map.Entry<UUID, List<Ticket>> i: storedTickets.getAllTickets().entrySet()){
+            //The arraylist stored in the hashmap
             for(int j = 0; j < i.getValue().size(); j++){
                 Calendar c = Calendar.getInstance();
                 c.setTime(i.getValue().get(j).getTicketDateLastUpdated());
@@ -97,6 +100,7 @@ public class Core{
                     i.getValue().remove(j);
                 }
             }
+            //Delete user from hashmap if they don't have any tickets
             if(i.getValue().isEmpty()){
                 storedTickets.getAllTickets().remove(i.getKey());
             }
@@ -104,7 +108,7 @@ public class Core{
     }
 
     /*
-    Filters all stored tickets based on user input
+    Filters all stored tickets based on conditions that user inputs
 
     @param  conditions               Filtering conditions added by the user
     @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
@@ -113,7 +117,7 @@ public class Core{
     public List<Ticket> filterTickets(Map conditions){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
 
-        if(conditions.isEmpty() || conditions == null){
+        if(conditions.isEmpty() || !(conditions instanceof Map)){
             throw new IllegalArgumentException();
         }
 
