@@ -67,6 +67,10 @@ public class Hub {
                 System.out.println("TicketHub: No Pre-existing Tickets Found");
                 return;
             }
+            else if(storedTicketsFile.length()== 0){
+                System.out.println("TicketHub: File is empty! Ignoring Loading");
+                return; 
+            }
 
             //Deserialize the ticketHub
             System.out.println("TicketHub: Loading in Ticket Data");
