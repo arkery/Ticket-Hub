@@ -7,6 +7,7 @@ import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -74,9 +75,9 @@ public class Hub {
 
             //Deserialize the ticketHub
             System.out.println("TicketHub: Loading in Ticket Data");
-            FileReader resolvedTicket = new FileReader(storedTicketsFile);
+            FileReader savedTickets = new FileReader(storedTicketsFile);
             Gson gson = new Gson();
-            this.storedTickets = gson.fromJson(resolvedTicket, DataCore.class);
+            this.storedTickets = gson.fromJson(savedTickets, DataCore.class);
 
         }catch(FileNotFoundException e) {
             System.out.println("TicketHub: Folder not found, creating Folder");
@@ -127,12 +128,17 @@ public class Hub {
      */
     public List<Ticket> filterTickets(Map conditions){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
+        List<Ticket> ticketsAsList = this.storedTickets.convertTicketDataMapToList();
 
         if(conditions.isEmpty() || !(conditions instanceof Map)){
             throw new IllegalArgumentException();
         }
 
-        if(conditions.containsKey(Options.TICKETCATEGORY)){
+        if(conditions.containsKey(Options.TICKETCREATOR)){
+            //activeConditions.add(x -> x.getTicketCreator().equals(conditions.get(Options.TICKETCREATOR)));
+            ticketsAsList = this.storedTickets.getAllTickets().get(Bukkit.getOfflinePlayer((String) conditions.get(Options.TICKETCREATOR)).getUniqueId());
+        }
+        else if(conditions.containsKey(Options.TICKETCATEGORY)){
             activeConditions.add(x -> x.getTicketCategory().equals(conditions.get(Options.TICKETCATEGORY)));
         }
         else if(conditions.containsKey(Options.TICKETSTATUS)){
@@ -152,14 +158,11 @@ public class Hub {
             //activeConditions.add(x -> x.getTicketDateLastUpdated().equals(conditions.get(Options.TICKETDATELASTUPDATED)));
             activeConditions.add(x -> dateFormat.format(x.getTicketDateLastUpdated()).equals(dateFormat.format(conditions.get(Options.TICKETDATELASTUPDATED))));
         }
-        else if(conditions.containsKey(Options.TICKETCREATOR)){
-            activeConditions.add(x -> x.getTicketCreator().equals(conditions.get(Options.TICKETCREATOR)));
-        }
         else if(conditions.containsKey(Options.TICKETASSIGNEDTO)){
             activeConditions.add(x -> x.getTicketAssignedTo().equals(conditions.get(Options.TICKETASSIGNEDTO)));
         }
 
-        return storedTickets.convertTicketDataMapToList()
+        return ticketsAsList
                 .stream()
                 .filter(activeConditions.stream().reduce(Predicate::and).orElse(x -> true))
                 .collect(Collectors.toList());
