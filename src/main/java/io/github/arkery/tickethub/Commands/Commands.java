@@ -222,7 +222,6 @@ public class Commands implements CommandExecutor {
                     ticketContacts += " " + Bukkit.getOfflinePlayer(i).getName();
                 }
 
-
                 if(page == 1) {
                     player.sendMessage(ChatColor.AQUA + "Details for Ticket " + displayTicket.getTicketID() + ": ");
 
@@ -239,17 +238,20 @@ public class Commands implements CommandExecutor {
                 }
                 else{
 
+                    page--;
+
                     if(displayTicket.getTicketComments().isEmpty()){
                         player.sendMessage(ChatColor.GOLD + "This ticket doesn't have any comments!");
                         return;
                     }
 
+                    //9 entries per page
                     int totalPages = (int) Math.ceil((double) displayTicket.getTicketComments().size() / 9);
-                    int topOfPage = (page) * 9;
-                    int bottomOfPage = 9 * page;
+                    int topOfPage = (page - 1) * 9;
+                    int bottomOfPage = 9 * page - 1;
 
-                    if (page - 1 > 0 && page <= totalPages) {
-                        player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + 1 + "]");
+                    if (page > 0 && page <= totalPages) {
+                        player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + "]");
                         if (displayTicket.getTicketComments().size() < topOfPage + 9) {
                             bottomOfPage = displayTicket.getTicketComments().size();
                         }
