@@ -278,7 +278,12 @@ public class Commands implements CommandExecutor {
      * @param args   the command input
      */
     public void ticketAddComment(Player player, String[] args){
+        if(player.hasPermission("tickethub.player")){
 
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
     /**
@@ -310,7 +315,12 @@ public class Commands implements CommandExecutor {
      * @param player the player who's sending this command
      */
     public void editTicket(Player player){
+        if(player.hasPermission("tickethub.player")){
 
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
     /**
@@ -320,7 +330,12 @@ public class Commands implements CommandExecutor {
      * @param args   the command input
      */
     public void listAllTickets(Player player, String[] args){
+        if(player.hasPermission("tickethub.player")){
 
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
     /**
@@ -329,7 +344,12 @@ public class Commands implements CommandExecutor {
      * @param player the player who's sending this command
      */
     public void filterAllTickets(Player player){
+        if(player.hasPermission("tickethub.player")){
 
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
     /**
@@ -339,7 +359,12 @@ public class Commands implements CommandExecutor {
      * @param args   the command input
      */
     public void myAssignedTickets(Player player, String[] args){
+        if(player.hasPermission("tickethub.player")){
 
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+        }
     }
 
     /**

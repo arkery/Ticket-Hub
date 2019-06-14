@@ -4,14 +4,6 @@
     <list default="true" id="edc848c2-4519-4234-90e7-7fb96eb327a2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Ticket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/github/arkery/tickethub/Commands/Commands.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/github/arkery/tickethub/Commands/Commands.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/github/arkery/tickethub/TicketSystem/Hub.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/github/arkery/tickethub/TicketSystem/Hub.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/github/arkery/tickethub/TicketSystem/Ticket.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/github/arkery/tickethub/TicketSystem/Ticket.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -29,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="236" column="31" lean-forward="true" selection-start-line="236" selection-start-column="31" selection-end-line="236" selection-end-column="31" />
+            <state relative-caret-position="-32">
+              <caret line="366" column="9" selection-start-line="366" selection-start-column="9" selection-end-line="366" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -58,6 +50,15 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="248">
               <caret line="111" column="24" selection-start-line="111" selection-start-column="24" selection-end-line="111" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="695">
+              <caret line="54" lean-forward="true" selection-start-line="54" selection-end-line="54" />
             </state>
           </provider>
         </entry>
@@ -139,21 +140,11 @@
   </component>
   <component name="MavenProjectNavigator">
     <treeState>
-      <expand>
-        <path>
-          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="TicketHub" type="9519ce18:MavenProjectsStructure$ProjectNode" />
-        </path>
-        <path>
-          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="TicketHub" type="9519ce18:MavenProjectsStructure$ProjectNode" />
-          <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
-        </path>
-      </expand>
+      <expand />
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="84" />
     <option name="y" value="-12" />
     <option name="width" value="1887" />
@@ -326,10 +317,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1519" height="977" extended-state="6" />
-    <editor active="true" />
+    <frame x="-7" y="-7" width="1519" height="977" extended-state="7" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20232399" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20232399" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -337,6 +327,7 @@
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info id="Team" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32979977" />
       <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32979977" />
@@ -351,7 +342,7 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Palette" order="3" />
-      <window_info active="true" anchor="right" id="Maven" order="4" visible="true" weight="0.14354067" />
+      <window_info anchor="right" id="Maven" order="4" weight="0.14354067" />
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
@@ -387,6 +378,30 @@
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="RECENT_FILTERS">
       <map>
         <entry key="Branch">
@@ -478,13 +493,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
-          <caret line="50" column="21" selection-start-line="50" selection-start-column="21" selection-end-line="50" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/titleNewTicket.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
@@ -541,10 +549,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="695">
+          <caret line="54" lean-forward="true" selection-start-line="54" selection-end-line="54" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="236" column="31" lean-forward="true" selection-start-line="236" selection-start-column="31" selection-end-line="236" selection-end-column="31" />
+        <state relative-caret-position="-32">
+          <caret line="366" column="9" selection-start-line="366" selection-start-column="9" selection-end-line="366" selection-end-column="9" />
         </state>
       </provider>
     </entry>
