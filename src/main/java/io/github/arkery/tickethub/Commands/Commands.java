@@ -312,9 +312,15 @@ public class Commands implements CommandExecutor {
                 return;
             }
 
+            //If their comment has spaces in it
+            String commentToAdd = player.getName() + ": ";
+            for(int i = 2; i < args.length; i++){
+                commentToAdd += " " + args[i];
+            }
+            
             for(Ticket i: this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId())){
                 if(i.getTicketID().equals(args[1])){
-                    i.getTicketComments().add(player.getName() + ": " + args[2]);
+                    i.getTicketComments().add(commentToAdd);
                     i.setTicketDateLastUpdated(new Date());
                     player.sendMessage(ChatColor.GREEN + "Comment added to ticket " + i.getTicketID());
                     return;
