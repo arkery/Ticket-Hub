@@ -256,10 +256,12 @@ public class Commands implements CommandExecutor {
                             bottomOfPage = displayTicket.getTicketComments().size();
                         }
 
+                        //Reverse it so it shows the latest comments on top
+                        Collections.reverse(displayTicket.getTicketComments());
+
                         player.sendMessage(ChatColor.BLUE + "Comments");
                         for (int i = topOfPage; i < bottomOfPage; i++) {
-                            player.sendMessage(ChatColor.GRAY + displayTicket.getTicketComments().get(i)
-                                    + " | " + dateFormat.format(displayTicket.getTicketComments().get(i)));
+                            player.sendMessage(ChatColor.GRAY + displayTicket.getTicketComments().get(i));
                         }
                     } else {
                         player.sendMessage(ChatColor.RED + "Invalid Page");
@@ -270,6 +272,7 @@ public class Commands implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "Please enter in the format of "
                         + ChatColor.DARK_GREEN + "/th ticketdetails <ticketid> <page>");
             }catch(IllegalArgumentException e){
+                e.printStackTrace();
                 player.sendMessage(ChatColor.RED + "Could not find Ticket!");
             }
         }
@@ -309,10 +312,9 @@ public class Commands implements CommandExecutor {
                 return;
             }
 
-            String commentToBeAdded = player.getName() + ": " + args[2];
             for(Ticket i: this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId())){
                 if(i.getTicketID().equals(args[1])){
-                    i.getTicketComments().add(args[2]);
+                    i.getTicketComments().add(player.getName() + ": " + args[2]);
                     player.sendMessage(ChatColor.GREEN + "Comment added to ticket " + i.getTicketID());
                     return;
                 }
