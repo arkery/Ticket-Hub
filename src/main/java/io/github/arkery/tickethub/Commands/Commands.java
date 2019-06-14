@@ -315,6 +315,7 @@ public class Commands implements CommandExecutor {
             for(Ticket i: this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId())){
                 if(i.getTicketID().equals(args[1])){
                     i.getTicketComments().add(player.getName() + ": " + args[2]);
+                    i.setTicketDateLastUpdated(new Date());
                     player.sendMessage(ChatColor.GREEN + "Comment added to ticket " + i.getTicketID());
                     return;
                 }
