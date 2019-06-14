@@ -134,6 +134,17 @@ public class Hub {
      *
      * @throws IllegalArgumentException This is thrown when there are no conditions (conditions is empty)
      * @param conditions                Filtering conditions added by the user
+     *
+     * Possible Filter Conditions:
+     *        Options.TicketCreator
+     *        Options.TicketCategory
+     *        Options.TicketStatus
+     *        Options.TicketPriority
+     *        Options.TicketContact
+     *        Options.TicketDateCreated
+     *        Options.TicketDateLastUpdated
+     *        Options.TicketAssignedTo
+     *
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
      */
     public List<Ticket> filterTickets(EnumMap conditions){
