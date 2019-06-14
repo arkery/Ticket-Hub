@@ -1,6 +1,7 @@
 package io.github.arkery.tickethub.Commands;
 
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
+import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import org.bukkit.Bukkit;
@@ -14,10 +15,7 @@ import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Commands implements CommandExecutor {
 
@@ -211,6 +209,13 @@ public class Commands implements CommandExecutor {
                 //Get the ticket
                 Ticket displayTicket = this.plugin.getTicketSystem().getSingleTicket(args[1]);
 
+                //If the ticket doesn't belong to them, they must be staff to view it.
+                if(displayTicket.getTicketCreator().equals(Bukkit.getOfflinePlayer(player.getUniqueId())) &&
+                player.hasPermission("tickethub.staff")){
+                    player.sendMessage(ChatColor.RED + "You do not have permissions to view this ticket!");
+                    return;
+                }
+
                 //Combine contacts to single line
                 String ticketContacts = "";
                 for(UUID i: displayTicket.getTicketContacts()){
@@ -240,11 +245,11 @@ public class Commands implements CommandExecutor {
                     }
 
                     int totalPages = (int) Math.ceil((double) displayTicket.getTicketComments().size() / 9);
-                    int topOfPage = (page - 1) * 9;
-                    int bottomOfPage = 9 * page - 1;
+                    int topOfPage = (page) * 9;
+                    int bottomOfPage = 9 * page;
 
-                    if (page > 0 && page <= totalPages) {
-                        player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + "]");
+                    if (page - 1 > 0 && page <= totalPages) {
+                        player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + 1 + "]");
                         if (displayTicket.getTicketComments().size() < topOfPage + 9) {
                             bottomOfPage = displayTicket.getTicketComments().size();
                         }
@@ -306,9 +311,13 @@ public class Commands implements CommandExecutor {
             for(Ticket i: this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId())){
                 if(i.getTicketID().equals(args[1])){
                     i.getTicketComments().add(args[2]);
-                    break;
+                    player.sendMessage(ChatColor.GREEN + "Comment added to ticket " + i.getTicketID());
+                    return;
                 }
             }
+
+            //By the end of the loop, if it doesn't find anything...
+            player.sendMessage(ChatColor.RED + "Could not find Ticket!");
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -419,13 +428,26 @@ public class Commands implements CommandExecutor {
 
     /**
      * display All tickets that are assigned to the player who calls this command - usable by staff
-     * /th assigned
+     * /th assigned <page>
      *
      * @param player the player who's sending this command
      * @param args   the command input
      */
     public void myAssignedTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.player")){
+            EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
+            conditions.put(Options.TICKETASSIGNEDTO, player.getUniqueId());
+
+            int page = 0;
+
+            if(args.length == 1){
+                page = 1;
+            }
+            else if(args.length == 2){
+                page = Integer.parseInt(args[1]);
+            }
+
+            ticketPageView(player, page, this.plugin.getTicketSystem().filterTickets(conditions));
 
         }
         else{
