@@ -56,7 +56,7 @@ public class TicketHub extends JavaPlugin {
 
             this.TicketSystem.saveTickets("");
             this.TicketSystem.saveTickets("Backup" + saveFormat.format(new Date()));
-            this.TicketSystem.deletePastOneWeek();
+            this.TicketSystem.checkPastOneWeek();
         };
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
         ScheduledFuture<?> scheduledFuture = service.scheduleAtFixedRate(job, 0, 1, TimeUnit.DAYS);

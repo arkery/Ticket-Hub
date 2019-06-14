@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 @Setter
 public class Hub {
 
-    private DataCore storedTickets;
+    private DataCore storedData;
     private File ticketFolder;
     private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
     public Hub(File pluginFolder){
         this.ticketFolder = new File(pluginFolder + "/Tickets");
-        this.storedTickets = new DataCore();
+        this.storedData = new DataCore();
     }
 
     /**
@@ -48,7 +48,7 @@ public class Hub {
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             FileWriter save = new FileWriter(new File(ticketFolder + "/" + name + ".json"));
-            save.write(gson.toJson(storedTickets));
+            save.write(gson.toJson(storedData));
             save.close();
         }catch(IOException e) {e.printStackTrace();}
     }
@@ -78,7 +78,7 @@ public class Hub {
             System.out.println("TicketHub: Loading in Ticket Data");
             FileReader savedTickets = new FileReader(storedTicketsFile);
             Gson gson = new Gson();
-            this.storedTickets = gson.fromJson(savedTickets, DataCore.class);
+            this.storedData = gson.fromJson(savedTickets, DataCore.class);
 
         }catch(FileNotFoundException e) {
             System.out.println("TicketHub: Folder not found, creating Folder");
@@ -94,28 +94,37 @@ public class Hub {
      * Checks all tickets that are stored and deletes the ones that have been resolved for more than a week
      * If the user has no tickets belonging to them after deletion, user is deleted from the hashmap
      *
-     * Note - For future reference, adding another conditional check in the nested for loop will not work.
-     *      - Currently, method can only remove one condition at a time, will need to run through the loop again or make
-     *        a second nested loop for another condition. This is because after deletion, the size of i.getValue is shortened
-     *        which will potentially cause Exception Errors (ie. OutOfBounds) if it attempts to find and delete another value.
      */
-    public synchronized void deletePastOneWeek(){
-        //all values in the hashmap
-        for(Map.Entry<UUID, List<Ticket>> i: storedTickets.getAllTickets().entrySet()){
-            //The arraylist stored in the hashmap
-            for(int j = 0; j < i.getValue().size(); j++){
-                Calendar c = Calendar.getInstance();
-                c.setTime(i.getValue().get(j).getTicketDateLastUpdated());
-                c.add(Calendar.DATE, 7);
+    public synchronized void checkPastOneWeek(){
 
-                if(i.getValue().get(j).getTicketStatus().equals(Status.RESOLVED) &&
-                        dateFormat.format(c.getTime()).equals(dateFormat.format(new Date()))){
-                    i.getValue().remove(j);
-                }
+        if(this.storedData.getTicketsToClose().isEmpty()){
+            System.out.println("TicketHub: No tickets to delete");
+            return;
+        }
+
+        for(Map.Entry<UUID, String> i: this.storedData.getTicketsToClose().entrySet()){
+
+            Ticket checkingThisTicket = this.storedData.getAllTickets().get(i.getKey()).get(i.getValue());
+            Calendar c = Calendar.getInstance();
+            c.setTime(checkingThisTicket.getTicketDateLastUpdated());
+            c.add(Calendar.DATE, 7);
+            if(checkingThisTicket.getTicketStatus().equals(Status.RESOLVED) &&
+                    dateFormat.format(c.getTime()).equals(dateFormat.format(new Date()))){
+
+                //Decrement Hub Statistic Values since ticket is being removed
+                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketPriority());
+                this.storedData.removeStatusStats(this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketStatus());
+
+                //Remove the ticket
+                this.storedData.getAllTickets().get(i.getKey()).remove(i.getValue());
+
+                //If the player now has no other tickets, remove the player from hub.
+                this.storedData.getTicketsToClose().remove(i.getKey());
             }
-            //Delete user from hashmap if they don't have any tickets
-            if(i.getValue().isEmpty()){
-                storedTickets.getAllTickets().remove(i.getKey());
+
+            if(this.storedData.getAllTickets().get(i.getKey()).isEmpty()){
+                this.storedData.getAllTickets().remove(i.getKey());
+                break;
             }
         }
     }
@@ -129,15 +138,15 @@ public class Hub {
      */
     public List<Ticket> filterTickets(EnumMap conditions){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
-        List<Ticket> ticketsAsList = this.storedTickets.convertTicketDataMapToList();
+        List<Ticket> ticketsAsList = this.storedData.convertAllTicketsMapToList();
 
         if(conditions.isEmpty() || !(conditions instanceof Map)){
             throw new IllegalArgumentException();
         }
 
         if(conditions.containsKey(Options.TICKETCREATOR)){
-            //activeConditions.add(x -> x.getTicketCreator().equals(conditions.get(Options.TICKETCREATOR)));
-            ticketsAsList = this.storedTickets.getAllTickets().get(Bukkit.getOfflinePlayer((String) conditions.get(Options.TICKETCREATOR)).getUniqueId());
+
+            ticketsAsList = this.storedData.convertPlayerTicketsMapToList(this.storedData.getAllTickets().get(conditions.get(Options.TICKETCREATOR)));
         }
         else if(conditions.containsKey(Options.TICKETCATEGORY)){
             activeConditions.add(x -> x.getTicketCategory().equals(conditions.get(Options.TICKETCATEGORY)));
@@ -182,18 +191,15 @@ public class Hub {
         String playerName = TicketID.substring(0, TicketID.length() - 12);
         Player getPlayer = Bukkit.getOfflinePlayer(playerName).getPlayer();
 
-        if(!this.storedTickets.getAllTickets().containsKey(getPlayer.getUniqueId())){
+        if(!this.storedData.getAllTickets().containsKey(getPlayer.getUniqueId())){
             throw new IllegalArgumentException();
         }
-        else if(this.storedTickets.getAllTickets().get(getPlayer.getUniqueId()).isEmpty()){
+        else if(this.storedData.getAllTickets().get(getPlayer.getUniqueId()).isEmpty()){
             throw new IllegalArgumentException();
         }
 
-        for(Ticket i: this.storedTickets.getAllTickets().get(getPlayer.getUniqueId())){
-            if(i.getTicketID().equals(TicketID)){
-                ticket = i;
-                break;
-            }
+        if(this.storedData.getAllTickets().get(getPlayer.getUniqueId()).containsKey(TicketID)){
+            ticket = this.storedData.getAllTickets().get(getPlayer.getUniqueId()).get(TicketID);
         }
 
         return ticket;

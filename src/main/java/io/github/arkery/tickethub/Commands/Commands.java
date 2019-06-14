@@ -43,7 +43,7 @@ public class Commands implements CommandExecutor {
                     case "new":
                         this.createNewTicket(player);
                         return false;
-                    case "allmytickets":
+                    case "mytickets":
                         this.myTicketsAll(player, args);
                         return false;
                     case "ticketdetails":
@@ -91,7 +91,7 @@ public class Commands implements CommandExecutor {
         player.sendMessage(ChatColor.AQUA + "TicketHub by arkery");
         player.sendMessage(ChatColor.GREEN + "Commands");
         player.sendMessage(ChatColor.GOLD + "   /th new " + ChatColor.GRAY + "Create a new ticket");
-        player.sendMessage(ChatColor.GOLD + "   /th allmytickets " + ChatColor.GRAY + "See all your tickets");
+        player.sendMessage(ChatColor.GOLD + "   /th mytickets " + ChatColor.GRAY + "See all your tickets");
         player.sendMessage(ChatColor.GOLD + "   /th ticketdetails " + ChatColor.GRAY + "See an individual ticket");
         player.sendMessage(ChatColor.GOLD + "   /th addcomment " + ChatColor.GRAY + "Add a comment to a ticket");
 
@@ -138,12 +138,15 @@ public class Commands implements CommandExecutor {
         if(player.hasPermission("tickethub.player")){
             try{
                 //Check if player has tickets
-                if(!plugin.getTicketSystem().getStoredTickets().getAllTickets().containsKey(player.getUniqueId())){
+                if(!plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(player.getUniqueId())){
                     player.sendMessage(ChatColor.RED + "You have no tickets!");
                     return;
                 }
 
-                List<Ticket> playerTickets = plugin.getTicketSystem().getStoredTickets().getAllTickets().get(player.getUniqueId());
+                List<Ticket> playerTickets = plugin.getTicketSystem().getStoredData().convertPlayerTicketsMapToList
+                    (
+                        plugin.getTicketSystem().getStoredData().getAllTickets().get(player.getUniqueId())
+                    );
 
                 //Check if player stated if they wanted it sorted by date created
                 if(args.length == 3 && args[2].equalsIgnoreCase("created")){
@@ -303,11 +306,15 @@ public class Commands implements CommandExecutor {
             String argsPlayerName = args[1].substring(0, args[1].length() - 12);
             Player argsGetPlayer = Bukkit.getOfflinePlayer(argsPlayerName).getPlayer();
 
-            if(!this.plugin.getTicketSystem().getStoredTickets().getAllTickets().containsKey(argsGetPlayer.getUniqueId())){
+            if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(argsGetPlayer.getUniqueId())){
                 player.sendMessage(ChatColor.RED + "Could not find Ticket!");
                 return;
             }
-            else if(this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId()).isEmpty()){
+            else if(this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).isEmpty()){
+                player.sendMessage(ChatColor.RED + "Could not find Ticket!");
+                return;
+            }
+            else if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).containsKey(args[1])){
                 player.sendMessage(ChatColor.RED + "Could not find Ticket!");
                 return;
             }
@@ -317,18 +324,11 @@ public class Commands implements CommandExecutor {
             for(int i = 2; i < args.length; i++){
                 commentToAdd += " " + args[i];
             }
-            
-            for(Ticket i: this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId())){
-                if(i.getTicketID().equals(args[1])){
-                    i.getTicketComments().add(commentToAdd);
-                    i.setTicketDateLastUpdated(new Date());
-                    player.sendMessage(ChatColor.GREEN + "Comment added to ticket " + i.getTicketID());
-                    return;
-                }
-            }
 
-            //By the end of the loop, if it doesn't find anything...
-            player.sendMessage(ChatColor.RED + "Could not find Ticket!");
+            this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).get(args[1]).getTicketComments().add(commentToAdd);
+            this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).get(args[1]).setTicketDateLastUpdated(new Date());
+            player.sendMessage(ChatColor.GREEN + "Comment added to ticket " + args[1]);
+
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -345,13 +345,13 @@ public class Commands implements CommandExecutor {
 
         if(player.hasPermission("tickethub.staff")){
             player.sendMessage(ChatColor.AQUA   + "PRIORITY");
-            player.sendMessage(ChatColor.GOLD   + "     " + this.plugin.getTicketSystem().getStoredTickets().getHighPriority() + "  High " );
-            player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getMediumPriority() + "  Medium ");
-            player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getLowPriority() + "  Low ");
+            player.sendMessage(ChatColor.GOLD   + "     " + this.plugin.getTicketSystem().getStoredData().getHighPriority() + "  High " );
+            player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredData().getMediumPriority() + "  Medium ");
+            player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredData().getLowPriority() + "  Low ");
             player.sendMessage(ChatColor.AQUA   + "STATUS");
-            player.sendMessage(ChatColor.RED    + "     " + this.plugin.getTicketSystem().getStoredTickets().getOpened() + "  Open ");
-            player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredTickets().getInProgress() + "  In Progress ");
-            player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredTickets().getResolved() + "  Resolved ");
+            player.sendMessage(ChatColor.RED    + "     " + this.plugin.getTicketSystem().getStoredData().getOpened() + "  Open ");
+            player.sendMessage(ChatColor.YELLOW + "     " + this.plugin.getTicketSystem().getStoredData().getInProgress() + "  In Progress ");
+            player.sendMessage(ChatColor.GREEN  + "     " + this.plugin.getTicketSystem().getStoredData().getResolved() + "  Resolved ");
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -384,7 +384,7 @@ public class Commands implements CommandExecutor {
     public void listAllTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.player")){
             try{
-                List<Ticket> displayList = this.plugin.getTicketSystem().getStoredTickets().convertTicketDataMapToList();
+                List<Ticket> displayList = this.plugin.getTicketSystem().getStoredData().convertAllTicketsMapToList();
 
                 //Check if player stated if they wanted it sorted by date created
                 if(args.length == 3 && args[2].equalsIgnoreCase("created")){
@@ -481,10 +481,15 @@ public class Commands implements CommandExecutor {
                 player.sendMessage(ChatColor.DARK_GREEN + "Please enter a name to save the ticket file as");
                 return;
             }
-            else{
+            else if(args.length == 2){
                 player.sendMessage(ChatColor.GRAY + "Saving tickets as: " + args[1]);
                 this.plugin.getTicketSystem().saveTickets(args[1]);
                 player.sendMessage(ChatColor.GREEN + "Tickets saved!");
+            }
+            else{
+                player.sendMessage(ChatColor.RED + "Please enter in the format of "
+                        + ChatColor.DARK_GREEN + "/th save <file name> |"
+                        + ChatColor.RED + "Note: You cannot have spaces in your file name");
             }
         }
         else{

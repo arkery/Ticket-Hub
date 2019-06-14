@@ -1,24 +1,29 @@
 package io.github.arkery.tickethub.TicketSystem;
 
+import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
+@Getter
 public class DataCore implements Serializable {
 
-    @Setter @Getter private ConcurrentHashMap<UUID, List<Ticket>> allTickets;
-    @Getter private int highPriority, mediumPriority, lowPriority;
-    @Getter private int opened, inProgress, resolved;
+    private ConcurrentHashMap<UUID, HashMap<String, Ticket>> allTickets;
+    private HashMap<UUID, String> ticketsToClose;
+    private int highPriority, mediumPriority, lowPriority;
+    private int opened, inProgress, resolved;
 
     public DataCore(){
         this.allTickets = new ConcurrentHashMap<>();
+        this.ticketsToClose = new HashMap<>();
         this.highPriority = this.mediumPriority = this.lowPriority = 0;
         this.opened = this.inProgress = this.resolved = 0;
     }
@@ -105,6 +110,44 @@ public class DataCore implements Serializable {
     }
 
     /**
+     * Updates Status Statistics based on ticket being removed
+     *
+     * @param value the priority to be added
+     */
+    public void removeStatusStats(Status value){
+        switch(value){
+            case OPENED:
+                this.opened--;
+                break;
+            case INPROGRESS:
+                this.inProgress--;
+                break;
+            case RESOLVED:
+                this.resolved--;
+                break;
+        }
+    }
+
+    /**
+     * Updates Priority Statistics based on ticket being removed
+     *
+     * @param value the priority to be added
+     */
+    public void removePriorityStats(Priority value){
+        switch(value){
+            case LOW:
+                this.lowPriority--;
+                break;
+            case MEDIUM:
+                this.mediumPriority--;
+                break;
+            case HIGH:
+                this.highPriority--;
+                break;
+        }
+    }
+
+    /**
      * Updates Status Statistics based on a new ticket being created
      *
      * @param value the priority to be added
@@ -128,16 +171,32 @@ public class DataCore implements Serializable {
      *
      * @return A single list containing all tickets that are stored
      */
-    public synchronized List<Ticket> convertTicketDataMapToList(){
+    public synchronized List<Ticket> convertAllTicketsMapToList(){
         List<Ticket> allTicketsAsList = new ArrayList<>();
 
-        for(Map.Entry<UUID, List<Ticket>> i: this.allTickets.entrySet()){
-            for(Ticket ticket: i.getValue()){
+        for(HashMap<String, Ticket> i: this.allTickets.values()){
+            for(Ticket ticket: i.values()){
                 allTicketsAsList.add(ticket);
             }
         }
 
         return allTicketsAsList;
+    }
+
+    /**
+     * Creates a copy of all tickets belonging to a certain player converted into a single UNSORTED list
+     *
+     * @param mapToConvert  The specific player's tickets
+     * @return              A single list containing all tickets that belong to a specified player
+     */
+    public synchronized List<Ticket> convertPlayerTicketsMapToList(HashMap<String, Ticket> mapToConvert){
+        List<Ticket> ticketsAsList = new ArrayList<>();
+
+        for(Ticket ticket: mapToConvert.values()){
+            ticketsAsList.add(ticket);
+        }
+
+        return ticketsAsList;
     }
 
 /*

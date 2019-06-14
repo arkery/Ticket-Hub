@@ -1,10 +1,8 @@
-io\github\arkery\tickethub\Commands\NewTicketConv\categoryNewTicket.class
 io\github\arkery\tickethub\Commands\NewTicketConv\contactNewTicket.class
 io\github\arkery\tickethub\Enums\Status.class
 io\github\arkery\tickethub\Enums\Priority.class
 io\github\arkery\tickethub\TicketSystem\DataCore.class
 io\github\arkery\tickethub\Commands\Commands.class
-io\github\arkery\tickethub\Commands\NewTicketConv\createNewTicket.class
 io\github\arkery\tickethub\TicketSystem\DataCore$1.class
 io\github\arkery\tickethub\TicketHub.class
 io\github\arkery\tickethub\Commands\NewTicketConv\descriptionNewTicket.class
@@ -12,5 +10,4 @@ io\github\arkery\tickethub\TicketSystem\Hub.class
 io\github\arkery\tickethub\Commands\NewTicketConv\priorityNewTicket.class
 io\github\arkery\tickethub\TicketSystem\Ticket.class
 io\github\arkery\tickethub\Commands\NewTicketConv\additionalContactNewTicket.class
-io\github\arkery\tickethub\Commands\NewTicketConv\titleNewTicket.class
 io\github\arkery\tickethub\Enums\Options.class
