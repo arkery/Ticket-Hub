@@ -110,6 +110,7 @@ public class Commands implements CommandExecutor {
 
      /**
      *  Create a new ticket  - this is usable by everyone
+     *  /th new
      *
      * @param player the player who's sending this command
      */
@@ -181,6 +182,7 @@ public class Commands implements CommandExecutor {
     /**
      * View all details of an individual ticket belonging to the player who invoked this method - usable by everyone
      * If player has staff permissions, they can access other tickets belonging to other players
+     * /th ticketdetails <ticketid> <page>
      *
      * @param player the player who's sending this command
      * @param args   the command input
@@ -207,7 +209,7 @@ public class Commands implements CommandExecutor {
                 }
 
                 //Get the ticket
-                Ticket displayTicket = this.plugin.getTicketSystem().searchForTicket(args[1]);
+                Ticket displayTicket = this.plugin.getTicketSystem().getSingleTicket(args[1]);
 
                 //Combine contacts to single line
                 String ticketContacts = "";
@@ -273,6 +275,7 @@ public class Commands implements CommandExecutor {
     /**
      * Add a comment to a ticket that belongs to the player who invoked this method - usable by everyone
      * If player has staff permissions, they can add comments to all tickets
+     * /th addcomment <ticketid> <comment>
      *
      * @param player the player who's sending this command
      * @param args   the command input
@@ -280,6 +283,32 @@ public class Commands implements CommandExecutor {
     public void ticketAddComment(Player player, String[] args){
         if(player.hasPermission("tickethub.player")){
 
+            //If they forgot to add the comment
+            if(args.length <= 2){
+                player.sendMessage(ChatColor.RED + "Please enter in the format of "
+                        + ChatColor.DARK_GREEN + "/th addcomment <ticketid> <comment>");
+                return;
+            }
+
+            String argsPlayerName = args[1].substring(0, args[1].length() - 12);
+            Player argsGetPlayer = Bukkit.getOfflinePlayer(argsPlayerName).getPlayer();
+
+            if(!this.plugin.getTicketSystem().getStoredTickets().getAllTickets().containsKey(argsGetPlayer.getUniqueId())){
+                player.sendMessage(ChatColor.RED + "Could not find Ticket!");
+                return;
+            }
+            else if(this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId()).isEmpty()){
+                player.sendMessage(ChatColor.RED + "Could not find Ticket!");
+                return;
+            }
+
+            String commentToBeAdded = player.getName() + ": " + args[2];
+            for(Ticket i: this.plugin.getTicketSystem().getStoredTickets().getAllTickets().get(argsGetPlayer.getUniqueId())){
+                if(i.getTicketID().equals(args[1])){
+                    i.getTicketComments().add(args[2]);
+                    break;
+                }
+            }
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -288,6 +317,7 @@ public class Commands implements CommandExecutor {
 
     /**
      * Show current statistics about all tickets saved - usable by staff
+     * /th stats
      *
      * @param player the player who's sending this command
      */
@@ -311,6 +341,7 @@ public class Commands implements CommandExecutor {
 
     /**
      * edit an existing ticket - usable by staff
+     * /th edit
      *
      * @param player the player who's sending this command
      */
@@ -325,13 +356,47 @@ public class Commands implements CommandExecutor {
 
     /**
      * Shows all tickets that are filed - usable by staff
+     * /th all <page> <updated/created> <ascending/descending>
      *
      * @param player the player who's sending this command
      * @param args   the command input
      */
     public void listAllTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.player")){
+            try{
+                List<Ticket> displayList = this.plugin.getTicketSystem().getStoredTickets().convertTicketDataMapToList();
 
+                //Check if player stated if they wanted it sorted by date created
+                if(args.length == 3 && args[2].equalsIgnoreCase("created")){
+                    displayList.sort(Comparator.comparing(Ticket::getTicketDateCreated));
+                }
+
+                //By Default, sort by date Updated
+                displayList.sort(Comparator.comparing(Ticket::getTicketDateLastUpdated));
+
+                //Check if player stated if they wanted to show it in ascending order
+                //If descending then don't reverse order
+                if(args.length == 4 && args[3].equalsIgnoreCase("ascending")){
+                    Collections.reverse(displayList);
+                }
+
+                //Second check if there are no tickets
+                if(displayList.isEmpty()){
+                    player.sendMessage(ChatColor.RED + "There are no tickets!");
+                    return;
+                }
+
+                //Check if player inputted a page
+                if(args.length == 1){
+                    this.ticketPageView(player, 1, displayList);
+                }
+                else{
+                    this.ticketPageView(player, Integer.parseInt(args[1]), displayList);
+                }
+            }catch(NumberFormatException e){
+                player.sendMessage(ChatColor.RED + "Please enter in the format of "
+                        + ChatColor.DARK_GREEN + "/th all <page> <updated/created> <ascending/descending>");
+            }
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -354,6 +419,7 @@ public class Commands implements CommandExecutor {
 
     /**
      * display All tickets that are assigned to the player who calls this command - usable by staff
+     * /th assigned
      *
      * @param player the player who's sending this command
      * @param args   the command input

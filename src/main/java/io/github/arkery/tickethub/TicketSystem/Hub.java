@@ -127,7 +127,7 @@ public class Hub {
      * @param conditions                Filtering conditions added by the user
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
      */
-    public List<Ticket> filterTickets(Map conditions){
+    public List<Ticket> filterTickets(EnumMap conditions){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
         List<Ticket> ticketsAsList = this.storedTickets.convertTicketDataMapToList();
 
@@ -171,13 +171,13 @@ public class Hub {
 
 
     /**
-     * Searches for a single ticket within all the stored Tickets
+     * Searches and gets a for a single ticket within all the stored Tickets
      *
      * @throws IllegalArgumentException Thrown if the ticket creator isn't found or doesn't have any tickets
      * @param TicketID                  The ticket ID
      * @return                          The ticket that the player is looking for
      */
-    public Ticket searchForTicket(String TicketID){
+    public Ticket getSingleTicket(String TicketID){
         Ticket ticket = new Ticket();
         String playerName = TicketID.substring(0, TicketID.length() - 12);
         Player getPlayer = Bukkit.getOfflinePlayer(playerName).getPlayer();
@@ -190,7 +190,7 @@ public class Hub {
         }
 
         for(Ticket i: this.storedTickets.getAllTickets().get(getPlayer.getUniqueId())){
-            if(i.getTicketID().equalsIgnoreCase(TicketID)){
+            if(i.getTicketID().equals(TicketID)){
                 ticket = i;
                 break;
             }
