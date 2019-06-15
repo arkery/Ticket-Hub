@@ -120,11 +120,17 @@ public class Hub {
 
                 //If the player now has no other tickets, remove the player from hub.
                 this.storedData.getTicketsToClose().remove(i.getKey());
+
+            }
+
+            if(!this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketStatus().equals(Status.RESOLVED)){
+                this.storedData.getTicketsToClose().remove(i.getKey());
+                continue;
             }
 
             if(this.storedData.getAllTickets().get(i.getKey()).isEmpty()){
                 this.storedData.getAllTickets().remove(i.getKey());
-                break;
+                continue;
             }
         }
     }
@@ -155,32 +161,32 @@ public class Hub {
             throw new IllegalArgumentException();
         }
 
-        if(conditions.containsKey(Options.TICKETCREATOR)){
+        if(conditions.containsKey(Options.CREATOR)){
 
-            ticketsAsList = this.storedData.convertPlayerTicketsMapToList(this.storedData.getAllTickets().get(conditions.get(Options.TICKETCREATOR)));
+            ticketsAsList = this.storedData.convertPlayerTicketsMapToList(this.storedData.getAllTickets().get(conditions.get(Options.CREATOR)));
         }
-        else if(conditions.containsKey(Options.TICKETCATEGORY)){
-            activeConditions.add(x -> x.getTicketCategory().equals(conditions.get(Options.TICKETCATEGORY)));
+        else if(conditions.containsKey(Options.CATEGORY)){
+            activeConditions.add(x -> x.getTicketCategory().equals(conditions.get(Options.CATEGORY)));
         }
-        else if(conditions.containsKey(Options.TICKETSTATUS)){
-            activeConditions.add(x -> x.getTicketStatus().equals(conditions.get(Options.TICKETSTATUS)));
+        else if(conditions.containsKey(Options.STATUS)){
+            activeConditions.add(x -> x.getTicketStatus().equals(conditions.get(Options.STATUS)));
         }
-        else if(conditions.containsKey(Options.TICKETPRIORITY)){
-            activeConditions.add(x -> x.getTicketPriority().equals(conditions.get(Options.TICKETPRIORITY)));
+        else if(conditions.containsKey(Options.PRIORITY)){
+            activeConditions.add(x -> x.getTicketPriority().equals(conditions.get(Options.PRIORITY)));
         }
-        else if(conditions.containsKey(Options.TICKETCONTACT)){
-            activeConditions.add(x -> x.getTicketContacts().contains(conditions.get(Options.TICKETCONTACT)));
+        else if(conditions.containsKey(Options.CONTACT)){
+            activeConditions.add(x -> x.getTicketContacts().contains(conditions.get(Options.CONTACT)));
         }
-        else if(conditions.containsKey(Options.TICKETDATECREATED)){
-            //activeConditions.add(x -> x.getTicketDateCreated().equals(conditions.get(Options.TICKETDATECREATED)));
-            activeConditions.add(x -> dateFormat.format(x.getTicketDateCreated()).equals(dateFormat.format(conditions.get(Options.TICKETDATECREATED))));
+        else if(conditions.containsKey(Options.DATECREATED)){
+            //activeConditions.add(x -> x.getTicketDateCreated().equals(conditions.get(Options.DATECREATED)));
+            activeConditions.add(x -> dateFormat.format(x.getTicketDateCreated()).equals(dateFormat.format(conditions.get(Options.DATECREATED))));
         }
-        else if(conditions.containsKey(Options.TICKETDATELASTUPDATED)){
-            //activeConditions.add(x -> x.getTicketDateLastUpdated().equals(conditions.get(Options.TICKETDATELASTUPDATED)));
-            activeConditions.add(x -> dateFormat.format(x.getTicketDateLastUpdated()).equals(dateFormat.format(conditions.get(Options.TICKETDATELASTUPDATED))));
+        else if(conditions.containsKey(Options.DATEUPDATED)){
+            //activeConditions.add(x -> x.getTicketDateLastUpdated().equals(conditions.get(Options.DATEUPDATED)));
+            activeConditions.add(x -> dateFormat.format(x.getTicketDateLastUpdated()).equals(dateFormat.format(conditions.get(Options.DATEUPDATED))));
         }
-        else if(conditions.containsKey(Options.TICKETASSIGNEDTO)){
-            activeConditions.add(x -> x.getTicketAssignedTo().equals(conditions.get(Options.TICKETASSIGNEDTO)));
+        else if(conditions.containsKey(Options.ASSIGNEDTO)){
+            activeConditions.add(x -> x.getTicketAssignedTo().equals(conditions.get(Options.ASSIGNEDTO)));
         }
 
         return ticketsAsList

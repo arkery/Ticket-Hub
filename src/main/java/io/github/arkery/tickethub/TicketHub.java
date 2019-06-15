@@ -2,8 +2,11 @@ package io.github.arkery.tickethub;
 
 import io.github.arkery.tickethub.Commands.Commands;
 import io.github.arkery.tickethub.TicketSystem.Hub;
+import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

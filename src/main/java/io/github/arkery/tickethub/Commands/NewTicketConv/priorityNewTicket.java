@@ -22,15 +22,15 @@ public class priorityNewTicket extends StringPrompt {
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
         if(answer.equalsIgnoreCase("low")){
-            conv.setSessionData(Options.TICKETPRIORITY, Priority.LOW);
+            conv.setSessionData(Options.PRIORITY, Priority.LOW);
             return new categoryNewTicket(plugin);
         }
         else if(answer.equalsIgnoreCase("medium")){
-            conv.setSessionData(Options.TICKETPRIORITY, Priority.MEDIUM);
+            conv.setSessionData(Options.PRIORITY, Priority.MEDIUM);
             return new categoryNewTicket(plugin);
         }
         else if(answer.equalsIgnoreCase("high")){
-            conv.setSessionData(Options.TICKETPRIORITY, Priority.HIGH);
+            conv.setSessionData(Options.PRIORITY, Priority.HIGH);
             return new categoryNewTicket(plugin);
         }
         else{

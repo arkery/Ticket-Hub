@@ -2,19 +2,17 @@ package io.github.arkery.tickethub.Commands.EditTicketConv;
 
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
+import lombok.AllArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 
+@AllArgsConstructor
 public class EditMenu extends StringPrompt {
 
     private TicketHub plugin;
     private Ticket editingTicket;
-    public EditMenu(TicketHub plugin, Ticket editingTicket){
-        this.plugin = plugin;
-        this.editingTicket = editingTicket;
-    }
 
     @Override
     public String getPromptText(ConversationContext conv) {

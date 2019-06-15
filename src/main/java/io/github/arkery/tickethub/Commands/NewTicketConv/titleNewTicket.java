@@ -21,7 +21,7 @@ public class titleNewTicket extends StringPrompt {
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        conv.setSessionData(Options.TICKETTITLE, answer);
+        conv.setSessionData(Options.TITLE, answer);
         return new priorityNewTicket(plugin);
     }
 }

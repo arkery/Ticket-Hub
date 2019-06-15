@@ -1,6 +1,7 @@
 package io.github.arkery.tickethub.Commands;
 
 import io.github.arkery.tickethub.Commands.EditTicketConv.TicketToEdit;
+import io.github.arkery.tickethub.Commands.FilterTicketsConv.FilterMenu;
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
@@ -437,7 +438,13 @@ public class Commands implements CommandExecutor {
      */
     public void filterAllTickets(Player player){
         if(player.hasPermission("tickethub.staff")){
-
+            Conversation conv = conversationFactory
+                    .withFirstPrompt(new FilterMenu(plugin))
+                    .withLocalEcho(false)
+                    .withEscapeSequence("cancel")
+                    .withTimeout(120)
+                    .buildConversation(player);
+            conv.begin();
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -454,7 +461,7 @@ public class Commands implements CommandExecutor {
     public void myAssignedTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.staff")){
             EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
-            conditions.put(Options.TICKETASSIGNEDTO, player.getUniqueId());
+            conditions.put(Options.ASSIGNEDTO, player.getUniqueId());
 
             int page = 0;
 
@@ -465,7 +472,7 @@ public class Commands implements CommandExecutor {
                 page = Integer.parseInt(args[1]);
             }
 
-            ticketPageView(player, page, this.plugin.getTicketSystem().filterTickets(conditions));
+            this.ticketPageView(player, page, this.plugin.getTicketSystem().filterTickets(conditions));
 
         }
         else{
@@ -533,5 +540,6 @@ public class Commands implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "Invalid Page");
         }
     }
+
 
 }

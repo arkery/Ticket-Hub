@@ -25,7 +25,7 @@ public class priorityEdit extends StringPrompt {
                 + Priority.LOW.toString()
                 + " | " + Priority.MEDIUM.toString()
                 + " | " + Priority.HIGH.toString()
-                + " | " + Priority.CRITICAL.toString() + " ]");
+                + " ]");
         return ChatColor.GOLD + "Enter a new Priority";
     }
 
@@ -44,10 +44,6 @@ public class priorityEdit extends StringPrompt {
         }
         else if(answer.equalsIgnoreCase("high")){
             this.changeTicketPriority(Priority.HIGH);
-            return new OptionToEditMore(plugin, editingTicket);
-        }
-        else if(answer.equalsIgnoreCase("critical")){
-            this.changeTicketPriority(Priority.CRITICAL);
             return new OptionToEditMore(plugin, editingTicket);
         }
         else{

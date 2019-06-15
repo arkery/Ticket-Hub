@@ -1,5 +1,6 @@
 package io.github.arkery.tickethub.Commands.EditTicketConv;
 
+import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,14 @@ public class OptionToEditMore extends BooleanPrompt {
     @Override
     protected Prompt acceptValidatedInput(ConversationContext conv, boolean answer) {
         if(!answer){
+
+            if(this.editingTicket.getTicketStatus().equals(Status.RESOLVED)){
+                this.plugin.getTicketSystem()
+                        .getStoredData()
+                        .getTicketsToClose()
+                        .put(this.editingTicket.getTicketCreator(),this.editingTicket.getTicketID());
+            }
+
             this.plugin.getTicketSystem()
                     .getStoredData().getAllTickets()
                     .get(this.editingTicket.getTicketCreator())

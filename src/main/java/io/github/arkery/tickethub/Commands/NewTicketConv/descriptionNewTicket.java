@@ -21,7 +21,7 @@ public class descriptionNewTicket extends StringPrompt {
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        conv.setSessionData(Options.TICKETDESCRIPTION, answer);
+        conv.setSessionData(Options.DESCRIPTION, answer);
         return new createNewTicket(plugin);
     }
 }

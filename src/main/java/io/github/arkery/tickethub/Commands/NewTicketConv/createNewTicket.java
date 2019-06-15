@@ -26,23 +26,23 @@ public class createNewTicket extends MessagePrompt {
     public String getPromptText(ConversationContext conv) {
         try{
             if(
-                conv.getAllSessionData().containsKey(Options.TICKETCONTACTS) &&
-                conv.getAllSessionData().containsKey(Options.TICKETCATEGORY) &&
-                conv.getAllSessionData().containsKey(Options.TICKETDESCRIPTION) &&
-                conv.getAllSessionData().containsKey(Options.TICKETPRIORITY) &&
-                conv.getAllSessionData().containsKey(Options.TICKETTITLE)
+                conv.getAllSessionData().containsKey(Options.CONTACTS) &&
+                conv.getAllSessionData().containsKey(Options.CATEGORY) &&
+                conv.getAllSessionData().containsKey(Options.DESCRIPTION) &&
+                conv.getAllSessionData().containsKey(Options.PRIORITY) &&
+                conv.getAllSessionData().containsKey(Options.TITLE)
             ){
                 Player player = (Player) conv.getForWhom();
                 DateFormat dateFormat = new SimpleDateFormat("MMddyyHHmmss"); // player IGN + 12 numbers
 
                 Ticket newTicket = new Ticket(
                          player.getName() + dateFormat.format(new Date()),           //ID
-                        (String) conv.getSessionData(Options.TICKETTITLE),                  //TITLE
+                        (String) conv.getSessionData(Options.TITLE),                  //TITLE
                         Status.OPENED,                                                      //Status
-                        (String) conv.getSessionData(Options.TICKETCATEGORY),               //Category
-                        (Priority) conv.getSessionData(Options.TICKETPRIORITY),             //Priority
-                        (ArrayList) conv.getSessionData(Options.TICKETCONTACTS),            //Contacts
-                        (String) conv.getSessionData(Options.TICKETDESCRIPTION),            //Description
+                        (String) conv.getSessionData(Options.CATEGORY),               //Category
+                        (Priority) conv.getSessionData(Options.PRIORITY),             //Priority
+                        (ArrayList) conv.getSessionData(Options.CONTACTS),            //Contacts
+                        (String) conv.getSessionData(Options.DESCRIPTION),            //Description
                         player.getUniqueId(),                                               //Assigned To
                         player.getUniqueId(),                                               //Creator
                         new Date(),                                                         //Date Created
@@ -63,7 +63,7 @@ public class createNewTicket extends MessagePrompt {
                 plugin.getTicketSystem().getStoredData().getAllTickets().put(player.getUniqueId(), playerTickets);
 
                 //Update Hub Statistics
-                plugin.getTicketSystem().getStoredData().addNewPriorityStats((Priority) conv.getSessionData(Options.TICKETPRIORITY));
+                plugin.getTicketSystem().getStoredData().addNewPriorityStats((Priority) conv.getSessionData(Options.PRIORITY));
                 plugin.getTicketSystem().getStoredData().addnewStatusStats(Status.OPENED);
                 conv.getForWhom().sendRawMessage(ChatColor.GREEN + "Ticket has now been created");
                 return ChatColor.GREEN + "Ticket ID is: " + player.getName() + dateFormat.format(new Date());

@@ -42,12 +42,12 @@ public class contactNewTicket extends StringPrompt {
             }
             else{
                 contacts.add(Bukkit.getOfflinePlayer(answer).getUniqueId());
-                conv.setSessionData(Options.TICKETCONTACTS, contacts);
+                conv.setSessionData(Options.CONTACTS, contacts);
                 return new additionalContactNewTicket(plugin);
             }
 
         }else if(!answer.equalsIgnoreCase("none") && !first){
-            contacts = (ArrayList) conv.getSessionData(Options.TICKETCONTACTS);
+            contacts = (ArrayList) conv.getSessionData(Options.CONTACTS);
 
             if(!Bukkit.getOfflinePlayer(answer).hasPlayedBefore()) {
                 conv.getForWhom().sendRawMessage(ChatColor.RED + answer + "has not joined the server before!");
@@ -59,14 +59,14 @@ public class contactNewTicket extends StringPrompt {
             }
             else{
                 contacts.add(Bukkit.getOfflinePlayer(answer).getUniqueId());
-                conv.setSessionData(Options.TICKETCONTACTS, contacts);
+                conv.setSessionData(Options.CONTACTS, contacts);
                 return new additionalContactNewTicket(plugin);
             }
 
         } else if(answer.equalsIgnoreCase("none")){
 
             contacts.add(((Player) conv.getForWhom()).getUniqueId());
-            conv.setSessionData(Options.TICKETCONTACTS, contacts);
+            conv.setSessionData(Options.CONTACTS, contacts);
             return new descriptionNewTicket(plugin);
         }
         else{

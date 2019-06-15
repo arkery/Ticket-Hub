@@ -27,7 +27,7 @@ public class categoryNewTicket extends StringPrompt {
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
         if(plugin.getCustomCategories().contains(answer.toLowerCase())){
-            conv.setSessionData(Options.TICKETCATEGORY, answer);
+            conv.setSessionData(Options.CATEGORY, answer);
             return new contactNewTicket(plugin, true);
         }else{
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");

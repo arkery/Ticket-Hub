@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.conversations.BooleanPrompt;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public class additionalContactNewTicket extends BooleanPrompt {
     @Override
     protected Prompt acceptValidatedInput(ConversationContext conv, boolean moreContacts) {
         if(moreContacts){
-            ArrayList<String> contacts = (ArrayList) conv.getSessionData(Options.TICKETCONTACTS);
+            ArrayList<String> contacts = (ArrayList) conv.getSessionData(Options.CONTACTS);
             if(contacts.size() < 3) {
                 return new contactNewTicket(plugin, false);
             }
