@@ -1,5 +1,6 @@
 package io.github.arkery.tickethub.Commands;
 
+import io.github.arkery.tickethub.Commands.EditTicketConv.TicketToEdit;
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
@@ -213,8 +214,8 @@ public class Commands implements CommandExecutor {
                 Ticket displayTicket = this.plugin.getTicketSystem().getSingleTicket(args[1]);
 
                 //If the ticket doesn't belong to them, they must be staff to view it.
-                if(displayTicket.getTicketCreator().equals(Bukkit.getOfflinePlayer(player.getUniqueId())) &&
-                player.hasPermission("tickethub.staff")){
+                if(!displayTicket.getTicketCreator().equals(Bukkit.getOfflinePlayer(player.getUniqueId())) &&
+                !player.hasPermission("tickethub.staff")){
                     player.sendMessage(ChatColor.RED + "You do not have permissions to view this ticket!");
                     return;
                 }
@@ -366,8 +367,14 @@ public class Commands implements CommandExecutor {
      * @param player the player who's sending this command
      */
     public void editTicket(Player player){
-        if(player.hasPermission("tickethub.player")){
-
+        if(player.hasPermission("tickethub.staff")){
+            Conversation conv = conversationFactory
+                    .withFirstPrompt(new TicketToEdit(plugin))
+                    .withLocalEcho(false)
+                    .withEscapeSequence("cancel")
+                    .withTimeout(120)
+                    .buildConversation(player);
+            conv.begin();
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -382,7 +389,7 @@ public class Commands implements CommandExecutor {
      * @param args   the command input
      */
     public void listAllTickets(Player player, String[] args){
-        if(player.hasPermission("tickethub.player")){
+        if(player.hasPermission("tickethub.staff")){
             try{
                 List<Ticket> displayList = this.plugin.getTicketSystem().getStoredData().convertAllTicketsMapToList();
 
@@ -429,7 +436,7 @@ public class Commands implements CommandExecutor {
      * @param player the player who's sending this command
      */
     public void filterAllTickets(Player player){
-        if(player.hasPermission("tickethub.player")){
+        if(player.hasPermission("tickethub.staff")){
 
         }
         else{
@@ -445,7 +452,7 @@ public class Commands implements CommandExecutor {
      * @param args   the command input
      */
     public void myAssignedTickets(Player player, String[] args){
-        if(player.hasPermission("tickethub.player")){
+        if(player.hasPermission("tickethub.staff")){
             EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
             conditions.put(Options.TICKETASSIGNEDTO, player.getUniqueId());
 

@@ -1,35 +1,39 @@
-package io.github.arkery.tickethub.Commands.NewTicketConv;
+package io.github.arkery.tickethub.Commands.EditTicketConv;
 
-import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
+import io.github.arkery.tickethub.TicketSystem.Ticket;
+import lombok.AllArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 
-public class categoryNewTicket extends StringPrompt {
+@AllArgsConstructor
+public class categoryEdit extends StringPrompt {
 
     private TicketHub plugin;
-    public categoryNewTicket(TicketHub plugin){
-        this.plugin = plugin;
-    }
+    private Ticket editingTicket;
 
     @Override
     public String getPromptText(ConversationContext conv) {
+        conv.getForWhom().sendRawMessage(ChatColor.GRAY + "Current Ticket Category: " + this.editingTicket.getTicketCategory());
+
         String all = "";
         for(String i : this.plugin.getCustomCategories()){
             all += " " +  i;
         }
         conv.getForWhom().sendRawMessage(ChatColor.DARK_AQUA + "[" + all + " ]");
-        return ChatColor.GOLD + "Enter Category of Ticket: ";
+        return ChatColor.AQUA + "Enter the new Category";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        if(plugin.getCustomCategories().contains(answer.toLowerCase())){
-            conv.setSessionData(Options.TICKETCATEGORY, answer);
-            return new contactNewTicket(plugin, true);
-        }else{
+
+        if(this.plugin.getCustomCategories().contains(answer.toLowerCase())){
+            this.editingTicket.setTicketCategory(answer.toLowerCase());
+            return new OptionToEditMore(this.plugin, this.editingTicket);
+        }
+        else{
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");
             return this;
         }
