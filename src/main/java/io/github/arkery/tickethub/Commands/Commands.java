@@ -321,6 +321,14 @@ public class Commands implements CommandExecutor {
                 return;
             }
 
+            //If the ticket doesn't belong to them, they must be staff to add comments.
+            if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId())
+                    .get(args[1]).getTicketCreator().equals(Bukkit.getOfflinePlayer(player.getUniqueId())) &&
+                    !player.hasPermission("tickethub.staff")){
+                player.sendMessage(ChatColor.RED + "You do not have permissions to view this ticket!");
+                return;
+            }
+
             //If their comment has spaces in it
             String commentToAdd = player.getName() + ": ";
             for(int i = 2; i < args.length; i++){
