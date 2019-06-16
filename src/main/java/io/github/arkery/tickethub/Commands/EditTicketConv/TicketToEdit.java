@@ -1,10 +1,10 @@
 package io.github.arkery.tickethub.Commands.EditTicketConv;
 
+import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
@@ -26,11 +26,15 @@ public class TicketToEdit extends StringPrompt {
         Player getPlayer = Bukkit.getOfflinePlayer(playerName).getPlayer();
 
         if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(getPlayer.getUniqueId())){
-            conv.getForWhom().sendRawMessage(Color.RED + "Could not find ticket!");
+            conv.getForWhom().sendRawMessage(ChatColor.RED + "Could not find ticket!");
             return this;
         }
         else if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(getPlayer.getUniqueId()).containsKey(answer)){
-            conv.getForWhom().sendRawMessage(Color.RED + "Could not find ticket!");
+            conv.getForWhom().sendRawMessage(ChatColor.RED + "Could not find ticket!");
+            return this;
+        }
+        else if(this.plugin.getTicketSystem().getSingleTicket(answer).getTicketStatus().equals(Status.CLOSED)){
+            conv.getForWhom().sendRawMessage(ChatColor.RED + "This ticket has been closed!");
             return this;
         }
         else{

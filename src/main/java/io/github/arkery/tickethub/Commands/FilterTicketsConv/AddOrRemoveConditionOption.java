@@ -19,13 +19,13 @@ public class AddOrRemoveConditionOption extends StringPrompt {
     @Override
     public String getPromptText(ConversationContext conv) {
 
-        return ChatColor.GOLD + "Enter 'add' or 'replaceKey' to add or replaceKey a filter condition \n" +
+        return ChatColor.GOLD + "Enter 'add' or 'replace' to add or replaceKey a filter condition \n" +
                 "Enter 'remove' to remove a filter condition";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        if(answer.equalsIgnoreCase("add") || answer.equalsIgnoreCase("replaceKey")){
+        if(answer.equalsIgnoreCase("add") || answer.equalsIgnoreCase("replace")){
             return new FilterMenu(this.plugin, this.filterConditions);
 
         }

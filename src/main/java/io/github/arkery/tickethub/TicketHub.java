@@ -1,10 +1,12 @@
 package io.github.arkery.tickethub;
 
 import io.github.arkery.tickethub.Commands.Commands;
+import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketSystem.Hub;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -13,10 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -61,7 +60,7 @@ public class TicketHub extends JavaPlugin implements Listener {
 
             this.TicketSystem.saveTickets("");
             this.TicketSystem.saveTickets("Backup" + saveFormat.format(new Date()));
-            this.TicketSystem.checkPastOneWeek();
+            this.TicketSystem.checkTickets();
         };
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
         ScheduledFuture<?> scheduledFuture = service.scheduleAtFixedRate(job, 0, 1, TimeUnit.DAYS);
@@ -124,6 +123,19 @@ public class TicketHub extends JavaPlugin implements Listener {
                 this.getTicketSystem().getStoredData().getPlayerIdentifiers().replaceKey(player.getPlayer().getUniqueId(), player.getPlayer().getName());
             }
         }
-    }
 
+        //On join, if they are staff - ping them how many tickets they have assigned to them.
+        if(player.getPlayer().hasPermission("tickethub.staff")){
+
+            EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
+            conditions.put(Options.ASSIGNEDTO, player.getPlayer().getUniqueId());
+            int assignedTickets = this.TicketSystem.filterTickets(conditions).size();
+
+            if( this.TicketSystem.filterTickets(conditions).isEmpty()){
+                assignedTickets = 0;
+            }
+
+            player.getPlayer().sendMessage(ChatColor.AQUA + "TicketHub: You have " + assignedTickets + " Tickets Assigned to You");
+        }
+    }
 }
