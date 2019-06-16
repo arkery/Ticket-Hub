@@ -306,7 +306,7 @@ public class Commands implements CommandExecutor {
             }
 
             String argsPlayerName = args[1].substring(0, args[1].length() - 12);
-            Player argsGetPlayer = Bukkit.getOfflinePlayer(argsPlayerName).getPlayer();
+            Player argsGetPlayer = Bukkit.getOfflinePlayer((UUID) this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(argsPlayerName)).getPlayer();
 
             if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(argsGetPlayer.getUniqueId())){
                 player.sendMessage(ChatColor.RED + "Could not find Ticket!");

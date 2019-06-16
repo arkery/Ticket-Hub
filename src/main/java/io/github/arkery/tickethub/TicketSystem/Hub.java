@@ -71,7 +71,7 @@ public class Hub {
             }
             else if(storedTicketsFile.length()== 0){
                 System.out.println("TicketHub: File is empty! Ignoring Loading");
-                return; 
+                return;
             }
 
             //Deserialize the ticketHub
@@ -145,8 +145,8 @@ public class Hub {
      *        Options.TicketCreator
      *        Options.TicketCategory
      *        Options.TicketStatus
-     *        Options.TicketPriority
      *        Options.TicketContact
+     *        Options.TicketPriority
      *        Options.TicketDateCreated
      *        Options.TicketDateLastUpdated
      *        Options.TicketAssignedTo
@@ -206,18 +206,32 @@ public class Hub {
     public Ticket getSingleTicket(String TicketID){
         Ticket ticket = new Ticket();
         String playerName = TicketID.substring(0, TicketID.length() - 12);
-        Player getPlayer = Bukkit.getOfflinePlayer(playerName).getPlayer();
+        UUID playerUUID = (UUID) this.storedData.getPlayerIdentifiers().getValue(playerName);
+        boolean found = true;
 
-        if(!this.storedData.getAllTickets().containsKey(getPlayer.getUniqueId())){
+        if(!this.storedData.getAllTickets().containsKey(playerUUID)){
+            found = false;
+        }
+        else if(this.storedData.getAllTickets().get(playerUUID).isEmpty()){
+            found = false;
+        }
+        else if(!this.storedData.getAllTickets().get(playerUUID).containsKey(TicketID)){
+            found = false;
+        }
+
+        //Try backup linear search.
+        if(!found){
+
+            for(Ticket i: this.storedData.convertAllTicketsMapToList()){
+                if(i.getTicketID().equals(TicketID)){
+                    ticket = i;
+                    return ticket;
+                }
+            }
             throw new IllegalArgumentException();
         }
-        else if(this.storedData.getAllTickets().get(getPlayer.getUniqueId()).isEmpty()){
-            throw new IllegalArgumentException();
-        }
 
-        if(this.storedData.getAllTickets().get(getPlayer.getUniqueId()).containsKey(TicketID)){
-            ticket = this.storedData.getAllTickets().get(getPlayer.getUniqueId()).get(TicketID);
-        }
+        ticket = this.storedData.getAllTickets().get(playerUUID).get(TicketID);
 
         return ticket;
     }

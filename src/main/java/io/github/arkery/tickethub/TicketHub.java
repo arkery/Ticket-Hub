@@ -2,11 +2,12 @@ package io.github.arkery.tickethub;
 
 import io.github.arkery.tickethub.Commands.Commands;
 import io.github.arkery.tickethub.TicketSystem.Hub;
-import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
-public class TicketHub extends JavaPlugin {
+public class TicketHub extends JavaPlugin implements Listener {
 
     private Hub TicketSystem;
     private List<String> customCategories;
@@ -37,6 +38,7 @@ public class TicketHub extends JavaPlugin {
         this.TicketSystem.loadTickets();
         this.dailyMaintenance();
         this.getCommand("th").setExecutor(new Commands(this));
+        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     @Override
@@ -102,6 +104,25 @@ public class TicketHub extends JavaPlugin {
         }catch(NullPointerException e) {
             e.printStackTrace();
             getLogger().info("Unable to generate Config");
+        }
+    }
+
+    @EventHandler
+    public void playerJoin(PlayerJoinEvent player){
+
+        //<String, Value>
+        
+        //If this is the first time the player joins this server since install of the plugin.
+        if(!this.getTicketSystem().getStoredData().getPlayerIdentifiers().containsValue(player.getPlayer().getUniqueId())){
+            this.getTicketSystem().getStoredData().getPlayerIdentifiers().add(player.getPlayer().getName(), player.getPlayer().getUniqueId());
+        }
+        //If they changed their name.
+        else if(this.getTicketSystem().getStoredData().getPlayerIdentifiers().containsValue(player.getPlayer().getUniqueId())){
+
+            String storedUsername = (String) this.getTicketSystem().getStoredData().getPlayerIdentifiers().getKey(player.getPlayer().getUniqueId());
+            if(!storedUsername.equals(player.getPlayer().getName())){
+                this.getTicketSystem().getStoredData().getPlayerIdentifiers().replaceKey(player.getPlayer().getUniqueId(), player.getPlayer().getName());
+            }
         }
     }
 

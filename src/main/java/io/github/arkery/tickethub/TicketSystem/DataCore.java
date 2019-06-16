@@ -1,12 +1,10 @@
 package io.github.arkery.tickethub.TicketSystem;
 
-import io.github.arkery.tickethub.Enums.Options;
+import io.github.arkery.tickethub.CustomUtils.HackedBiDirectMap;
 import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.Bukkit;
 
 import java.io.Serializable;
 import java.util.*;
@@ -17,13 +15,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DataCore implements Serializable {
 
     private ConcurrentHashMap<UUID, HashMap<String, Ticket>> allTickets;
+
     private HashMap<UUID, String> ticketsToClose;
+    private HackedBiDirectMap<String, UUID> playerIdentifiers;
+
     private int highPriority, mediumPriority, lowPriority;
     private int opened, inProgress, resolved;
 
     public DataCore(){
         this.allTickets = new ConcurrentHashMap<>();
         this.ticketsToClose = new HashMap<>();
+        this.playerIdentifiers = new HackedBiDirectMap<>();
+
         this.highPriority = this.mediumPriority = this.lowPriority = 0;
         this.opened = this.inProgress = this.resolved = 0;
     }

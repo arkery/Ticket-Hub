@@ -11,6 +11,7 @@ import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 
 import java.util.EnumMap;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class creatorFilter extends StringPrompt {
@@ -26,7 +27,7 @@ public class creatorFilter extends StringPrompt {
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        Player creator = Bukkit.getOfflinePlayer(answer).getPlayer();
+        Player creator = Bukkit.getOfflinePlayer((UUID) this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer)).getPlayer();
 
         if(creator.hasPlayedBefore()){
             this.filterConditions.put(Options.CREATOR, creator.getUniqueId());
