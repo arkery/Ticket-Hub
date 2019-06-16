@@ -9,6 +9,8 @@ import org.bukkit.conversations.BooleanPrompt;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 
+import java.util.Date;
+
 @AllArgsConstructor
 public class confirmClose extends BooleanPrompt {
 
@@ -17,7 +19,7 @@ public class confirmClose extends BooleanPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        return ChatColor.LIGHT_PURPLE + "Are you sure you want to close ticket: " + editingTicket.getTicketID() + ChatColor.BOLD + " Closing a ticket will prevent further updates/editing";
+        return ChatColor.LIGHT_PURPLE + "Are you sure you want to close ticket: " + editingTicket.getTicketID() + ChatColor.BOLD + "? \n Closing a ticket will prevent further updates/editing";
     }
 
     @Override
@@ -29,11 +31,11 @@ public class confirmClose extends BooleanPrompt {
                    .getStoredData()
                    .removeStatusStats(this.editingTicket.getTicketStatus());
            this.editingTicket.setTicketStatus(Status.CLOSED);
+           this.editingTicket.setTicketDateLastUpdated(new Date());
 
            this.plugin.getTicketSystem()
-                   .getStoredData().getAllTickets()
-                   .get(this.editingTicket.getTicketCreator())
-                   .replace(this.editingTicket.getTicketID(), this.editingTicket);
+                   .getStoredData().getTicketsToClose()
+                   .put(this.editingTicket.getTicketCreator(), this.editingTicket.getTicketID());
            conv.getForWhom().sendRawMessage(ChatColor.DARK_PURPLE + "Ticket Closed!");
 
            return END_OF_CONVERSATION;

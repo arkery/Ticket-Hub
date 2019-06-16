@@ -1,5 +1,6 @@
 package io.github.arkery.tickethub.CustomUtils;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -12,7 +13,8 @@ import java.util.HashMap;
 @NoArgsConstructor
 public class HackedBiDirectMap<A, B> implements Serializable {
 
-    private HashMap<Object, Object> data = new HashMap<>();
+    private HashMap<A, B> KeyToValue = new HashMap<>();
+    private HashMap<B, A> ValueToKey = new HashMap<>();
 
     /**
      * Replace a key by searching map with the value
@@ -21,11 +23,10 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @param newKey    The new key that is replacing the existing key
      */
     public void replaceKey(B value, A newKey){
-        if(this.data.containsKey(value)){
-            this.data.replace(value, newKey);
-            this.data.remove(newKey);
-            this.data.put(newKey, value);
-        }
+       if(this.ValueToKey.containsKey(value)){
+           this.KeyToValue.replace(this.ValueToKey.get(value), value);
+           this.ValueToKey.replace(value, newKey);
+       }
     }
 
     /**
@@ -35,10 +36,9 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @param newValue  The new value that is replacing the existing value
      */
     public void replaceValue(A key, B newValue){
-        if(this.data.containsKey(key)){
-            this.data.replace(key, newValue);
-            this.data.remove(newValue);
-            this.data.put(newValue, key);
+        if(this.ValueToKey.containsKey(key)){
+            this.ValueToKey.replace(this.KeyToValue.get(key), key);
+            this.KeyToValue.replace(key, newValue);
         }
     }
 
@@ -50,9 +50,9 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @param value The value
      */
     public void add(A key, B value){
-        if(!this.data.containsKey(key) && !this.data.containsKey(value)){
-            this.data.put(key, value);
-            this.data.put(value, key);
+        if(!this.KeyToValue.containsKey(key) && !this.ValueToKey.containsKey(value)){
+            this.KeyToValue.put(key, value);
+            this.ValueToKey.put(value, key);
         }
     }
 
@@ -63,10 +63,10 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @param key key used to remove entry in map
      */
     public void removeKey(A key){
-        B b = (B) this.data.get(key);
-        if(this.data.containsKey(key) && this.data.containsKey(b)){
-            this.data.remove(key);
-            this.data.remove(b);
+        if(this.KeyToValue.containsKey(key)){
+            B value = this.KeyToValue.get(key);
+            this.KeyToValue.remove(key);
+            this.ValueToKey.remove(value);
         }
     }
     
@@ -76,10 +76,10 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @param value value used to remove entry in map
      */
     public void removeValue(B value){
-        A a = (A) this.data.get(value);
-        if(this.data.containsKey(value) && this.data.containsKey(a)){
-            this.data.remove(value);
-            this.data.remove(a);
+        if(this.ValueToKey.containsKey(value)){
+            A key = this.ValueToKey.get(value);
+            this.KeyToValue.remove(key);
+            this.ValueToKey.remove(value);
         }
     }
 
@@ -87,7 +87,8 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * Clear everything in the map
      */
     public void clear(){
-        this.data = new HashMap<>();
+        this.KeyToValue.clear();
+        this.ValueToKey.clear();
     }
 
     /**
@@ -96,12 +97,8 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @param value the value used to search for the key
      * @return      the key - if it can't find it - returns the parameter that user inputs
      */
-    public Object getKey(B value){
-        if(this.data.containsKey(value)){
-            return this.data.get(value);
-        }else{
-            return value;
-        }
+    public A getKey(B value){
+        return this.ValueToKey.get(value);
     }
 
     /**
@@ -110,12 +107,8 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @param key the key used to search for the value
      * @return  the value - if it can't find it - returns the parameter that user inputs
      */
-    public Object getValue(A key){
-        if(this.data.containsKey(key)){
-            return this.data.get(key);
-        }else{
-            return key;
-        }
+    public B getValue(A key) {
+        return this.KeyToValue.get(key);
     }
 
     /**
@@ -125,12 +118,11 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @return    true if found, false if not
      */
     public boolean containsKey(A key){
-        if(this.data.containsKey(key)){
+        if(this.KeyToValue.containsKey(key) && this.ValueToKey.containsValue(key)){
             return true;
         }else{
             return false;
         }
-
     }
 
     /**
@@ -140,12 +132,11 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @return      true if found, false if not
      */
     public boolean containsValue(B value){
-        if(this.data.containsKey(value)){
+        if(this.ValueToKey.containsKey(value) && this.KeyToValue.containsValue(value)){
             return true;
         }else{
             return false;
         }
-
     }
 
     /**
@@ -154,7 +145,7 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * @return The amount of entries (Excluding duplicates)
      */
     public int size(){
-        return this.data.size() / 2;
+        return this.KeyToValue.size();
     }
 
 }

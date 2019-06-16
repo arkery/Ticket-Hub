@@ -124,6 +124,7 @@ public class TicketHub extends JavaPlugin implements Listener {
             }
         }
 
+        //On join, if they are staff - ping them how many tickets they have assigned to them.
         if(player.getPlayer().hasPermission("tickethub.staff")){
 
             EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
@@ -134,7 +135,7 @@ public class TicketHub extends JavaPlugin implements Listener {
                 assignedTickets = 0;
             }
 
-            player.getPlayer().sendMessage(ChatColor.AQUA + "TicketHub: You have " + assignedTickets + "Tickets Assigned to You");
+            player.getPlayer().sendMessage(ChatColor.AQUA + "TicketHub: You have " + assignedTickets + " Tickets Assigned to You");
         }
     }
 }

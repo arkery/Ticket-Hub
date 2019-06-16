@@ -212,12 +212,15 @@ public class Hub {
      * @return                          The ticket that the player is looking for
      */
     public Ticket getSingleTicket(String TicketID){
+        boolean found = true;
         Ticket ticket = new Ticket();
         String playerName = TicketID.substring(0, TicketID.length() - 12);
-        UUID playerUUID = (UUID) this.storedData.getPlayerIdentifiers().getValue(playerName);
-        boolean found = true;
+        UUID playerUUID = new UUID(0L, 0L);
 
-        if(!this.storedData.getAllTickets().containsKey(playerUUID)){
+        if(!this.storedData.getPlayerIdentifiers().containsKey(playerName)){
+            found = false;
+        }
+        else if(!this.storedData.getAllTickets().containsKey(playerUUID)){
             found = false;
         }
         else if(this.storedData.getAllTickets().get(playerUUID).isEmpty()){
@@ -239,6 +242,7 @@ public class Hub {
             throw new IllegalArgumentException("Data not found");
         }
 
+        playerUUID = this.storedData.getPlayerIdentifiers().getValue(playerName);
         ticket = this.storedData.getAllTickets().get(playerUUID).get(TicketID);
 
         return ticket;

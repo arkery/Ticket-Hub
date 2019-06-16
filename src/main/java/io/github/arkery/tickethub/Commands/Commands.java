@@ -7,6 +7,10 @@ import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -72,6 +76,9 @@ public class Commands implements CommandExecutor {
                         return false;
                     case "save":
                         this.saveAllTickets(player, args);
+                        return false;
+                    case "people":
+                        player.sendMessage("People who have joined: " + this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().size());
                         return false;
                     default:
                         this.mainCommand(player);
@@ -550,11 +557,15 @@ public class Commands implements CommandExecutor {
 
             player.sendMessage(ChatColor.BLUE + "Ticket ID - Date Updated");
             for (int i = topOfPage; i < bottomOfPage; i++) {
-                player.sendMessage(ChatColor.GRAY + displayTickets.get(i).getTicketID() + " | " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()));
+
+                TextComponent ticketInfo = new TextComponent(displayTickets.get(i).getTicketID() + " | " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()));
+                ticketInfo.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+                ticketInfo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to see ticket details").create()));
+                ticketInfo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/th ticketdetails " + displayTickets.get(i).getTicketID()));
+                player.spigot().sendMessage(ticketInfo);
             }
         } else {
             player.sendMessage(ChatColor.RED + "Invalid Page");
         }
     }
-
 }
