@@ -4,6 +4,7 @@ import io.github.arkery.tickethub.Commands.EditTicketConv.TicketToEdit;
 import io.github.arkery.tickethub.Commands.FilterTicketsConv.FilterMenu;
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
 import io.github.arkery.tickethub.Enums.Options;
+import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import org.bukkit.Bukkit;
@@ -71,6 +72,9 @@ public class Commands implements CommandExecutor {
                         return false;
                     case "save":
                         this.saveAllTickets(player, args);
+                        return false;
+                    default:
+                        this.mainCommand(player);
                         return false;
                 }
             }
@@ -320,6 +324,10 @@ public class Commands implements CommandExecutor {
                 player.sendMessage(ChatColor.RED + "Could not find Ticket!");
                 return;
             }
+            else if(this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).get(args[1]).getTicketStatus().equals(Status.CLOSED)){
+                player.sendMessage(ChatColor.RED + "This ticket has been closed!");
+                return;
+            }
 
             //If the ticket doesn't belong to them, they must be staff to add comments.
             if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId())
@@ -548,6 +556,5 @@ public class Commands implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "Invalid Page");
         }
     }
-
 
 }

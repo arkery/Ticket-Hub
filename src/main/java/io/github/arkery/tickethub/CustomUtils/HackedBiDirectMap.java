@@ -69,8 +69,7 @@ public class HackedBiDirectMap<A, B> implements Serializable {
             this.data.remove(b);
         }
     }
-
-
+    
     /**
      * remove an entry in the map using the value
      *

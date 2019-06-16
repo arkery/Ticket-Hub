@@ -21,8 +21,8 @@ public class statusEdit extends StringPrompt {
         conv.getForWhom().sendRawMessage(ChatColor.GRAY + "Current Ticket Status: " +
                 ((Ticket) conv.getSessionData(Options.TICKET)).getTicketStatus().toString());
 
-        conv.getForWhom().sendRawMessage(ChatColor.GOLD + "Status Options: " +
-                "[ " + Status.OPENED.toString() + " | " + Status.INPROGRESS.toString() + " | " + Status.RESOLVED.toString() + " ]");
+        conv.getForWhom().sendRawMessage(ChatColor.GOLD + "Status Options: \n" +
+                "[ Open | InProgress | Resolved | Closed ]");
         return ChatColor.GOLD + "Enter a new Status";
     }
 
@@ -31,15 +31,18 @@ public class statusEdit extends StringPrompt {
 
         if(answer.equalsIgnoreCase("open")){
             this.changeTicketStatus(Status.OPENED);
-            return new OptionToEditMore(plugin, editingTicket);
+            return new OptionToEditMore(this.plugin, this.editingTicket);
         }
         else if(answer.equalsIgnoreCase("inprogress")){
             this.changeTicketStatus(Status.INPROGRESS);
-            return new OptionToEditMore(plugin, editingTicket);
+            return new OptionToEditMore(this.plugin, this.editingTicket);
         }
         else if(answer.equalsIgnoreCase("resolved")){
             this.changeTicketStatus(Status.RESOLVED);
-            return new OptionToEditMore(plugin, editingTicket);
+            return new OptionToEditMore(this.plugin, this.editingTicket);
+        }
+        else if(answer.equalsIgnoreCase("closed")){
+            return new confirmClose(this.plugin, this.editingTicket);
         }
         else{
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");

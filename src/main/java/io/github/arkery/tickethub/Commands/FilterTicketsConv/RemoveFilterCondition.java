@@ -29,7 +29,7 @@ public class RemoveFilterCondition extends StringPrompt {
             }
         }
 
-        return ChatColor.AQUA + "Choose Filter Conditions To Remove: "
+        return ChatColor.AQUA + "Choose Filter Conditions To Remove: \n"
                 + ChatColor.GOLD + "[ Category | Status | Priority | Contact | DateCreated | DateUpdated | AssignedTo ]";
     }
 

@@ -92,10 +92,9 @@ public class Hub {
 
     /**
      * Checks all tickets that are stored and deletes the ones that have been resolved for more than a week
-     * If the user has no tickets belonging to them after deletion, user is deleted from the hashmap
-     *
+     *If the player no longer has any tickets, delete them from the map
      */
-    public synchronized void checkPastOneWeek(){
+    public synchronized void checkTickets(){
 
         if(this.storedData.getTicketsToClose().isEmpty()){
             System.out.println("TicketHub: No tickets to delete");
@@ -108,6 +107,8 @@ public class Hub {
             Calendar c = Calendar.getInstance();
             c.setTime(checkingThisTicket.getTicketDateLastUpdated());
             c.add(Calendar.DATE, 7);
+
+            //If after seven days, the ticket is resolved and there are no updates - remove it.
             if(checkingThisTicket.getTicketStatus().equals(Status.RESOLVED) &&
                     dateFormat.format(c.getTime()).equals(dateFormat.format(new Date()))){
 
@@ -118,19 +119,26 @@ public class Hub {
                 //Remove the ticket
                 this.storedData.getAllTickets().get(i.getKey()).remove(i.getValue());
 
-                //If the player now has no other tickets, remove the player from hub.
+                //Now that it has been removed from the hub, remove it from the list of tickets to close
                 this.storedData.getTicketsToClose().remove(i.getKey());
 
             }
 
+            //If the ticket status is set to close, immediately remove it.
+            if(checkingThisTicket.getTicketStatus().equals(Status.CLOSED)){
+                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketPriority());
+                this.storedData.getAllTickets().get(i.getKey()).remove(i.getValue());
+                this.storedData.getTicketsToClose().remove(i.getKey());
+            }
+
+            //If the status of the ticket is no longer resolved
             if(!this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketStatus().equals(Status.RESOLVED)){
                 this.storedData.getTicketsToClose().remove(i.getKey());
-                continue;
             }
 
+            //If the player no longer has any tickets, delete them from the map
             if(this.storedData.getAllTickets().get(i.getKey()).isEmpty()){
                 this.storedData.getAllTickets().remove(i.getKey());
-                continue;
             }
         }
     }
