@@ -158,7 +158,7 @@ public class Hub {
         List<Ticket> ticketsAsList = this.storedData.convertAllTicketsMapToList();
 
         if(conditions.isEmpty() || !(conditions instanceof Map)){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Filter Conditions are Empty");
         }
 
         if(conditions.containsKey(Options.CREATOR)){
@@ -228,7 +228,7 @@ public class Hub {
                     return ticket;
                 }
             }
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Data not found");
         }
 
         ticket = this.storedData.getAllTickets().get(playerUUID).get(TicketID);
