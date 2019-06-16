@@ -1,8 +1,0 @@
-name: Custom_Ticket_Hub
-version: 1.0
-author: arkery
-main: java.io.github.arkery.customtickethub.CustomTicketHub
-api-version: 1.14
-
-
-commands:
