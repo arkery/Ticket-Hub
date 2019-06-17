@@ -16,7 +16,7 @@ public class descriptionNewTicket extends StringPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        return ChatColor.GOLD + "Enter Ticket Description: ";
+        return "\n" + ChatColor.GOLD + "Enter Ticket Description: ";
     }
 
     @Override

@@ -20,7 +20,7 @@ public class categoryNewTicket extends StringPrompt {
         for(String i : this.plugin.getCustomCategories()){
             all += " " +  i;
         }
-        conv.getForWhom().sendRawMessage(ChatColor.DARK_AQUA + "[" + all + " ]");
+        conv.getForWhom().sendRawMessage("\n" + ChatColor.GOLD + "Available Options: " + ChatColor.DARK_AQUA + all);
         return ChatColor.GOLD + "Enter Category of Ticket: ";
     }
 

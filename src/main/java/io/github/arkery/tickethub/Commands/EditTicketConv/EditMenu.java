@@ -17,8 +17,8 @@ public class EditMenu extends StringPrompt {
     @Override
     public String getPromptText(ConversationContext conv) {
 
-        return ChatColor.AQUA + "Choose Edit Options: "
-                + ChatColor.GOLD + "[ Title | Status | Priority | Category | Contacts | Description | Assigned_To ]";
+        conv.getForWhom().sendRawMessage("\n" + ChatColor.GOLD + "Available Options: " + ChatColor.DARK_AQUA + "Title Status Priority Category Contacts Description AssignedTo");
+        return ChatColor.GOLD + "Enter an Edit Option ";
     }
 
     @Override
@@ -37,7 +37,7 @@ public class EditMenu extends StringPrompt {
                 return new contactsEdit(plugin, editingTicket);
             case "description":
                 return new descriptionEdit(plugin, editingTicket);
-            case "assigned_to":
+            case "assignedto":
                 return new assignedtoEdit(plugin, editingTicket);
             default:
                 conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");

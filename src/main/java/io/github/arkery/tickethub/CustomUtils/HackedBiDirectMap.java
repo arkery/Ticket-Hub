@@ -95,7 +95,7 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * Gets the key using the value
      *
      * @param value the value used to search for the key
-     * @return      the key - if it can't find it - returns the parameter that user inputs
+     * @return      the key
      */
     public A getKey(B value){
         return this.ValueToKey.get(value);
@@ -105,7 +105,7 @@ public class HackedBiDirectMap<A, B> implements Serializable {
      * Gets the value using the key
      *
      * @param key the key used to search for the value
-     * @return  the value - if it can't find it - returns the parameter that user inputs
+     * @return  the value
      */
     public B getValue(A key) {
         return this.KeyToValue.get(key);
