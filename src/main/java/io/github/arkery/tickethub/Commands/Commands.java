@@ -28,7 +28,7 @@ public class Commands implements CommandExecutor {
 
     private TicketHub plugin;
     private ConversationFactory conversationFactory;
-    private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd");
 
     public Commands(TicketHub plugin){
         this.plugin = plugin;
@@ -239,18 +239,18 @@ public class Commands implements CommandExecutor {
                 }
 
                 if(page == 1) {
-                    player.sendMessage(ChatColor.AQUA + "Details for Ticket " + displayTicket.getTicketID() + ": ");
+                    player.sendMessage(ChatColor.AQUA + "\nDetails for Ticket " + displayTicket.getTicketID() + ": ");
 
-                    player.sendMessage(ChatColor.GOLD + "     Title        " + displayTicket.getTicketTitle());
-                    player.sendMessage(ChatColor.GOLD + "     Status       " + displayTicket.getTicketStatus().toString());
-                    player.sendMessage(ChatColor.GOLD + "     Category     " + displayTicket.getTicketCategory());
-                    player.sendMessage(ChatColor.GOLD + "     Priority     " + displayTicket.getTicketPriority().toString());
-                    player.sendMessage(ChatColor.GOLD + "     Contacts     " + ticketContacts);
-                    player.sendMessage(ChatColor.GOLD + "     Description  " + displayTicket.getTicketDescription());
-                    player.sendMessage(ChatColor.GOLD + "     Assigned To  " + Bukkit.getOfflinePlayer(displayTicket.getTicketAssignedTo()).getName());
-                    player.sendMessage(ChatColor.GOLD + "     Creator      " + Bukkit.getOfflinePlayer(displayTicket.getTicketCreator()).getName());
-                    player.sendMessage(ChatColor.GOLD + "     Last Updated " + dateFormat.format(displayTicket.getTicketDateLastUpdated()));
-                    player.sendMessage(ChatColor.GOLD + "     Date Created " + dateFormat.format(displayTicket.getTicketDateCreated()));
+                    player.sendMessage(ChatColor.GOLD + "\n   Title: " + ChatColor.BLUE + displayTicket.getTicketTitle());
+                    player.sendMessage(ChatColor.GOLD + "\n   Status: " + ChatColor.BLUE + displayTicket.getTicketStatus().toString());
+                    player.sendMessage(ChatColor.GOLD + "   Category: " + ChatColor.BLUE + displayTicket.getTicketCategory());
+                    player.sendMessage(ChatColor.GOLD + "   Priority: " + ChatColor.BLUE + displayTicket.getTicketPriority().toString());
+                    player.sendMessage(ChatColor.GOLD + "\n   Contacts: " + ChatColor.BLUE + ticketContacts);
+                    player.sendMessage(ChatColor.GOLD + "\n   Description: " + ChatColor.BLUE + displayTicket.getTicketDescription());
+                    player.sendMessage(ChatColor.GOLD + "\n   Assigned To: " + ChatColor.BLUE + Bukkit.getOfflinePlayer(displayTicket.getTicketAssignedTo()).getName());
+                    player.sendMessage(ChatColor.GOLD + "   Creator: " + ChatColor.BLUE + Bukkit.getOfflinePlayer(displayTicket.getTicketCreator()).getName());
+                    player.sendMessage(ChatColor.GOLD + "\n   Last Updated: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateLastUpdated()));
+                    player.sendMessage(ChatColor.GOLD + "   Date Created: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateCreated()));
                 }
                 else{
 
@@ -275,9 +275,9 @@ public class Commands implements CommandExecutor {
                         //Reverse it so it shows the latest comments on top
                         Collections.reverse(displayTicket.getTicketComments());
 
-                        player.sendMessage(ChatColor.BLUE + "Comments");
+                        player.sendMessage(ChatColor.BLUE + "Comments:");
                         for (int i = topOfPage; i < bottomOfPage; i++) {
-                            player.sendMessage(ChatColor.GRAY + displayTicket.getTicketComments().get(i));
+                            player.sendMessage(ChatColor.GOLD + displayTicket.getTicketComments().get(i));
                         }
                     } else {
                         player.sendMessage(ChatColor.RED + "Invalid Page");
@@ -555,13 +555,22 @@ public class Commands implements CommandExecutor {
                 bottomOfPage = displayTickets.size();
             }
 
-            player.sendMessage(ChatColor.BLUE + "Ticket ID - Date Updated");
+            //60 characters per line
+            player.sendMessage(ChatColor.GOLD + "\n[ ID Status Priority Category DateUpdated DateCreated ]");
+            player.sendMessage("  ");
             for (int i = topOfPage; i < bottomOfPage; i++) {
 
-                TextComponent ticketInfo = new TextComponent(displayTickets.get(i).getTicketID() + " | " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()));
-                ticketInfo.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+                TextComponent ticketInfo = new TextComponent(
+                        displayTickets.get(i).getTicketID() +
+                        " " + displayTickets.get(i).getTicketStatus().toString() +
+                        " " + displayTickets.get(i).getTicketPriority().toString() +
+                        " " + displayTickets.get(i).getTicketCategory() +
+                        " " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()) +
+                        " " + dateFormat.format(displayTickets.get(i).getTicketDateCreated()
+                        ));
+                ticketInfo.setColor(net.md_5.bungee.api.ChatColor.BLUE);
                 ticketInfo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to see ticket details").create()));
-                ticketInfo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/th ticketdetails " + displayTickets.get(i).getTicketID()));
+                ticketInfo.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/th ticketdetails " + displayTickets.get(i).getTicketID()));
                 player.spigot().sendMessage(ticketInfo);
             }
         } else {

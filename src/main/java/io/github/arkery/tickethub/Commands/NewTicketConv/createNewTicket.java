@@ -65,8 +65,7 @@ public class createNewTicket extends MessagePrompt {
                 //Update Hub Statistics
                 plugin.getTicketSystem().getStoredData().addNewPriorityStats((Priority) conv.getSessionData(Options.PRIORITY));
                 plugin.getTicketSystem().getStoredData().addnewStatusStats(Status.OPENED);
-                conv.getForWhom().sendRawMessage(ChatColor.GREEN + "Ticket has now been created");
-                return ChatColor.GREEN + "Ticket ID is: " + player.getName() + dateFormat.format(new Date());
+                return ChatColor.GREEN + "\nTicket has now been created!" + " Ticket ID: " + ChatColor.AQUA + player.getName() + dateFormat.format(new Date());
             }
             else{
                 return ChatColor.RED + "Unable to retrieve data for ticket creation";

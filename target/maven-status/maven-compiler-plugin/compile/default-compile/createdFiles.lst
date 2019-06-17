@@ -1,6 +1,7 @@
 io\github\arkery\tickethub\Commands\FilterTicketsConv\creatorFilter.class
 io\github\arkery\tickethub\Enums\Status.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\assignedtoFilter.class
+io\github\arkery\tickethub\Commands\EditTicketConv\TicketToEdit.class
 io\github\arkery\tickethub\Commands\EditTicketConv\descriptionEdit.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\RemoveFilterCondition.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\contactFilter.class
@@ -11,7 +12,9 @@ io\github\arkery\tickethub\Commands\FilterTicketsConv\viewFilter.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\AddOrRemoveConditionOption.class
 io\github\arkery\tickethub\Commands\Commands.class
 io\github\arkery\tickethub\Commands\EditTicketConv\categoryEdit.class
+io\github\arkery\tickethub\Commands\NewTicketConv\createNewTicket.class
 io\github\arkery\tickethub\Enums\DateSetting.class
+io\github\arkery\tickethub\CustomUtils\HackedBiDirectMap.class
 io\github\arkery\tickethub\TicketSystem\DataCore$1.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\statusFilter.class
 io\github\arkery\tickethub\TicketHub.class
@@ -22,7 +25,9 @@ io\github\arkery\tickethub\TicketSystem\Hub.class
 io\github\arkery\tickethub\Commands\NewTicketConv\priorityNewTicket.class
 io\github\arkery\tickethub\TicketSystem\Ticket.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\priorityFilter.class
+io\github\arkery\tickethub\Commands\NewTicketConv\titleNewTicket.class
 io\github\arkery\tickethub\Enums\OrderSetting.class
+io\github\arkery\tickethub\Commands\NewTicketConv\categoryNewTicket.class
 io\github\arkery\tickethub\Commands\NewTicketConv\contactNewTicket.class
 io\github\arkery\tickethub\Commands\EditTicketConv\contactsRemoveEdit.class
 io\github\arkery\tickethub\Commands\EditTicketConv\OptionToEditMore.class

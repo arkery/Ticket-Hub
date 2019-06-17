@@ -18,10 +18,9 @@ public class statusEdit extends StringPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        conv.getForWhom().sendRawMessage(ChatColor.GRAY + "Current Ticket Status: " + this.editingTicket.getTicketStatus());
+        conv.getForWhom().sendRawMessage("\n" + ChatColor.GRAY + "Current Ticket Status: " + this.editingTicket.getTicketStatus());
 
-        conv.getForWhom().sendRawMessage(ChatColor.GOLD + "Status Options: \n" +
-                "[ Open | InProgress | Resolved | Closed ]");
+        conv.getForWhom().sendRawMessage(ChatColor.GOLD + "Status Options: Open InProgress Resolved Closed ");
         return ChatColor.GOLD + "Enter a new Status";
     }
 

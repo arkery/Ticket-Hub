@@ -16,7 +16,8 @@ public class priorityNewTicket extends StringPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        return ChatColor.GOLD + "Enter Priority of Ticket: " + ChatColor.DARK_AQUA + "[ LOW | MEDIUM | HIGH ]";
+        conv.getForWhom().sendRawMessage("\n" + ChatColor.GOLD + "Available Options: " + ChatColor.DARK_AQUA + "Low Medium High");
+        return ChatColor.GOLD + "Enter Priority of Ticket ";
     }
 
     @Override

@@ -17,7 +17,7 @@ public class OptionToEditMore extends BooleanPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        return ChatColor.GOLD + "Do you want to edit other parts of the Ticket: " + this.editingTicket.getTicketID() + " ?";
+        return "\n" + ChatColor.DARK_GREEN + "Do you want to edit other parts of the Ticket? ";
     }
 
     @Override

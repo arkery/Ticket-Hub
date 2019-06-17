@@ -26,7 +26,7 @@ public class contactNewTicket extends StringPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        return ChatColor.GOLD + "Enter contact's username . Enter 'none' if there are no contacts.";
+        return "\n" + ChatColor.GOLD + "Enter contact's username. Enter 'none' if there are no contacts.";
     }
     
     @Override
