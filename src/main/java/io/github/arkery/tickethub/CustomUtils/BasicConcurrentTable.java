@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author arkery
  */
 @NoArgsConstructor
-public class HackedConcurrentMapTable<X,Y,Value> implements Serializable {
+public class BasicConcurrentTable<X,Y,Value> implements Serializable {
 
     private ConcurrentHashMap<X, HashMap<Y, Value>> data = new ConcurrentHashMap<>();
     private HashSet<X> xValues = new HashSet<>(); //Table must have unique x values

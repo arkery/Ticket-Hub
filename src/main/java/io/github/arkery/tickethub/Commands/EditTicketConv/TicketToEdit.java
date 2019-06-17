@@ -23,7 +23,7 @@ public class TicketToEdit extends StringPrompt {
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
         String playerName = answer.substring(0, answer.length() - 12);
-        Player getPlayer = Bukkit.getOfflinePlayer(playerName).getPlayer();
+        Player getPlayer = Bukkit.getOfflinePlayer(this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer)).getPlayer();
 
         if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().contains(getPlayer.getUniqueId(), answer)){
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Could not find ticket!");

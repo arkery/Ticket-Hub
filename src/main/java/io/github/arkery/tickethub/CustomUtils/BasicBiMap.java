@@ -10,7 +10,7 @@ import java.util.HashMap;
  * @author arkery
  */
 @NoArgsConstructor
-public class HackedBiDirectMap<A, B> implements Serializable {
+public class BasicBiMap<A, B> implements Serializable {
 
     private HashMap<A, B> KeyToValue = new HashMap<>();
     private HashMap<B, A> ValueToKey = new HashMap<>();
