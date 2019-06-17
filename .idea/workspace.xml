@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="edc848c2-4519-4234-90e7-7fb96eb327a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentMapTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedBiDirectMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedBiDirectMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/OptionToEditMore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/OptionToEditMore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/TicketToEdit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/TicketToEdit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentMapTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentMapTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -23,10 +27,28 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedBiDirectMap.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="21" column="70" lean-forward="true" selection-start-line="21" selection-start-column="70" selection-end-line="21" selection-end-column="70" />
+            <state relative-caret-position="-1894">
+              <caret line="406" column="114" selection-start-line="406" selection-start-column="114" selection-end-line="406" selection-end-column="114" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="367">
+              <caret line="56" column="97" selection-start-line="56" selection-start-column="97" selection-end-line="56" selection-end-column="97" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="16" column="69" selection-start-line="16" selection-start-column="69" selection-end-line="16" selection-end-column="69" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -35,10 +57,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentMapTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="595">
-              <caret line="197" column="34" selection-start-line="197" selection-start-column="34" selection-end-line="197" selection-end-column="34" />
+            <state relative-caret-position="420">
+              <caret line="128" column="5" lean-forward="true" selection-start-line="128" selection-start-column="5" selection-end-line="128" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -46,20 +68,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentMapTable.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="20" column="6" lean-forward="true" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1877#1878#0" expanded="true" />
-                <element signature="e#1927#1928#0" expanded="true" />
-                <element signature="e#2404#2405#0" expanded="true" />
-                <element signature="e#2450#2451#0" expanded="true" />
-                <element signature="e#3799#3800#0" expanded="true" />
-                <element signature="e#3832#3833#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="343">
+              <caret line="236" selection-start-line="236" selection-end-line="236" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/OptionToEditMore.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="42" column="65" lean-forward="true" selection-start-line="42" selection-start-column="65" selection-end-line="42" selection-end-column="65" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/TicketToEdit.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="267">
+              <caret line="31" column="78" selection-start-line="31" selection-start-column="78" selection-end-line="31" selection-end-column="78" />
             </state>
           </provider>
         </entry>
@@ -133,27 +164,27 @@
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/FilterTicketsConv/viewFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/playerIdentifiier.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/playerIdentifiier.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/assignedtoEdit.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/FilterTicketsConv/creatorFilter.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/FilterTicketsConv/AddOrRemoveConditionOption.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/FilterTicketsConv/RemoveFilterCondition.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketHub.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/confirmClose.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/TicketToEdit.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/priorityNewTicket.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/categoryNewTicket.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/descriptionNewTicket.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/contactNewTicket.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/EditMenu.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/statusEdit.java" />
-        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/OptionToEditMore.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedBiDirectMap.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentXYTable.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java" />
         <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentMapTable.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/OptionToEditMore.java" />
+        <option value="$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/TicketToEdit.java" />
       </list>
     </option>
   </component>
@@ -278,12 +309,6 @@
               <item name="Ticket-Hub" type="58d84e3e:PackageViewProjectNode" />
               <item name="TicketHub" type="616d4139:PackageViewModuleNode" />
               <item name="io.github.arkery.tickethub" type="1f31426a:PackageElementNode" />
-              <item name="Enums" type="1f31426a:PackageElementNode" />
-            </path>
-            <path>
-              <item name="Ticket-Hub" type="58d84e3e:PackageViewProjectNode" />
-              <item name="TicketHub" type="616d4139:PackageViewModuleNode" />
-              <item name="io.github.arkery.tickethub" type="1f31426a:PackageElementNode" />
               <item name="TicketSystem" type="1f31426a:PackageElementNode" />
             </path>
           </expand>
@@ -339,7 +364,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13859275" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13859275" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -350,7 +375,7 @@
       <window_info id="Learn" order="8" weight="0.32995737" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.15709643" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.15709643" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -358,7 +383,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32936078" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.32936078" />
+      <window_info active="true" anchor="bottom" id="Messages" order="10" visible="true" weight="0.32936078" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -598,20 +623,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="471">
-          <caret line="574" column="13" lean-forward="true" selection-start-line="574" selection-start-column="13" selection-end-line="574" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="126" column="74" selection-start-line="126" selection-start-column="74" selection-end-line="126" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/EditMenu.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="256">
@@ -623,27 +634,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/OptionToEditMore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="34" column="52" lean-forward="true" selection-start-line="34" selection-start-column="52" selection-end-line="34" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="71" column="13" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/TicketToEdit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
         </state>
       </provider>
     </entry>
@@ -689,20 +679,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedBiDirectMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="197" column="34" selection-start-line="197" selection-start-column="34" selection-end-line="197" selection-end-column="34" />
+        <state relative-caret-position="-1759">
+          <caret line="18" column="52" lean-forward="true" selection-start-line="18" selection-start-column="52" selection-end-line="18" selection-end-column="52" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedBiDirectMap.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/DataCore.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="21" column="70" lean-forward="true" selection-start-line="21" selection-start-column="70" selection-end-line="21" selection-end-column="70" />
+        <state relative-caret-position="304">
+          <caret line="16" column="69" selection-start-line="16" selection-start-column="69" selection-end-line="16" selection-end-column="69" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -711,17 +701,46 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/CustomUtils/HackedConcurrentMapTable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="20" column="6" lean-forward="true" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
+        <state relative-caret-position="420">
+          <caret line="128" column="5" lean-forward="true" selection-start-line="128" selection-start-column="5" selection-end-line="128" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1877#1878#0" expanded="true" />
-            <element signature="e#1927#1928#0" expanded="true" />
-            <element signature="e#2404#2405#0" expanded="true" />
-            <element signature="e#2450#2451#0" expanded="true" />
-            <element signature="e#3799#3800#0" expanded="true" />
-            <element signature="e#3832#3833#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/TicketSystem/Hub.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="343">
+          <caret line="236" selection-start-line="236" selection-end-line="236" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/Commands.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1894">
+          <caret line="406" column="114" selection-start-line="406" selection-start-column="114" selection-end-line="406" selection-end-column="114" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/NewTicketConv/createNewTicket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="56" column="97" selection-start-line="56" selection-start-column="97" selection-end-line="56" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/OptionToEditMore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="42" column="65" lean-forward="true" selection-start-line="42" selection-start-column="65" selection-end-line="42" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/io/github/arkery/tickethub/Commands/EditTicketConv/TicketToEdit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="31" column="78" selection-start-line="31" selection-start-column="78" selection-end-line="31" selection-end-column="78" />
         </state>
       </provider>
     </entry>

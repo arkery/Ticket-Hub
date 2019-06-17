@@ -9,6 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Hackish Table implementation
+ * @author arkery
+ */
 @NoArgsConstructor
 public class HackedConcurrentMapTable<X,Y,Value> implements Serializable {
 

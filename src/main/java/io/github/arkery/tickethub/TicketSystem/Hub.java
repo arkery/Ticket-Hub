@@ -7,8 +7,6 @@ import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -103,7 +101,9 @@ public class Hub {
 
         for(Map.Entry<UUID, String> i: this.storedData.getTicketsToClose().entrySet()){
 
-            Ticket checkingThisTicket = this.storedData.getAllTickets().get(i.getKey()).get(i.getValue());
+            //x - uuid
+            //x - string
+            Ticket checkingThisTicket = this.storedData.getAllTickets().get(i.getKey(), i.getValue());
             Calendar c = Calendar.getInstance();
             c.setTime(checkingThisTicket.getTicketDateLastUpdated());
             c.add(Calendar.DATE, 7);
@@ -113,11 +113,11 @@ public class Hub {
                     dateFormat.format(c.getTime()).equals(dateFormat.format(new Date()))){
 
                 //Decrement Hub Statistic Values since ticket is being removed
-                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketPriority());
-                this.storedData.removeStatusStats(this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketStatus());
+                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey(), i.getValue()).getTicketPriority());
+                this.storedData.removeStatusStats(this.storedData.getAllTickets().get(i.getKey(), i.getValue()).getTicketStatus());
 
                 //Remove the ticket
-                this.storedData.getAllTickets().get(i.getKey()).remove(i.getValue());
+                this.storedData.getAllTickets().remove(i.getKey(), i.getValue());
 
                 //Now that it has been removed from the hub, remove it from the list of tickets to close
                 this.storedData.getTicketsToClose().remove(i.getKey());
@@ -126,19 +126,14 @@ public class Hub {
 
             //If the ticket status is set to close, immediately remove it.
             if(checkingThisTicket.getTicketStatus().equals(Status.CLOSED)){
-                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketPriority());
-                this.storedData.getAllTickets().get(i.getKey()).remove(i.getValue());
+                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey(),i.getValue()).getTicketPriority());
+                this.storedData.getAllTickets().remove(i.getKey(), i.getValue());
                 this.storedData.getTicketsToClose().remove(i.getKey());
             }
 
             //If the status of the ticket is no longer resolved
-            if(!this.storedData.getAllTickets().get(i.getKey()).get(i.getValue()).getTicketStatus().equals(Status.RESOLVED)){
+            if(!this.storedData.getAllTickets().get(i.getKey(),i.getValue()).getTicketStatus().equals(Status.RESOLVED)){
                 this.storedData.getTicketsToClose().remove(i.getKey());
-            }
-
-            //If the player no longer has any tickets, delete them from the map
-            if(this.storedData.getAllTickets().get(i.getKey()).isEmpty()){
-                this.storedData.getAllTickets().remove(i.getKey());
             }
         }
     }
@@ -163,7 +158,7 @@ public class Hub {
      */
     public List<Ticket> filterTickets(EnumMap conditions){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
-        List<Ticket> ticketsAsList = this.storedData.convertAllTicketsMapToList();
+        List<Ticket> ticketsAsList = this.storedData.getAllTickets().getAll();
 
         if(conditions.isEmpty() || !(conditions instanceof Map)){
             throw new IllegalArgumentException("Filter Conditions are Empty");
@@ -171,7 +166,7 @@ public class Hub {
 
         if(conditions.containsKey(Options.CREATOR)){
 
-            ticketsAsList = this.storedData.convertPlayerTicketsMapToList(this.storedData.getAllTickets().get(conditions.get(Options.CREATOR)));
+            ticketsAsList = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
         }
         else if(conditions.containsKey(Options.CATEGORY)){
             activeConditions.add(x -> x.getTicketCategory().equals(conditions.get(Options.CATEGORY)));
@@ -220,20 +215,18 @@ public class Hub {
         if(!this.storedData.getPlayerIdentifiers().containsKey(playerName)){
             found = false;
         }
-        else if(!this.storedData.getAllTickets().containsKey(playerUUID)){
-            found = false;
+        else{
+            playerUUID = this.storedData.getPlayerIdentifiers().getValue(playerName);
         }
-        else if(this.storedData.getAllTickets().get(playerUUID).isEmpty()){
-            found = false;
-        }
-        else if(!this.storedData.getAllTickets().get(playerUUID).containsKey(TicketID)){
+
+        if(!this.storedData.getAllTickets().contains(playerUUID, TicketID)){
             found = false;
         }
 
         //Try backup linear search.
         if(!found){
 
-            for(Ticket i: this.storedData.convertAllTicketsMapToList()){
+            for(Ticket i: this.storedData.getAllTickets().getAll()){
                 if(i.getTicketID().equals(TicketID)){
                     ticket = i;
                     return ticket;
@@ -242,8 +235,7 @@ public class Hub {
             throw new IllegalArgumentException("Data not found");
         }
 
-        playerUUID = this.storedData.getPlayerIdentifiers().getValue(playerName);
-        ticket = this.storedData.getAllTickets().get(playerUUID).get(TicketID);
+        ticket = this.storedData.getAllTickets().get(playerUUID, TicketID);
 
         return ticket;
     }

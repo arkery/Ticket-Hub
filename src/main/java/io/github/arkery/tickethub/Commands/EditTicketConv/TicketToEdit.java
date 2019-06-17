@@ -25,11 +25,7 @@ public class TicketToEdit extends StringPrompt {
         String playerName = answer.substring(0, answer.length() - 12);
         Player getPlayer = Bukkit.getOfflinePlayer(playerName).getPlayer();
 
-        if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(getPlayer.getUniqueId())){
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "Could not find ticket!");
-            return this;
-        }
-        else if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(getPlayer.getUniqueId()).containsKey(answer)){
+        if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().contains(getPlayer.getUniqueId(), answer)){
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Could not find ticket!");
             return this;
         }

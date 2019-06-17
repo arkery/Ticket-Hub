@@ -32,9 +32,10 @@ public class OptionToEditMore extends BooleanPrompt {
             }
 
             this.plugin.getTicketSystem()
-                    .getStoredData().getAllTickets()
-                    .get(this.editingTicket.getTicketCreator())
-                    .replace(this.editingTicket.getTicketID(), this.editingTicket);
+                    .getStoredData()
+                    .getAllTickets()
+                    .replace(this.editingTicket.getTicketCreator(), this.editingTicket.getTicketID(), this.editingTicket);
+
             conv.getForWhom().sendRawMessage(ChatColor.GREEN + "Ticket Updated!");
             return END_OF_CONVERSATION;
         }

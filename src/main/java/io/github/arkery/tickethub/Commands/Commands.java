@@ -151,15 +151,12 @@ public class Commands implements CommandExecutor {
         if(player.hasPermission("tickethub.player")){
             try{
                 //Check if player has tickets
-                if(!plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(player.getUniqueId())){
+                if(plugin.getTicketSystem().getStoredData().getAllTickets().getAllX(player.getUniqueId()).isEmpty()){
                     player.sendMessage(ChatColor.RED + "You have no tickets!");
                     return;
                 }
 
-                List<Ticket> playerTickets = plugin.getTicketSystem().getStoredData().convertPlayerTicketsMapToList
-                    (
-                        plugin.getTicketSystem().getStoredData().getAllTickets().get(player.getUniqueId())
-                    );
+                List<Ticket> playerTickets = plugin.getTicketSystem().getStoredData().getAllTickets().getAllX(player.getUniqueId());
 
                 //Check if player stated if they wanted it sorted by date created
                 if(args.length == 3 && args[2].equalsIgnoreCase("created")){
@@ -319,26 +316,18 @@ public class Commands implements CommandExecutor {
             String argsPlayerName = args[1].substring(0, args[1].length() - 12);
             Player argsGetPlayer = Bukkit.getOfflinePlayer((UUID) this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(argsPlayerName)).getPlayer();
 
-            if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(argsGetPlayer.getUniqueId())){
+            if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().contains(argsGetPlayer.getUniqueId(), args[1])){
                 player.sendMessage(ChatColor.RED + "Could not find Ticket!");
                 return;
             }
-            else if(this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).isEmpty()){
-                player.sendMessage(ChatColor.RED + "Could not find Ticket!");
-                return;
-            }
-            else if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).containsKey(args[1])){
-                player.sendMessage(ChatColor.RED + "Could not find Ticket!");
-                return;
-            }
-            else if(this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).get(args[1]).getTicketStatus().equals(Status.CLOSED)){
+            else if(this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId(), args[1]).getTicketStatus().equals(Status.CLOSED)){
                 player.sendMessage(ChatColor.RED + "This ticket has been closed!");
                 return;
             }
 
             //If the ticket doesn't belong to them, they must be staff to add comments.
-            if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId())
-                    .get(args[1]).getTicketCreator().equals(Bukkit.getOfflinePlayer(player.getUniqueId())) &&
+            if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId(), args[1])
+                    .getTicketCreator().equals(Bukkit.getOfflinePlayer(player.getUniqueId())) &&
                     !player.hasPermission("tickethub.staff")){
                 player.sendMessage(ChatColor.RED + "You do not have permissions to view this ticket!");
                 return;
@@ -350,8 +339,8 @@ public class Commands implements CommandExecutor {
                 commentToAdd += " " + args[i];
             }
 
-            this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).get(args[1]).getTicketComments().add(commentToAdd);
-            this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId()).get(args[1]).setTicketDateLastUpdated(new Date());
+            this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId(),args[1]).getTicketComments().add(commentToAdd);
+            this.plugin.getTicketSystem().getStoredData().getAllTickets().get(argsGetPlayer.getUniqueId(),args[1]).setTicketDateLastUpdated(new Date());
             player.sendMessage(ChatColor.GREEN + "Comment added to ticket " + args[1]);
 
         }
@@ -415,7 +404,7 @@ public class Commands implements CommandExecutor {
     public void listAllTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.staff")){
             try{
-                List<Ticket> displayList = this.plugin.getTicketSystem().getStoredData().convertAllTicketsMapToList();
+                List<Ticket> displayList = this.plugin.getTicketSystem().getStoredData().getAllTickets().getAll();
 
                 //Check if player stated if they wanted it sorted by date created
                 if(args.length == 3 && args[2].equalsIgnoreCase("created")){

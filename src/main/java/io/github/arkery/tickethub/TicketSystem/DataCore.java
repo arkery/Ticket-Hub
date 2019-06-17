@@ -1,6 +1,7 @@
 package io.github.arkery.tickethub.TicketSystem;
 
 import io.github.arkery.tickethub.CustomUtils.HackedBiDirectMap;
+import io.github.arkery.tickethub.CustomUtils.HackedConcurrentMapTable;
 import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.AllArgsConstructor;
@@ -8,22 +9,23 @@ import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @AllArgsConstructor
 @Getter
 public class DataCore implements Serializable {
 
-    private ConcurrentHashMap<UUID, HashMap<String, Ticket>> allTickets;
+    private HackedConcurrentMapTable<UUID, String, Ticket> allTickets;
 
     private HashMap<UUID, String> ticketsToClose;
     private HackedBiDirectMap<String, UUID> playerIdentifiers;
+
 
     private int highPriority, mediumPriority, lowPriority;
     private int opened, inProgress, resolved;
 
     public DataCore(){
-        this.allTickets = new ConcurrentHashMap<>();
+        //this.allTickets = new ConcurrentHashMap<>();
+        this.allTickets = new HackedConcurrentMapTable<>();
         this.ticketsToClose = new HashMap<>();
         this.playerIdentifiers = new HackedBiDirectMap<>();
 
@@ -168,60 +170,4 @@ public class DataCore implements Serializable {
                 break;
         }
     }
-
-    /**
-     * Creates a copy of all tickets that exist into a single UNSORTED list
-     *
-     * @return A single list containing all tickets that are stored
-     */
-    public synchronized List<Ticket> convertAllTicketsMapToList(){
-        List<Ticket> allTicketsAsList = new ArrayList<>();
-
-        for(HashMap<String, Ticket> i: this.allTickets.values()){
-            for(Ticket ticket: i.values()){
-                allTicketsAsList.add(ticket);
-            }
-        }
-
-        return allTicketsAsList;
-    }
-
-    /**
-     * Creates a copy of all tickets belonging to a certain player converted into a single UNSORTED list
-     *
-     * @param mapToConvert  The specific player's tickets
-     * @return              A single list containing all tickets that belong to a specified player
-     */
-    public synchronized List<Ticket> convertPlayerTicketsMapToList(HashMap<String, Ticket> mapToConvert){
-        List<Ticket> ticketsAsList = new ArrayList<>();
-
-        for(Ticket ticket: mapToConvert.values()){
-            ticketsAsList.add(ticket);
-        }
-
-        return ticketsAsList;
-    }
-
-/*
-
-    Removes Hours, Minutes and Seconds from a date object
-
-    @param dateToRemove the date object that Hours, Minutes and Seconds will be removed from
-    @return             Date Object without Hours, Minutes and Seconds
-
-    public Date removeHourMinuteSeconds(Date dateToRemove){
-    Calendar modifyDate = Calendar.getInstance();
-
-    modifyDate.setTime(dateToRemove);
-    modifyDate.set(Calendar.HOUR_OF_DAY, 0);
-    modifyDate.set(Calendar.MINUTE, 0);
-    modifyDate.set(Calendar.SECOND, 0);
-    modifyDate.set(Calendar.MILLISECOND, 0);
-
-    return modifyDate.getTime();
-}
- */
-
-
-
 }

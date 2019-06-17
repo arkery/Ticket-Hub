@@ -50,17 +50,8 @@ public class createNewTicket extends MessagePrompt {
                         new ArrayList<>()                                                   //Comments
                 );
 
-                HashMap<String, Ticket> playerTickets = new HashMap<>();
-
-                //Check if the player has other tickets belonging to them
-                if(plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(player.getUniqueId())){
-                    playerTickets = this.plugin.getTicketSystem().getStoredData().getAllTickets().get(player.getUniqueId());
-                }
-
-
                 //Add the ticket into the Hub
-                playerTickets.put(newTicket.getTicketID(), newTicket);
-                plugin.getTicketSystem().getStoredData().getAllTickets().put(player.getUniqueId(), playerTickets);
+                plugin.getTicketSystem().getStoredData().getAllTickets().add(player.getUniqueId(), newTicket.getTicketID(),  newTicket);
 
                 //Update Hub Statistics
                 plugin.getTicketSystem().getStoredData().addNewPriorityStats((Priority) conv.getSessionData(Options.PRIORITY));
