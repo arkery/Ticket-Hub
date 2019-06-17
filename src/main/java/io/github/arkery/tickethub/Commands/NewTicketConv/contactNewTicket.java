@@ -32,16 +32,16 @@ public class contactNewTicket extends StringPrompt {
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
         if(!answer.equalsIgnoreCase("none") && first){
-            if(!Bukkit.getOfflinePlayer(answer).hasPlayedBefore()) {
+            if(!this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().containsKey(answer)) {
                 conv.getForWhom().sendRawMessage(ChatColor.RED + answer + " has not joined the server before!");
                 return this;
             }
-            else if(contacts.contains(Bukkit.getOfflinePlayer(answer).getUniqueId())){
+            else if(this.contacts.contains(this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer))){
                 conv.getForWhom().sendRawMessage(ChatColor.RED + answer + " is already a contact!");
                 return new additionalContactNewTicket(plugin);
             }
             else{
-                contacts.add(Bukkit.getOfflinePlayer(answer).getUniqueId());
+                contacts.add(this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer));
                 conv.setSessionData(Options.CONTACTS, contacts);
                 return new additionalContactNewTicket(plugin);
             }
@@ -49,16 +49,16 @@ public class contactNewTicket extends StringPrompt {
         }else if(!answer.equalsIgnoreCase("none") && !first){
             contacts = (ArrayList) conv.getSessionData(Options.CONTACTS);
 
-            if(!Bukkit.getOfflinePlayer(answer).hasPlayedBefore()) {
-                conv.getForWhom().sendRawMessage(ChatColor.RED + answer + "has not joined the server before!");
+            if(!this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().containsKey(answer)) {
+                conv.getForWhom().sendRawMessage(ChatColor.RED + answer + " has not joined the server before!");
                 return this;
             }
-            else if(contacts.contains(Bukkit.getOfflinePlayer(answer).getUniqueId())){
+            else if(this.contacts.contains(this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer))){
                 conv.getForWhom().sendRawMessage(ChatColor.RED + answer + " is already a contact!");
                 return new additionalContactNewTicket(plugin);
             }
             else{
-                contacts.add(Bukkit.getOfflinePlayer(answer).getUniqueId());
+                contacts.add(this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer));
                 conv.setSessionData(Options.CONTACTS, contacts);
                 return new additionalContactNewTicket(plugin);
             }

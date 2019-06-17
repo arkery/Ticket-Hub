@@ -26,7 +26,7 @@ public class contactFilter extends StringPrompt {
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        Player contact = Bukkit.getOfflinePlayer(answer).getPlayer();
+        Player contact = Bukkit.getOfflinePlayer(this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer)).getPlayer();
 
         if(contact.hasPlayedBefore()){
             this.filterConditions.put(Options.CONTACT, contact.getUniqueId());
