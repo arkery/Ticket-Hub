@@ -1,6 +1,5 @@
 package io.github.arkery.tickethub.CustomUtils;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -55,7 +54,6 @@ public class HackedBiDirectMap<A, B> implements Serializable {
             this.ValueToKey.put(value, key);
         }
     }
-
 
     /**
      * remove an entry in the map using the key
