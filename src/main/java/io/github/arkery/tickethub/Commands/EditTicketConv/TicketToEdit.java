@@ -1,5 +1,7 @@
 package io.github.arkery.tickethub.Commands.EditTicketConv;
 
+import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
+import io.github.arkery.tickethub.CustomUtils.Exceptions.TicketNotFoundException;
 import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;
@@ -22,20 +24,19 @@ public class TicketToEdit extends StringPrompt {
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        String playerName = answer.substring(0, answer.length() - 12);
-        Player getPlayer = Bukkit.getOfflinePlayer(this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer)).getPlayer();
 
-        if(!this.plugin.getTicketSystem().getStoredData().getAllTickets().contains(getPlayer.getUniqueId(), answer)){
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "Could not find ticket!");
-            return this;
-        }
-        else if(this.plugin.getTicketSystem().getTicket(answer).getTicketStatus().equals(Status.CLOSED)){
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "This ticket has been closed!");
-            return this;
-        }
-        else{
-            conv.getForWhom().sendRawMessage(ChatColor.GREEN + "Editing Ticket: " + this.plugin.getTicketSystem().getTicket(answer).getTicketID());
-            return new EditMenu(plugin, this.plugin.getTicketSystem().getTicket(answer));
+        try{
+            if(this.plugin.getTicketSystem().getTicket(answer).getTicketStatus().equals(Status.CLOSED)){
+                conv.getForWhom().sendRawMessage(ChatColor.RED + "This ticket has been closed!");
+                return this;
+            }
+            else{
+                conv.getForWhom().sendRawMessage(ChatColor.GREEN + "Editing Ticket: " + this.plugin.getTicketSystem().getTicket(answer).getTicketID());
+                return new EditMenu(plugin, this.plugin.getTicketSystem().getTicket(answer));
+            }
+        }catch(TicketNotFoundException e) {
+            conv.getForWhom().sendRawMessage("Could not find ticket!");
+            return END_OF_CONVERSATION;
         }
     }
 }

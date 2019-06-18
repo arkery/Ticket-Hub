@@ -1,6 +1,5 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
-import io.github.arkery.tickethub.Commands.EditTicketConv.*;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;

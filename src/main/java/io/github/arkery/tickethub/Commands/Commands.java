@@ -310,7 +310,7 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
                 try{
                     Ticket editingTicket = super.plugin.getTicketSystem().getTicket(args[1]);
 
-                    if(editingTicket.getTicketCreator() != player.getUniqueId() && player.hasPermission("tickethub.staff")){
+                    if(editingTicket.getTicketCreator() != player.getUniqueId() && !player.hasPermission("tickethub.staff")){
                         player.sendMessage("You do not have permission to modify a ticket that isn't yours!");
                         return;
                     }

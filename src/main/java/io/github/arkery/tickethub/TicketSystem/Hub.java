@@ -395,17 +395,6 @@ public class Hub {
             return true;
         }
         else{
-            if(Bukkit.getOfflinePlayer(player.getUniqueId()).hasPlayedBefore()){
-                try{
-                    this.addUser(player.getName(), player.getUniqueId());
-                }catch(AlreadyExistsException e){
-                    System.out.println("TicketHub: Error plugin is attempting to add already " +
-                            "existing player despite Initially detecting player hasn't joined ");
-                }
-            }
-            else{
-                return false;
-            }
             return false;
         }
     }
@@ -422,18 +411,6 @@ public class Hub {
             return true;
         }
         else{
-            if(Bukkit.getOfflinePlayer(playerUsername).hasPlayedBefore()){
-                try{
-                    Player player = Bukkit.getOfflinePlayer(playerUsername).getPlayer();
-                    this.addUser(player.getName(), player.getUniqueId());
-                }catch(AlreadyExistsException e){
-                    System.out.println("TicketHub: Error plugin is attempting to add already " +
-                            "existing player despite Initially detecting player hasn't joined ");
-                }
-            }
-            else{
-                return false;
-            }
             return false;
         }
     }
@@ -449,18 +426,6 @@ public class Hub {
             return true;
         }
         else{
-            if(Bukkit.getOfflinePlayer(playerUUID).hasPlayedBefore()){
-                try{
-                    Player player = Bukkit.getOfflinePlayer(playerUUID).getPlayer();
-                    this.addUser(player.getName(), player.getUniqueId());
-                }catch(AlreadyExistsException e){
-                    System.out.println("TicketHub: Error plugin is attempting to add already " +
-                            "existing player despite Initially detecting player hasn't joined ");
-                }
-            }
-            else{
-                return false;
-            }
             return false;
         }
     }

@@ -1,6 +1,7 @@
 package io.github.arkery.tickethub.Commands.EditTicketConv;
 
 
+import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.AllArgsConstructor;
@@ -34,13 +35,12 @@ public class contactsAddEdit extends StringPrompt {
             return new contactsEdit(this.plugin, this.editingTicket);
         }
         else{
-            Player contact = Bukkit.getOfflinePlayer(answer).getPlayer();
-            if(!contact.hasPlayedBefore()){
+            try{
+                this.editingTicket.getTicketContacts().add(this.plugin.getTicketSystem().getUserUUID(answer));
+                return new OptionToEditMore(plugin, editingTicket);
+            }catch(PlayerNotFoundException e){
                 conv.getForWhom().sendRawMessage(ChatColor.RED + answer + "has not joined the server before!");
                 return this;
-            }else{
-                this.editingTicket.getTicketContacts().add(contact.getUniqueId());
-                return new OptionToEditMore(plugin, editingTicket);
             }
         }
     }
