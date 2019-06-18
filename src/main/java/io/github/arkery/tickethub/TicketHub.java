@@ -1,6 +1,7 @@
 package io.github.arkery.tickethub;
 
 import io.github.arkery.tickethub.Commands.Commands;
+import io.github.arkery.tickethub.CustomUtils.Exceptions.AlreadyExistsException;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketSystem.Hub;
 import lombok.Getter;
@@ -110,19 +111,17 @@ public class TicketHub extends JavaPlugin implements Listener {
     public void playerJoin(PlayerJoinEvent player){
 
         //<String, Value>
-        
-        //If this is the first time the player joins this server since install of the plugin.
-        if(!this.getTicketSystem().getStoredData().getPlayerIdentifiers().containsValue(player.getPlayer().getUniqueId())){
-            this.getTicketSystem().getStoredData().getPlayerIdentifiers().add(player.getPlayer().getName(), player.getPlayer().getUniqueId());
-        }
-        //If they changed their name.
-        else if(this.getTicketSystem().getStoredData().getPlayerIdentifiers().containsValue(player.getPlayer().getUniqueId())){
-
-            String storedUsername = (String) this.getTicketSystem().getStoredData().getPlayerIdentifiers().getKey(player.getPlayer().getUniqueId());
-            if(!storedUsername.equals(player.getPlayer().getName())){
-                this.getTicketSystem().getStoredData().getPlayerIdentifiers().replaceKey(player.getPlayer().getUniqueId(), player.getPlayer().getName());
+        if(!this.TicketSystem.joinedTheServer(player.getPlayer())){
+            try{
+                this.TicketSystem.addUser(player.getPlayer().getName(), player.getPlayer().getUniqueId());
+            }catch(AlreadyExistsException e){
+                System.out.println("playerJoin Event attempting to add player despite player already existing!");
             }
+        }else if(this.TicketSystem.joinedTheServer(player.getPlayer())){
+            //If they changed their name....
+            this.TicketSystem.maybeUpdateUser(player.getPlayer());
         }
+
 
         //On join, if they are staff - ping them how many tickets they have assigned to them.
         if(player.getPlayer().hasPermission("tickethub.staff")){

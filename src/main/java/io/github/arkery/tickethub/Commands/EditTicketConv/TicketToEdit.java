@@ -29,13 +29,13 @@ public class TicketToEdit extends StringPrompt {
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Could not find ticket!");
             return this;
         }
-        else if(this.plugin.getTicketSystem().getSingleTicket(answer).getTicketStatus().equals(Status.CLOSED)){
+        else if(this.plugin.getTicketSystem().getTicket(answer).getTicketStatus().equals(Status.CLOSED)){
             conv.getForWhom().sendRawMessage(ChatColor.RED + "This ticket has been closed!");
             return this;
         }
         else{
-            conv.getForWhom().sendRawMessage(ChatColor.GREEN + "Editing Ticket: " + this.plugin.getTicketSystem().getSingleTicket(answer).getTicketID());
-            return new EditMenu(plugin, this.plugin.getTicketSystem().getSingleTicket(answer));
+            conv.getForWhom().sendRawMessage(ChatColor.GREEN + "Editing Ticket: " + this.plugin.getTicketSystem().getTicket(answer).getTicketID());
+            return new EditMenu(plugin, this.plugin.getTicketSystem().getTicket(answer));
         }
     }
 }

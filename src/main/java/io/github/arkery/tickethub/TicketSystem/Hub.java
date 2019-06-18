@@ -3,10 +3,16 @@ package io.github.arkery.tickethub.TicketSystem;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
+import io.github.arkery.tickethub.CustomUtils.Exceptions.AlreadyExistsException;
+import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
+import io.github.arkery.tickethub.CustomUtils.Exceptions.TicketNotFoundException;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Synchronized;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -33,7 +39,8 @@ public class Hub {
      *
      * @param name
      */
-    public synchronized void saveTickets(String name){
+    @Synchronized
+    public void saveTickets(String name){
         if(name.equalsIgnoreCase("")){
             name = "tickets";
         }
@@ -92,7 +99,8 @@ public class Hub {
      * Checks all tickets that are stored and deletes the ones that have been resolved for more than a week
      *If the player no longer has any tickets, delete them from the map
      */
-    public synchronized void checkTickets(){
+    @Synchronized
+    public void checkTickets(){
 
         if(this.storedData.getTicketsToClose().isEmpty()){
             System.out.println("TicketHub: No tickets to delete");
@@ -156,7 +164,7 @@ public class Hub {
      *
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
      */
-    public List<Ticket> filterTickets(EnumMap conditions){
+    public List<Ticket> filterTickets(EnumMap conditions) throws IllegalArgumentException{
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
         List<Ticket> ticketsAsList = this.storedData.getAllTickets().getAll();
 
@@ -202,11 +210,11 @@ public class Hub {
     /**
      * Searches and gets a for a single ticket within all the stored Tickets
      *
-     * @throws IllegalArgumentException Thrown if the ticket creator isn't found or doesn't have any tickets
+     * @throws TicketNotFoundException  Thrown if the ticket creator isn't found or doesn't have any tickets
      * @param TicketID                  The ticket ID
      * @return                          The ticket that the player is looking for
      */
-    public Ticket getSingleTicket(String TicketID){
+    public Ticket getTicket(String TicketID) throws TicketNotFoundException{
         boolean found = true;
         Ticket ticket = new Ticket();
         String playerName = TicketID.substring(0, TicketID.length() - 12);
@@ -232,12 +240,231 @@ public class Hub {
                     return ticket;
                 }
             }
-            throw new IllegalArgumentException("Data not found");
+            throw new TicketNotFoundException("Data not found");
         }
 
         ticket = this.storedData.getAllTickets().get(playerUUID, TicketID);
 
         return ticket;
     }
+
+
+    /**
+     * Add a ticket
+     * Automatically tries to update ticket if it detects that ticket already exists.
+     *
+     * @param newTicket Ticket to add
+     */
+    public void addTicket(Ticket newTicket){
+        if(!this.storedData.getAllTickets().contains(newTicket.getTicketCreator(), newTicket.getTicketID())){
+            this.storedData.getAllTickets().add(newTicket.getTicketCreator(), newTicket.getTicketID(), newTicket);
+            this.storedData.addNewPriorityStats(newTicket.getTicketPriority());
+            this.storedData.addnewStatusStats(newTicket.getTicketStatus());
+        }
+        else{
+            try{
+                this.updateTicket(newTicket);
+            }catch(TicketNotFoundException e){
+                System.out.println("Plugin Attempted to Update Ticket when TicketID doesn't exist!");
+            }
+        }
+    }
+
+    /**
+     * Update an existing Ticket by replacing it.
+     *
+     * @param ticket                    Ticket to update
+     * @throws TicketNotFoundException  Thrown if the existing ticket is not found;
+     */
+    public void updateTicket(Ticket ticket) throws TicketNotFoundException{
+        if(this.storedData.getAllTickets().contains(ticket.getTicketCreator(), ticket.getTicketID())){
+
+            this.storedData.updateStatusStats(this.storedData
+                            .getAllTickets()
+                            .get(ticket.getTicketCreator(), ticket.getTicketID()).getTicketStatus()
+                            , ticket.getTicketStatus());
+            this.storedData.updatePriorityStats(this.storedData
+                            .getAllTickets()
+                            .get(ticket.getTicketCreator()
+                            , ticket.getTicketID()).getTicketPriority(),
+                            ticket.getTicketPriority());
+            this.storedData.getAllTickets().replace(ticket.getTicketCreator(), ticket.getTicketID(), ticket);
+
+        }
+        else{
+            throw new TicketNotFoundException();
+        }
+    }
+
+    /**
+     * Remove a Ticket that's stored
+     *
+     * @param ticketID                  The ID of the ticket to search and remove
+     * @throws TicketNotFoundException  Thrown if plugin can't find the given Ticket ID:
+     */
+    public void removeTicket(String ticketID) throws TicketNotFoundException{
+        String playername = ticketID.substring(0, ticketID.length() - 12);
+        if(this.storedData.getPlayerIdentifiers().containsKey(playername)){
+            if(this.storedData.getAllTickets().contains(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID)){
+                this.storedData.removeStatusStats(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketStatus());
+                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketPriority());
+                this.storedData.getAllTickets().remove(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketCreator(),ticketID);
+            }
+            else{
+                throw new TicketNotFoundException();
+            }
+        }
+        else{
+            throw new TicketNotFoundException();
+        }
+    }
+
+    /**
+     * Get the UUID of a player that has joined the server
+     *
+     * @param name                      The username of the player
+     * @return                          the UUID of the player
+     * @throws PlayerNotFoundException  Thrown if the player hasn't joined the server.
+     */
+    public UUID getUserUUID(String name) throws PlayerNotFoundException{
+        if(this.storedData.getPlayerIdentifiers().containsKey(name)){
+            return this.storedData.getPlayerIdentifiers().getValue(name);
+        }
+        else{
+            throw new PlayerNotFoundException();
+        }
+    }
+
+    /**
+     * Get the Username of the player that has joined the server
+     *
+     * @param playeruuid                The UUID of the player to look for
+     * @return                          The username of the searching player
+     * @throws PlayerNotFoundException  Thrown if the player hasn't joined the server
+     */
+    public String getUserName(UUID playeruuid) throws PlayerNotFoundException{
+        if(this.storedData.getPlayerIdentifiers().containsValue(playeruuid)){
+            return this.storedData.getPlayerIdentifiers().getKey(playeruuid);
+        }
+        else{
+            throw new PlayerNotFoundException();
+        }
+    }
+
+    /**
+     * Adds the user to the list of players who have joined the server.
+     *
+     * @param username
+     * @param playerUUID
+     * @throws AlreadyExistsException
+     */
+    public void addUser(String username, UUID playerUUID) throws AlreadyExistsException{
+        if(!this.joinedTheServer(username) && !this.joinedTheServer(playerUUID)){
+            this.storedData.getPlayerIdentifiers().add(username, playerUUID);
+        }
+        else{
+            throw new AlreadyExistsException();
+        }
+    }
+
+    /**
+     * Attempt to update the user if they changed their name. If they didn't change it, do nothing
+     *
+     * @param player The player to update
+     */
+    public void maybeUpdateUser(Player player){
+
+        String storedUsername = this.storedData.getPlayerIdentifiers().getKey(player.getPlayer().getUniqueId());
+        if(!storedUsername.equals(player.getPlayer().getName())){
+            this.storedData.getPlayerIdentifiers().replaceKey(player.getPlayer().getUniqueId(), player.getPlayer().getName());
+        }
+    }
+
+
+    /**
+     * Has the player joined the server?
+     *
+     * @param player    the player to search for
+     * @return          True if the have, False if they haven't
+     */
+    public boolean joinedTheServer(Player player){
+        if (this.storedData.getPlayerIdentifiers()
+                .containsValue(player.getUniqueId())
+                && this.storedData.getPlayerIdentifiers()
+                .containsKey(player.getName())) {
+            return true;
+        }
+        else{
+            if(Bukkit.getOfflinePlayer(player.getUniqueId()).hasPlayedBefore()){
+                try{
+                    this.addUser(player.getName(), player.getUniqueId());
+                }catch(AlreadyExistsException e){
+                    System.out.println("TicketHub: Error plugin is attempting to add already " +
+                            "existing player despite Initially detecting player hasn't joined ");
+                }
+            }
+            else{
+                return false;
+            }
+            return false;
+        }
+    }
+
+
+    /**
+     * Has the player joined the server?
+     *
+     * @param playerUsername    the player to search for
+     * @return                  True if the have, False if they haven't
+     */
+    public boolean joinedTheServer(String playerUsername){
+        if (this.storedData.getPlayerIdentifiers().containsKey(playerUsername)) {
+            return true;
+        }
+        else{
+            if(Bukkit.getOfflinePlayer(playerUsername).hasPlayedBefore()){
+                try{
+                    Player player = Bukkit.getOfflinePlayer(playerUsername).getPlayer();
+                    this.addUser(player.getName(), player.getUniqueId());
+                }catch(AlreadyExistsException e){
+                    System.out.println("TicketHub: Error plugin is attempting to add already " +
+                            "existing player despite Initially detecting player hasn't joined ");
+                }
+            }
+            else{
+                return false;
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Has the player joined the server?
+     *
+     * @param playerUUID    the player to search for
+     * @return              True if the have, False if they haven't
+     */
+    public boolean joinedTheServer(UUID playerUUID){
+        if (this.storedData.getPlayerIdentifiers().containsValue(playerUUID)) {
+            return true;
+        }
+        else{
+            if(Bukkit.getOfflinePlayer(playerUUID).hasPlayedBefore()){
+                try{
+                    Player player = Bukkit.getOfflinePlayer(playerUUID).getPlayer();
+                    this.addUser(player.getName(), player.getUniqueId());
+                }catch(AlreadyExistsException e){
+                    System.out.println("TicketHub: Error plugin is attempting to add already " +
+                            "existing player despite Initially detecting player hasn't joined ");
+                }
+            }
+            else{
+                return false;
+            }
+            return false;
+        }
+    }
+
+
 
 }

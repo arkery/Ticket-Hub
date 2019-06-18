@@ -7,6 +7,8 @@ import java.util.HashMap;
 
 /**
  * Hackish Bi Directional Map
+ * This does not directly support .ToString or .Equals
+ *
  * @author arkery
  */
 @NoArgsConstructor
@@ -144,6 +146,22 @@ public class BasicBiMap<A, B> implements Serializable {
      */
     public int size(){
         return this.KeyToValue.size();
+    }
+
+    /**
+     * Checks if BiMap is Empty
+     *
+     * @return true if empty, false if not.
+     */
+    public boolean isEmpty(){
+        if(this.KeyToValue.size() == 0 && this.ValueToKey.size() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+
     }
 
 }

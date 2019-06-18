@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Hackish Table implementation
+ * This does not directly support .ToString or .Equals
+ *
  * @author arkery
  */
 @NoArgsConstructor
@@ -167,4 +169,20 @@ public class BasicConcurrentTable<X,Y,Value> implements Serializable {
     public void clear(){
         this.data.clear();
     }
+
+    /**
+     * Check if Table is Empty
+     *
+     * @return true if empty, false if not.
+     */
+    public boolean isEmpty(){
+        if(this.data.size() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
 }
