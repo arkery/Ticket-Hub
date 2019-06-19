@@ -8,6 +8,10 @@ import io.github.arkery.tickethub.CustomUtils.Exceptions.TicketNotFoundException
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,9 +55,6 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
                     case "ticketdetails":
                         this.ticketDetails(player, args);
                         return false;
-                    case "addcomment":
-                        this.ticketAddComment(player, args);
-                        return false;
                     case "stats":
                         this.statistics(player);
                         return false;
@@ -72,6 +73,35 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
                     case "save":
                         this.saveAllTickets(player, args);
                         return false;
+                //Past beyond here is for click commands
+                    case "cedittitle":
+                        super.clickEditTitle(player, args);
+                        return false;
+                    case "ceditstatus":
+                        super.clickEditStatus(player, args);
+                        return false;
+                    case "ccloseticket":
+                        super.clickCloseTicket(player, args);
+                        return false;
+                    case "ceditpriority":
+                        super.clickEditPriority(player, args);
+                        return false;
+                    case "ceditcategory":
+                        super.clickEditCategory(player, args);
+                        return false;
+                    case "ceditcontacts":
+                        super.clickEditContacts(player, args);
+                        return false;
+                    case "ceditdescription":
+                        super.clickEditDescription(player, args);
+                    case "ceditassignedto":
+                        super.clickEditAssignedTo(player, args);
+                    case "cviewcomments":
+                        super.clickViewComments(player, args);
+                        return false;
+                    case "caddcomment":
+                        super.clickAddComment(player, args);
+                        return false;
                     default:
                         this.mainCommand(player);
                         return false;
@@ -85,8 +115,7 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
 
         return false;
     }
-    
-//Individual Commands
+
     /**
      * Main command if player only does /th
      * Shows all available commands.
@@ -94,12 +123,11 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
      * @param player the player who's sending this command
      */
     private void mainCommand(Player player){
-        player.sendMessage(ChatColor.AQUA + "TicketHub by arkery");
+        player.sendMessage("\n" + ChatColor.AQUA + "TicketHub by arkery");
         player.sendMessage(ChatColor.GREEN + "Commands");
         player.sendMessage(ChatColor.GOLD + "   /th new " + ChatColor.GRAY + "Create a new ticket");
         player.sendMessage(ChatColor.GOLD + "   /th mytickets " + ChatColor.GRAY + "See all your tickets");
         player.sendMessage(ChatColor.GOLD + "   /th ticketdetails " + ChatColor.GRAY + "See an individual ticket");
-        player.sendMessage(ChatColor.GOLD + "   /th addcomment " + ChatColor.GRAY + "Add a comment to a ticket");
 
         if(player.hasPermission("tickethub.staff")){
             player.sendMessage(ChatColor.GREEN + "Staff Commands");
@@ -186,7 +214,7 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
     /**
      * View all details of an individual ticket belonging to the player who invoked this method - usable by everyone
      * If player has staff permissions, they can access other tickets belonging to other players
-     * /th ticketdetails <ticketid> <page>
+     * /th ticketdetails <ticketid>
      *
      * @param player the player who's sending this command
      * @param args   the command input
@@ -194,25 +222,7 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
     private void ticketDetails(Player player, String[] args){
         if(player.hasPermission("tickethub.player")){
             try{
-                int page = 0;
 
-                //If they forgot to enter the ticketid when calling the command
-                if(args.length == 1){
-                    player.sendMessage(ChatColor.RED + "Please enter in the format of "
-                            + ChatColor.DARK_GREEN + "/th ticketdetails <ticketid> <page>");
-                    return;
-                }
-                //If they only entered the ticket ID
-                else if(args.length == 2){
-                    page = 1;
-
-                }
-                //If they also included a page number
-                else if(args.length == 3){
-                    page = Integer.parseInt(args[2]);
-                }
-
-                //Get the ticket
                 Ticket displayTicket = this.plugin.getTicketSystem().getTicket(args[1]);
 
                 //If the ticket doesn't belong to them, they must be staff to view it.
@@ -222,111 +232,130 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
                     return;
                 }
 
-                //Combine contacts to single line
-                String ticketContacts = "";
+                String ticketContactsAsString = "";
                 for(UUID i: displayTicket.getTicketContacts()){
-                    ticketContacts += " " + super.plugin.getTicketSystem().getUserName(i);
+                    ticketContactsAsString += " " + super.plugin.getTicketSystem().getUserName(i);
                 }
 
-                if(page == 1) {
-                    player.sendMessage(ChatColor.AQUA + "\nDetails for Ticket " + displayTicket.getTicketID() + ": ");
-
-                    player.sendMessage(ChatColor.GOLD + "\n   Title: " + ChatColor.BLUE + displayTicket.getTicketTitle());
-                    player.sendMessage(ChatColor.GOLD + "\n   Status: " + ChatColor.BLUE + displayTicket.getTicketStatus().toString());
-                    player.sendMessage(ChatColor.GOLD + "   Category: " + ChatColor.BLUE + displayTicket.getTicketCategory());
-                    player.sendMessage(ChatColor.GOLD + "   Priority: " + ChatColor.BLUE + displayTicket.getTicketPriority().toString());
-                    player.sendMessage(ChatColor.GOLD + "\n   Contacts: " + ChatColor.BLUE + ticketContacts);
-                    player.sendMessage(ChatColor.GOLD + "\n   Description: " + ChatColor.BLUE + displayTicket.getTicketDescription());
-                    player.sendMessage(ChatColor.GOLD + "\n   Assigned To: " + ChatColor.BLUE + super.plugin.getTicketSystem().getUserName(displayTicket.getTicketAssignedTo()));
-                    player.sendMessage(ChatColor.GOLD + "   Creator: " + ChatColor.BLUE + super.plugin.getTicketSystem().getUserName(displayTicket.getTicketCreator()));
-                    player.sendMessage(ChatColor.GOLD + "\n   Last Updated: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateLastUpdated()));
-                    player.sendMessage(ChatColor.GOLD + "   Date Created: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateCreated()));
-                }
-                else{
-
-                    page--;
-
-                    if(displayTicket.getTicketComments().isEmpty()){
-                        player.sendMessage(ChatColor.GOLD + "This ticket doesn't have any comments!");
-                        return;
-                    }
-
-                    //9 entries per page
-                    int totalPages = (int) Math.ceil((double) displayTicket.getTicketComments().size() / 9);
-                    int topOfPage = (page - 1) * 9;
-                    int bottomOfPage = 9 * page - 1;
-
-                    if (page > 0 && page <= totalPages) {
-                        player.sendMessage(ChatColor.GOLD + "Page: [" + page + "/" + totalPages + "]");
-                        if (displayTicket.getTicketComments().size() < topOfPage + 9) {
-                            bottomOfPage = displayTicket.getTicketComments().size();
-                        }
-
-                        //Reverse it so it shows the latest comments on top
-                        Collections.reverse(displayTicket.getTicketComments());
-
-                        player.sendMessage(ChatColor.BLUE + "Comments:");
-                        for (int i = topOfPage; i < bottomOfPage; i++) {
-                            player.sendMessage(ChatColor.GOLD + displayTicket.getTicketComments().get(i));
-                        }
-                    } else {
-                        player.sendMessage(ChatColor.RED + "Invalid Page");
-                    }
+                String categoryAsString = "";
+                for(String i : this.plugin.getCustomCategories()){
+                    categoryAsString += " " +  i;
                 }
 
-            }catch(NumberFormatException e){
+            //SetUp
+
+                //Title
+                TextComponent ticketTitle = new TextComponent(displayTicket.getTicketTitle());
+                ticketTitle.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+                ticketTitle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Title").create()));
+                ticketTitle.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th cedittitle " + displayTicket.getTicketID() + " " + displayTicket.getTicketTitle()));
+
+                TextComponent messageTitle = new TextComponent("\n   Title: ");
+                messageTitle.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageTitle.addExtra(ticketTitle);
+
+                //Status
+                TextComponent ticketStatus = new TextComponent(displayTicket.getTicketStatus().toString());
+                ticketStatus.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+                ticketStatus.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Status | Options: Opened InProgress Resolved").create()));
+                ticketStatus.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ceditstatus " + displayTicket.getTicketID() + " " + displayTicket.getTicketStatus().toString()));
+
+                TextComponent messageStatus = new TextComponent("   Category: ");
+                messageStatus.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageStatus.addExtra(ticketStatus);
+
+                //Priority
+                TextComponent ticketPriority = new TextComponent(displayTicket.getTicketPriority().toString());
+                ticketPriority.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+                ticketPriority.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Priority | Options: Low Medium High").create()));
+                ticketPriority.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ceditpriority " + displayTicket.getTicketID() + " " + displayTicket.getTicketPriority().toString()));
+
+                TextComponent messagePriority = new TextComponent("   Priority: ");
+                messagePriority.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messagePriority.addExtra(ticketPriority);
+
+                //Category
+                TextComponent ticketCategory = new TextComponent(displayTicket.getTicketCategory());
+                ticketCategory.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+                ticketCategory.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Category | Options: " + categoryAsString).create()));
+                ticketCategory.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ceditcategory " + displayTicket.getTicketID() + " " + displayTicket.getTicketPriority().toString()));
+
+                TextComponent messageCategory = new TextComponent("   Category: ");
+                messageCategory.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageCategory.addExtra(ticketCategory);
+
+                //Contacts
+                TextComponent ticketContacts = new TextComponent(ticketContactsAsString);
+                ticketContacts.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+                ticketContacts.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Contacts").create()));
+                ticketContacts.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ceditcontacts " + displayTicket.getTicketID() + " " + ticketContactsAsString));
+
+                TextComponent messageContacts = new TextComponent("\n   Contacts: ");
+                messageContacts.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageContacts.addExtra(ticketContacts);
+
+                //Description
+                TextComponent ticketDescription = new TextComponent(displayTicket.getTicketDescription());
+                ticketDescription.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+                ticketDescription.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Description").create()));
+                ticketDescription.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ceditdescription " + displayTicket.getTicketID() + " " + displayTicket.getTicketDescription()));
+
+                TextComponent messageDescription = new TextComponent("\n   Description: ");
+                messageDescription.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageDescription.addExtra(ticketDescription);
+
+                //Assigned To
+                TextComponent ticketAssignedTo = new TextComponent(super.plugin.getTicketSystem().getUserName(displayTicket.getTicketAssignedTo()));
+                ticketAssignedTo.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+                ticketAssignedTo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Description").create()));
+                ticketAssignedTo.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ceditdescription " + displayTicket.getTicketID() + " " + displayTicket.getTicketDescription()));
+
+                TextComponent messageAssignedTo = new TextComponent("\n   Assigned To: ");
+                messageAssignedTo.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageAssignedTo.addExtra(ticketAssignedTo);
+
+                //Add Comments
+                TextComponent ticketAddComment = new TextComponent("   Add A Comment");
+                ticketAddComment.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
+                ticketAddComment.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Here To Add A Comment").create()));
+                ticketAddComment.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/th caddcomment "+ displayTicket.getTicketID()));
+
+                //View Comments
+                TextComponent ticketViewComments = new TextComponent("\n   View Comments");
+                ticketViewComments.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
+                ticketViewComments.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Here To View Comments").create()));
+                ticketViewComments.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/th cviewcomments "+ displayTicket.getTicketID() + " 1"));
+                ticketViewComments.addExtra(ticketAddComment);
+
+                //Close Ticket
+                TextComponent ticketClose = new TextComponent("   Click here to Close Ticket");
+                ticketClose.setColor(net.md_5.bungee.api.ChatColor.RED);
+                ticketClose.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Warning: Closing a ticket essentially deletes it").create()));
+                ticketClose.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ccloseticket " + displayTicket.getTicketID()));
+
+                //Displaying
+                player.sendMessage(ChatColor.AQUA + "\nDetails for Ticket " + displayTicket.getTicketID() + ": ");
+
+                player.spigot().sendMessage(messageTitle);
+                player.spigot().sendMessage(messageStatus);
+                player.spigot().sendMessage(messagePriority);
+                player.spigot().sendMessage(messageCategory);
+                player.spigot().sendMessage(messageCategory);
+                player.spigot().sendMessage(messageDescription);
+                player.spigot().sendMessage(messageAssignedTo);
+                player.sendMessage(ChatColor.GOLD + "   Creator: " + ChatColor.BLUE + super.plugin.getTicketSystem().getUserName(displayTicket.getTicketCreator()));
+                player.sendMessage(ChatColor.GOLD + "\n   Last Updated: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateLastUpdated()));
+                player.sendMessage(ChatColor.GOLD + "   Date Created: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateCreated()));
+                player.spigot().sendMessage(ticketViewComments);
+                player.spigot().sendMessage(ticketClose);
+
+            }catch(IndexOutOfBoundsException e){
                 player.sendMessage(ChatColor.RED + "Please enter in the format of "
-                        + ChatColor.DARK_GREEN + "/th ticketdetails <ticketid> <page>");
+                        + ChatColor.DARK_GREEN + "/th ticketdetails <ticketid>");
             }catch(TicketNotFoundException e){
-                e.printStackTrace();
                 player.sendMessage(ChatColor.RED + "Could not find Ticket!");
             }catch(PlayerNotFoundException e){
                 player.sendMessage(ChatColor.RED + "Unable to find player!");
-            }
-        }
-        else{
-            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
-        }
-    }
-
-    /**
-     * Add a comment to a ticket that belongs to the player who invoked this method - usable by everyone
-     * If player has staff permissions, they can add comments to all tickets
-     * /th addcomment <ticketid> <comment>
-     *
-     * @param player the player who's sending this command
-     * @param args   the command input
-     */
-    public void ticketAddComment(Player player, String[] args){
-        if(player.hasPermission("tickethub.player")){
-
-            //If they forgot to add the comment
-            if(args.length <= 2){
-                player.sendMessage(ChatColor.RED + "Please enter in the format of "
-                        + ChatColor.DARK_GREEN + "/th addcomment <ticketid> <comment>");
-                return;
-            }
-            else{
-                try{
-                    Ticket editingTicket = super.plugin.getTicketSystem().getTicket(args[1]);
-
-                    if(editingTicket.getTicketCreator() != player.getUniqueId() && !player.hasPermission("tickethub.staff")){
-                        player.sendMessage("You do not have permission to modify a ticket that isn't yours!");
-                        return;
-                    }
-
-                    String commentToAdd = player.getName() + ": ";
-                    for(int i = 2; i < args.length; i++){
-                        commentToAdd += " " + args[i];
-                    }
-                    editingTicket.getTicketComments().add(commentToAdd);
-                    this.plugin.getTicketSystem().updateTicket(editingTicket);
-
-
-                }catch(TicketNotFoundException e){
-                    player.sendMessage(ChatColor.RED + "Could not find Ticket!");
-                    return;
-                }
             }
         }
         else{

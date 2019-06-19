@@ -1,5 +1,6 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
+import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;
@@ -26,21 +27,14 @@ public class assignedtoFilter extends StringPrompt {
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        Player assignedTo = Bukkit.getOfflinePlayer(answer).getPlayer();
 
-        if(assignedTo.hasPlayedBefore() && assignedTo.hasPermission("tickethub.staff")){
-            this.filterConditions.put(Options.ASSIGNEDTO, assignedTo.getUniqueId());
+        try{
+            this.filterConditions.put(Options.ASSIGNEDTO, this.plugin.getTicketSystem().getUserUUID(answer));
             return new OptionForMoreConditions(this.plugin, this.filterConditions);
-        }
-        else if(!assignedTo.hasPermission("tickethub.staff")){
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "This person is not a staff member!");
-            return this;
-        }
-        else{
+        }catch(PlayerNotFoundException e){
             conv.getForWhom().sendRawMessage(ChatColor.RED + "This person has not joined this server!");
             return this;
         }
-
     }
 
 }

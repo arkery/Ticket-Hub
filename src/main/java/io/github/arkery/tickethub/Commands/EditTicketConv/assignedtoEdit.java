@@ -1,5 +1,6 @@
 package io.github.arkery.tickethub.Commands.EditTicketConv;
 
+import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.AllArgsConstructor;
@@ -26,15 +27,13 @@ public class assignedtoEdit extends StringPrompt {
     public Prompt acceptInput(ConversationContext conv, String answer) {
 
         if(!answer.isEmpty() || !answer.equals("")){
-            Player assignedPlayer = Bukkit.getOfflinePlayer(answer).getPlayer();
-            if(!assignedPlayer.hasPlayedBefore()){
+            try{
+                this.editingTicket.setTicketAssignedTo(this.plugin.getTicketSystem().getUserUUID(answer));
+                return new OptionToEditMore(plugin, editingTicket);
+            }catch(PlayerNotFoundException e){
                 conv.getForWhom().sendRawMessage(ChatColor.RED + answer + "has not joined the server before!");
                 return this;
-            }else{
-                this.editingTicket.setTicketAssignedTo(assignedPlayer.getUniqueId());
-                return new OptionToEditMore(plugin, editingTicket);
             }
-
         }else{
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry | Cannot be Empty");
             return this;
