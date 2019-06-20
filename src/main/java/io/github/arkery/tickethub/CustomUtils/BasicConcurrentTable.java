@@ -56,6 +56,7 @@ public class BasicConcurrentTable<X,Y,Value> implements Serializable {
     public void remove(X x, Y y){
 
         if(this.data.containsKey(x) && this.data.containsKey(y)){
+            System.out.println("Removing Ticket");
             this.data.get(x).remove(y);
             this.yValues.remove(y);
 

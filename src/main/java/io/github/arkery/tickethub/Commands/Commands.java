@@ -6,6 +6,7 @@ import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException
 import io.github.arkery.tickethub.CustomUtils.Exceptions.TicketNotFoundException;
 import io.github.arkery.tickethub.CustomUtils.TicketPageView;
 import io.github.arkery.tickethub.Enums.Options;
+import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import net.md_5.bungee.api.ChatColor;
@@ -20,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.UUID;
@@ -74,6 +76,9 @@ public class Commands implements CommandExecutor {
                     case "save":
                         this.saveAllTickets(player, args);
                         return false;
+                    case "close":
+                        this.closeTicket(player, args);
+                        return false;
                     default:
                         this.mainCommand(player);
                         return false;
@@ -103,11 +108,12 @@ public class Commands implements CommandExecutor {
 
             if(player.hasPermission("tickethub.staff")){
                 player.spigot().sendMessage(new Clickable( ChatColor.AQUA,"Staff Menu").text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   stats", "Click here to see ticket stats", HoverEvent.Action.SHOW_TEXT, "/th stats", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See Hub Statistics").text()).text());
+                //player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   stats", "Click here to see ticket    stats", HoverEvent.Action.SHOW_TEXT, "/th stats", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See Hub Statistics").text()).text());
                 //player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   edit").add(new Clickable(ChatColor.BLUE, " Edit a ticket").text()).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   all", "Click here to all tickets", HoverEvent.Action.SHOW_TEXT, "/th all (page)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all tickets").text()).text());
                 //player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   filter").add(new Clickable(ChatColor.BLUE, " Filter all Tickets").text()).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   assigned", "Click here to your assigned tickets", HoverEvent.Action.SHOW_TEXT, "/th assigned (page)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all your assigned tickets").text()).text());
+                //player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   assigned", "Click here to your assigned tickets", HoverEvent.Action.SHOW_TEXT, "/th assigned (page)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all your assigned tickets").text()).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   close", "Click here to close a ticket", HoverEvent.Action.SHOW_TEXT, "/th close (ticket id)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Close a ticket").text()).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   save", "Click here to see ticket stats", HoverEvent.Action.SHOW_TEXT, "/th save filename", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Save Tickets Manually").text()).text());
             }
         }else{
@@ -291,14 +297,18 @@ public class Commands implements CommandExecutor {
     private void statistics(Player player){
 
         if(player.hasPermission("tickethub.staff")){
+            /*
             player.spigot().sendMessage(new Clickable(ChatColor.AQUA,"\nPriority").text());
             player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   Low: ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getLowPriority()).text()).text());
             player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   Medium: ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getMediumPriority()).text()).text());
             player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   High: ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getHighPriority()).text()).text());
             player.spigot().sendMessage(new Clickable(ChatColor.AQUA,"Status").text());
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   new").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getOpened()).text()).text());
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   mytickets ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getInProgress()).text()).text());
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   ticketdetails ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getResolved()).text()).text());
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   New: ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getOpened()).text()).text());
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   InProgress: ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getInProgress()).text()).text());
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   Resolved: ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getResolved()).text()).text());
+        */
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   Total Tickets: ").add(new Clickable(ChatColor.BLUE, "" + this.plugin.getTicketSystem().getStoredData().getAllTickets().size()).text()).text());
+
         }
         else {
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
@@ -325,4 +335,34 @@ public class Commands implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "\nYou do not have permissions to do this");
         }
     }
+
+    private void closeTicket(Player player, String[] args){
+        if(player.hasPermission("tickethub.staff")){
+            try{
+
+                Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
+                if(editingTicket.getTicketStatus().equals(Status.CLOSED)){
+                    player.sendMessage(ChatColor.RED + "This ticket is closed!");
+                    return;
+                }
+
+                editingTicket.setTicketStatus(Status.CLOSED);
+
+                editingTicket.setTicketDateLastUpdated(new Date());
+                this.plugin.getTicketSystem().getStoredData().getTicketsToClose().put(editingTicket.getTicketCreator(), editingTicket.getTicketID());
+                this.plugin.getTicketSystem().updateTicket(editingTicket);
+                this.plugin.getTicketSystem().removeTicket(editingTicket.getTicketID());
+
+            }catch(TicketNotFoundException e){
+                player.sendMessage(ChatColor.RED + "Could not find ticket!");
+            }catch(IndexOutOfBoundsException e){
+                player.sendMessage(ChatColor.RED + "Please enter in the format of "
+                        + ChatColor.DARK_GREEN + "/th cCloseTicket <TicketID>");
+            }
+        }
+        else{
+            player.sendMessage(ChatColor.RED + "You don't have permissions to do this!");
+        }
+    }
+
 }

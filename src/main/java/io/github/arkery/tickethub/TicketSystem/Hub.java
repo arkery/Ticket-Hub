@@ -306,10 +306,14 @@ public class Hub {
     public void removeTicket(String ticketID) throws TicketNotFoundException{
         String playername = ticketID.substring(0, ticketID.length() - 12);
         if(this.storedData.getPlayerIdentifiers().containsKey(playername)){
+            System.out.println("IT contains the UUID");
             if(this.storedData.getAllTickets().contains(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID)){
+                System.out.println("IT contains the Ticket ID");
+                Ticket removingTicket = this.getTicket(ticketID);
                 this.storedData.removeStatusStats(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketStatus());
                 this.storedData.removePriorityStats(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketPriority());
-                this.storedData.getAllTickets().remove(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketCreator(),ticketID);
+                //this.storedData.getAllTickets().remove(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketCreator(),ticketID);
+                this.storedData.getAllTickets().remove(removingTicket.getTicketCreator(), removingTicket.getTicketID());
             }
             else{
                 throw new TicketNotFoundException();

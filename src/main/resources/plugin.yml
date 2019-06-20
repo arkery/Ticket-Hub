@@ -7,3 +7,4 @@ description: Ticket Management Plugin for Spigot based servers
 
 commands:
   th:
+    aliases: {ticket, ticketsystm, t}

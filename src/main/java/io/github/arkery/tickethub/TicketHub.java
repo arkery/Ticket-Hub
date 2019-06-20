@@ -38,6 +38,7 @@ public class TicketHub extends JavaPlugin implements Listener {
         this.TicketSystem.loadTickets();
         this.dailyMaintenance();
         this.getCommand("th").setExecutor(new Commands(this));
+        //this.getCommand("ticketsystm").setExecutor(new Commands(this));
         Bukkit.getPluginManager().registerEvents(this, this);
     }
 

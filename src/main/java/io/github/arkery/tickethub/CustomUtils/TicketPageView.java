@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @NoArgsConstructor
@@ -25,6 +27,9 @@ public class TicketPageView {
      * @param displayTickets list to display as
      */
     public void ticketPageView(Player player, int page, List<Ticket> displayTickets) {
+
+        displayTickets.sort(Comparator.comparing(Ticket::getTicketDateLastUpdated));
+        Collections.reverse(displayTickets);
 
         DateFormat dateFormat = new SimpleDateFormat("MM.dd");
         int totalPages = (int) Math.ceil((double) displayTickets.size() / 9);
@@ -48,7 +53,15 @@ public class TicketPageView {
                                 " " + dateFormat.format(displayTickets.get(i).getTicketDateCreated()
                         ));
                 ticketInfo.setColor(net.md_5.bungee.api.ChatColor.GRAY);
-                ticketInfo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to see ticket details").create()));
+                ticketInfo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
+                        displayTickets.get(i).getTicketID() +
+                        "\n" + displayTickets.get(i).getTicketTitle() +
+                        "\n" + displayTickets.get(i).getTicketStatus().toString() +
+                        "\n" + displayTickets.get(i).getTicketPriority().toString() +
+                        "\n" + displayTickets.get(i).getTicketCategory() +
+                        "\n" + displayTickets.get(i).getTicketDescription() +
+                        "\n" + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()) +
+                        "\n" + dateFormat.format(displayTickets.get(i).getTicketDateCreated())).create()));
                 ticketInfo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/th details " + displayTickets.get(i).getTicketID()));
 
                 player.spigot().sendMessage(ticketInfo);
