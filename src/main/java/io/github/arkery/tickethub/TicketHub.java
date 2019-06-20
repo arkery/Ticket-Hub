@@ -1,6 +1,6 @@
 package io.github.arkery.tickethub;
 
-import io.github.arkery.tickethub.Commands.Commands;
+import io.github.arkery.tickethub.OldCommands.Command;
 import io.github.arkery.tickethub.CustomUtils.Exceptions.AlreadyExistsException;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketSystem.Hub;
@@ -37,7 +37,7 @@ public class TicketHub extends JavaPlugin implements Listener {
         this.createOrLoadConfig();
         this.TicketSystem.loadTickets();
         this.dailyMaintenance();
-        this.getCommand("th").setExecutor(new Commands(this));
+        this.getCommand("th").setExecutor(new Command(this));
         Bukkit.getPluginManager().registerEvents(this, this);
     }
 

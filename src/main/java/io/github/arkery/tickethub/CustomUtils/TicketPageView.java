@@ -27,13 +27,6 @@ public class TicketPageView {
     public void ticketPageView(Player player, int page, List<Ticket> displayTickets) {
 
         DateFormat dateFormat = new SimpleDateFormat("MM.dd");
-
-        if(displayTickets.isEmpty()){
-            player.sendMessage(ChatColor.RED + "There are no tickets!");
-            return;
-        }
-
-        //9 entries per page
         int totalPages = (int) Math.ceil((double) displayTickets.size() / 9);
         int topOfPage = (page - 1) * 9;
         int bottomOfPage = 9 * page - 1;
