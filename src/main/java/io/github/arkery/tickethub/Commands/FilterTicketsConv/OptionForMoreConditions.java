@@ -29,7 +29,7 @@ public class OptionForMoreConditions extends BooleanPrompt {
             }
         }
 
-        return ChatColor.GOLD + "Do you want to modify the current filter conditions? ";
+        return ChatColor.DARK_GREEN + "\nDo you want to modify the current filter conditions? ";
     }
 
     @Override

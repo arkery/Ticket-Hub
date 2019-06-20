@@ -19,7 +19,7 @@ public class AddOrRemoveConditionOption extends StringPrompt {
     @Override
     public String getPromptText(ConversationContext conv) {
 
-        return ChatColor.GOLD + "Enter 'add' or 'replace' to add or replaceKey a filter condition \n" +
+        return ChatColor.GOLD + "Enter 'add' or 'replace' to add or replace a filter condition \n" +
                 "Enter 'remove' to remove a filter condition";
     }
 

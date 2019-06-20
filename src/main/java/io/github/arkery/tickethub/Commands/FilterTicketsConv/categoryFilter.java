@@ -23,7 +23,7 @@ public class categoryFilter extends StringPrompt {
         for(String i : this.plugin.getCustomCategories()){
             all += " " +  i;
         }
-        conv.getForWhom().sendRawMessage(ChatColor.DARK_AQUA + "[" + all + " ]");
+        conv.getForWhom().sendRawMessage(ChatColor.GOLD + "\nCategory Options: " + ChatColor.DARK_AQUA + all);
         return ChatColor.AQUA + "Enter the category to add as filter condition";
     }
 

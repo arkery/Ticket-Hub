@@ -45,5 +45,7 @@ C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\ticket
 C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\tickethub\Commands\EditTicketConv\EditMenu.java
 C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\tickethub\Enums\Options.java
 C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\tickethub\Commands\FilterTicketsConv\statusFilter.java
+C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\tickethub\CustomUtils\TicketPageView.java
 C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\tickethub\Commands\FilterTicketsConv\AddOrRemoveConditionOption.java
+C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\tickethub\Commands\AllTicketsConv\allTicketsWithoutFilter.java
 C:\Users\arker\Documents\GitHub\Ticket-Hub\src\main\java\io\github\arkery\tickethub\Commands\NewTicketConv\createNewTicket.java

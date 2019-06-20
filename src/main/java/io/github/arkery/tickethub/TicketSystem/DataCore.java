@@ -24,7 +24,7 @@ public class DataCore implements Serializable {
     private int opened, inProgress, resolved;
 
     public DataCore(){
-        //this.allTickets = new ConcurrentHashMap<>();
+        //this.DisplayTickets = new ConcurrentHashMap<>();
         this.allTickets = new BasicConcurrentTable<>();
         this.ticketsToClose = new HashMap<>();
         this.playerIdentifiers = new BasicBiMap<>();

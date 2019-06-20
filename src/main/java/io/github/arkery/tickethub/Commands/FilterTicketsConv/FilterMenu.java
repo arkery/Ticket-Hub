@@ -33,8 +33,9 @@ public class FilterMenu extends StringPrompt {
             }
         }
 
-        return ChatColor.AQUA + "Choose Filter Conditions: "
-                + ChatColor.GOLD + "[ Category | Status | Priority | Contact | DateCreated | DateUpdated | AssignedTo | Creator ]";
+        conv.getForWhom().sendRawMessage("\n" + ChatColor.GOLD + "Available Options: " + ChatColor.DARK_AQUA + " Status Priority Category Contact DateCreated DateUpdated AssignedTo Creator");
+        return ChatColor.GOLD + "Enter an Edit Option ";
+
     }
 
     @Override

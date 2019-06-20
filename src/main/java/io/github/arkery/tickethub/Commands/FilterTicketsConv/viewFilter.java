@@ -6,10 +6,14 @@ import io.github.arkery.tickethub.Enums.OrderSetting;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.AllArgsConstructor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
+import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -46,6 +50,14 @@ public class viewFilter extends StringPrompt {
 
         Collections.reverse(filteredTickets);
         this.ticketPageView(conv, this.page, filteredTickets);
+
+        TextComponent ticketClose = new TextComponent("   Click here to Close Ticket");
+        ticketClose.setColor(net.md_5.bungee.api.ChatColor.RED);
+        ticketClose.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Warning: Closing a ticket essentially deletes it").create()));
+
+        Player player = (Player) conv.getForWhom();
+
+        player.spigot().sendMessage(ticketClose);
 
         return ChatColor.GOLD + "Options: \n" +
                 "Enter page number (if applicable) \n" +
@@ -90,6 +102,9 @@ public class viewFilter extends StringPrompt {
                 //Cautionary backup check
                 conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Page");
                 return new viewFilter(this.plugin, this.filterConditions, 1, this.dateSetting, this.orderSetting, this.filteredList);
+            }catch(NullPointerException e){
+                conv.getForWhom().sendRawMessage(ChatColor.LIGHT_PURPLE + "No tickets found with applied filter conditions!");
+                return new OptionForMoreConditions(this.plugin, this.filterConditions);
             }
         }
         else if(answer.equalsIgnoreCase("ascending")){
@@ -149,6 +164,11 @@ public class viewFilter extends StringPrompt {
      * @throws IllegalArgumentException thrown if it gets invalid page
      */
     public void ticketPageView(ConversationContext conv, int page, List<Ticket> displayTickets) {
+
+        if(displayTickets.isEmpty()){
+            conv.getForWhom().sendRawMessage(ChatColor.RED + "There are no tickets!");
+            return;
+        }
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 

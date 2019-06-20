@@ -15,6 +15,7 @@ io\github\arkery\tickethub\Commands\EditTicketConv\EditMenu.class
 io\github\arkery\tickethub\Commands\EditTicketConv\assignedtoEdit.class
 io\github\arkery\tickethub\Commands\NewTicketConv\descriptionNewTicket.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\priorityFilter.class
+io\github\arkery\tickethub\Commands\ClickCommands.class
 io\github\arkery\tickethub\CustomUtils\BasicBiMap.class
 io\github\arkery\tickethub\Commands\EditTicketConv\contactsRemoveEdit.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\dateupdatedFilter.class
@@ -43,8 +44,8 @@ io\github\arkery\tickethub\Commands\NewTicketConv\categoryNewTicket.class
 io\github\arkery\tickethub\Commands\NewTicketConv\contactNewTicket.class
 io\github\arkery\tickethub\Commands\EditTicketConv\OptionToEditMore.class
 io\github\arkery\tickethub\CustomUtils\Exceptions\AlreadyExistsException.class
-io\github\arkery\tickethub\Commands\BackGroundCommandUntil.class
 io\github\arkery\tickethub\Commands\EditTicketConv\contactsAddEdit.class
 io\github\arkery\tickethub\Commands\FilterTicketsConv\OptionForMoreConditions.class
 io\github\arkery\tickethub\Commands\EditTicketConv\statusEdit.class
 io\github\arkery\tickethub\Commands\NewTicketConv\additionalContactNewTicket.class
+io\github\arkery\tickethub\CustomUtils\TicketPageViewMenu.class

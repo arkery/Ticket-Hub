@@ -3,8 +3,10 @@ package io.github.arkery.tickethub.Commands;
 import io.github.arkery.tickethub.Commands.EditTicketConv.TicketToEdit;
 import io.github.arkery.tickethub.Commands.FilterTicketsConv.FilterMenu;
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
+import io.github.arkery.tickethub.CustomUtils.DisplayTickets;
 import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
 import io.github.arkery.tickethub.CustomUtils.Exceptions.TicketNotFoundException;
+import io.github.arkery.tickethub.CustomUtils.TicketPageView;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
@@ -24,7 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Commands extends BackGroundCommandUntil implements CommandExecutor {
+public class Commands extends ClickCommands implements CommandExecutor {
     
     private ConversationFactory conversationFactory;
     private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -196,14 +198,16 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
 
                 //Check if player inputted a page
                 if(args.length == 1){
-                    super.ticketPageView(player, 1, playerTickets);
+                    new TicketPageView().ticketPageView(player, 1, playerTickets);
                 }
                 else{
-                    super.ticketPageView(player, Integer.parseInt(args[1]), playerTickets);
+                    new TicketPageView().ticketPageView(player, Integer.parseInt(args[1]), playerTickets);
                 }
             }catch(NumberFormatException e){
                 player.sendMessage(ChatColor.RED + "Please enter in the format of "
                         + ChatColor.DARK_GREEN + "/th allmytickets <page> <created/updated>");
+            }catch(NullPointerException e){
+                player.sendMessage(ChatColor.RED + "There are no tickets!");
             }
         }
         else{
@@ -260,7 +264,7 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
                 ticketStatus.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to edit Status | Options: Opened InProgress Resolved").create()));
                 ticketStatus.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND,"/th ceditstatus " + displayTicket.getTicketID() + " " + displayTicket.getTicketStatus().toString()));
 
-                TextComponent messageStatus = new TextComponent("   Category: ");
+                TextComponent messageStatus = new TextComponent("   Status: ");
                 messageStatus.setColor(net.md_5.bungee.api.ChatColor.GOLD);
                 messageStatus.addExtra(ticketStatus);
 
@@ -314,6 +318,30 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
                 messageAssignedTo.setColor(net.md_5.bungee.api.ChatColor.GOLD);
                 messageAssignedTo.addExtra(ticketAssignedTo);
 
+                //Creator
+                TextComponent ticketCreator = new TextComponent(super.plugin.getTicketSystem().getUserName(displayTicket.getTicketCreator()));
+                ticketCreator.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+
+                TextComponent messageCreator = new TextComponent("\n   Creator: ");
+                messageCreator.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageCreator.addExtra(ticketCreator);
+
+                //Last Updated
+                TextComponent ticketLastUpdated = new TextComponent(dateFormat.format(displayTicket.getTicketDateLastUpdated()));
+                ticketLastUpdated.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+
+                TextComponent messageLastUpdated = new TextComponent("\n   Last Updated: ");
+                messageLastUpdated.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageLastUpdated.addExtra(ticketLastUpdated);
+
+                //Created
+                TextComponent ticketDateCreated = new TextComponent(dateFormat.format(displayTicket.getTicketDateCreated()));
+                ticketDateCreated.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+
+                TextComponent messageDateCreated = new TextComponent("   Created On: ");
+                messageDateCreated.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+                messageDateCreated.addExtra(ticketLastUpdated);
+
                 //Add Comments
                 TextComponent ticketAddComment = new TextComponent("   Add A Comment");
                 ticketAddComment.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
@@ -340,12 +368,12 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
                 player.spigot().sendMessage(messageStatus);
                 player.spigot().sendMessage(messagePriority);
                 player.spigot().sendMessage(messageCategory);
-                player.spigot().sendMessage(messageCategory);
+                player.spigot().sendMessage(messageContacts);
                 player.spigot().sendMessage(messageDescription);
                 player.spigot().sendMessage(messageAssignedTo);
-                player.sendMessage(ChatColor.GOLD + "   Creator: " + ChatColor.BLUE + super.plugin.getTicketSystem().getUserName(displayTicket.getTicketCreator()));
-                player.sendMessage(ChatColor.GOLD + "\n   Last Updated: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateLastUpdated()));
-                player.sendMessage(ChatColor.GOLD + "   Date Created: " + ChatColor.BLUE + dateFormat.format(displayTicket.getTicketDateCreated()));
+                player.spigot().sendMessage(messageCreator);
+                player.spigot().sendMessage(messageLastUpdated);
+                player.spigot().sendMessage(messageDateCreated);
                 player.spigot().sendMessage(ticketViewComments);
                 player.spigot().sendMessage(ticketClose);
 
@@ -418,6 +446,22 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
     private void listAllTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.staff")){
             try{
+
+                List<Ticket> displayList = this.plugin.getTicketSystem().getStoredData().getAllTickets().getAll();
+
+                //Check if there are no tickets
+                if(displayList.isEmpty()|| displayList == null){
+                    player.sendMessage(ChatColor.RED + "There are no tickets!");
+                    return;
+                }
+
+                Conversation conv = conversationFactory
+                        .withFirstPrompt(new DisplayTickets(plugin, displayList, player))
+                        .withLocalEcho(false)
+                        .buildConversation(player);
+                conv.begin();
+
+                /*
                 List<Ticket> displayList = this.plugin.getTicketSystem().getStoredData().getAllTickets().getAll();
 
                 //Check if there are no tickets
@@ -442,11 +486,13 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
 
                 //Check if player inputted a page
                 if(args.length == 1){
-                    super.ticketPageView(player, 1, displayList);
+                    new TicketPageView().ticketPageView(player, 1, displayList);
                 }
                 else{
-                    super.ticketPageView(player, Integer.parseInt(args[1]), displayList);
+                    new TicketPageView().ticketPageView(player, Integer.parseInt(args[1]), displayList);
                 }
+                */
+
             }catch(NumberFormatException e){
                 player.sendMessage(ChatColor.RED + "Please enter in the format of "
                         + ChatColor.DARK_GREEN + "/th all <page> <updated/created> <ascending/descending>");
@@ -482,24 +528,24 @@ public class Commands extends BackGroundCommandUntil implements CommandExecutor 
      * /th assigned <page>
      *
      * @param player the player who's sending this command
-     * @param args   the command input
+     * @param args   args0 = assigned, args1 = page Number
      */
     private void myAssignedTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.staff")){
-            EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
-            conditions.put(Options.ASSIGNEDTO, player.getUniqueId());
+            try{
+                EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
+                conditions.put(Options.ASSIGNEDTO, player.getUniqueId());
 
-            int page = 0;
+                int page = 1;
 
-            if(args.length == 1){
-                page = 1;
+                if(args.length > 1){
+                    page = Integer.parseInt(args[1]);
+                }
+
+                new TicketPageView().ticketPageView(player, page, this.plugin.getTicketSystem().filterTickets(conditions));
+            }catch(NumberFormatException e){
+                player.sendMessage(ChatColor.RED + "Invalid Page Number!");
             }
-            else if(args.length == 2){
-                page = Integer.parseInt(args[1]);
-            }
-
-            super.ticketPageView(player, page, this.plugin.getTicketSystem().filterTickets(conditions));
-
         }
         else{
             player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
