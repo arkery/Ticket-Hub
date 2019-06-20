@@ -1,4 +1,4 @@
-package io.github.arkery.tickethub.OldCommands.NewTicketConv;
+package io.github.arkery.tickethub.Commands.NewTicketConv;
 
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;

@@ -1,4 +1,4 @@
-package io.github.arkery.tickethub.OldCommands.NewTicketConv;
+package io.github.arkery.tickethub.Commands.NewTicketConv;
 
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
@@ -12,7 +12,8 @@ import java.util.ArrayList;
 public class additionalContactNewTicket extends BooleanPrompt {
 
     private TicketHub plugin;
-    public additionalContactNewTicket(TicketHub plugin){
+
+    public additionalContactNewTicket(TicketHub plugin) {
         this.plugin = plugin;
     }
 
@@ -20,20 +21,19 @@ public class additionalContactNewTicket extends BooleanPrompt {
     public String getPromptText(ConversationContext conv) {
         return ChatColor.GOLD + "Do you want to add more contacts?";
     }
+
     @Override
     protected Prompt acceptValidatedInput(ConversationContext conv, boolean moreContacts) {
-        if(moreContacts){
+        if (moreContacts) {
             ArrayList<String> contacts = (ArrayList) conv.getSessionData(Options.CONTACTS);
-            if(contacts.size() < 3) {
+            if (contacts.size() < 3) {
                 return new contactNewTicket(plugin, false);
-            }
-            else{
+            } else {
                 conv.getForWhom().sendRawMessage(ChatColor.RED + "You cannot have more than 3 contacts! Moving to Description");
                 return new descriptionNewTicket(plugin);
             }
 
-        }
-        else{
+        } else {
             return new descriptionNewTicket(plugin);
         }
     }

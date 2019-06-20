@@ -2,11 +2,11 @@ package io.github.arkery.tickethub.CustomUtils;
 
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.NoArgsConstructor;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
@@ -49,12 +49,12 @@ public class TicketPageView {
                         ));
                 ticketInfo.setColor(net.md_5.bungee.api.ChatColor.GRAY);
                 ticketInfo.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click here to see ticket details").create()));
-                ticketInfo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/th ticketdetails " + displayTickets.get(i).getTicketID()));
+                ticketInfo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/th details " + displayTickets.get(i).getTicketID()));
 
                 player.spigot().sendMessage(ticketInfo);
             }
         } else {
-            player.sendMessage(ChatColor.RED + "Invalid Page");
+            player.spigot().sendMessage(new Clickable( ChatColor.RED, "Invalid Page!").text());
         }
     }
 }

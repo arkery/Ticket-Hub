@@ -174,7 +174,8 @@ public class Hub {
 
         if(conditions.containsKey(Options.CREATOR)){
 
-            ticketsAsList = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
+            //ticketsAsList = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
+            activeConditions.add(x -> x.getTicketCreator().equals(conditions.get(Options.CREATOR)));
         }
         else if(conditions.containsKey(Options.CATEGORY)){
             activeConditions.add(x -> x.getTicketCategory().equals(conditions.get(Options.CATEGORY)));

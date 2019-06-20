@@ -1,40 +1,35 @@
-package io.github.arkery.tickethub.OldCommands.FilterTicketsConv;
+package io.github.arkery.tickethub.Commands.NewTicketConv;
 
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
-import lombok.AllArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 
-import java.util.EnumMap;
-
-@AllArgsConstructor
-public class categoryFilter extends StringPrompt {
+public class categoryNewTicket extends StringPrompt {
 
     private TicketHub plugin;
-    private EnumMap<Options, Object> filterConditions;
+    public categoryNewTicket(TicketHub plugin){
+        this.plugin = plugin;
+    }
 
     @Override
     public String getPromptText(ConversationContext conv) {
-
         String all = "";
         for(String i : this.plugin.getCustomCategories()){
             all += " " +  i;
         }
-        conv.getForWhom().sendRawMessage(ChatColor.GOLD + "\nCategory Options: " + ChatColor.DARK_AQUA + all);
-        return ChatColor.AQUA + "Enter the category to add as filter condition";
+        conv.getForWhom().sendRawMessage("\n" + ChatColor.GOLD + "Available Options: " + ChatColor.DARK_AQUA + all);
+        return ChatColor.GOLD + "Enter Category of Ticket: ";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        if(this.plugin.getCustomCategories().contains(answer.toLowerCase())){
-
-            filterConditions.put(Options.CATEGORY, answer.toLowerCase());
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
-        }
-        else{
+        if(plugin.getCustomCategories().contains(answer.toLowerCase())){
+            conv.setSessionData(Options.CATEGORY, answer);
+            return new contactNewTicket(plugin, true);
+        }else{
             conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");
             return this;
         }
