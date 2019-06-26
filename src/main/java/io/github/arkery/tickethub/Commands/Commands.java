@@ -257,11 +257,6 @@ public class Commands implements CommandExecutor {
                     ticketContactsAsString += " " + this.plugin.getTicketSystem().getUserName(i);
                 }
 
-                String categoryAsString = "";
-                for(String i : this.plugin.getCustomCategories()){
-                    categoryAsString += " " +  i;
-                }
-
                 player.spigot().sendMessage(new Clickable( ChatColor.AQUA, "\nDetails for Ticket: ").add(new Clickable(ChatColor.AQUA, displayTicket.getTicketID()).text()).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "\n   Title: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketTitle()).text()).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "\n   Status: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketStatus().toString()).text()).text());

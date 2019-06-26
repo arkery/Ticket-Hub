@@ -11,7 +11,6 @@ import io.github.arkery.tickethub.Enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.*;
@@ -164,7 +163,7 @@ public class Hub {
      *
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
      */
-    public List<Ticket> filterTickets(EnumMap conditions) throws IllegalArgumentException{
+    public List<Ticket> filterTickets(EnumMap<Options, Object> conditions) throws IllegalArgumentException{
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
         List<Ticket> ticketsAsList = this.storedData.getAllTickets().getAll();
 

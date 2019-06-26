@@ -14,7 +14,7 @@ public class Clickable {
     private TextComponent textComponent;
 
     public Clickable(String DisplayText){
-        TextComponent textComponent = new TextComponent(DisplayText);
+        this.textComponent = new TextComponent(DisplayText);
     }
 
     public Clickable(ChatColor Color, String DisplayText){

@@ -31,13 +31,13 @@ public class BasicBiMap<A, B> implements Serializable {
     }
 
     /**
-     * Replace a key by searching map with the key
+     * Replace a value by searching map with the key
      *
      * @param key       The key used to search
      * @param newValue  The new value that is replacing the existing value
      */
     public void replaceValue(A key, B newValue){
-        if(this.ValueToKey.containsKey(key)){
+        if(this.KeyToValue.containsKey(key)){
             this.ValueToKey.replace(this.KeyToValue.get(key), key);
             this.KeyToValue.replace(key, newValue);
         }
