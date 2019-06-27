@@ -20,9 +20,11 @@ import java.util.List;
 
 
 /**
- * Check if viewingTickets is null beforehand.
+ * OLD DISPLAY TICKET 
+ * DEPRECATED
  *
  */
+@Deprecated
 public class DisplayTickets extends StringPrompt {
 
     TicketHub plugin;

@@ -95,9 +95,9 @@ public class BasicConcurrentTable<X,Y,Value> implements Serializable {
     /**
      * Get a value at given x & y
      *
-     * @param x
-     * @param y
-     * @return
+     * @param x x coor
+     * @param y y coor
+     * @return  the value at x & y
      */
     public Value get(X x, Y y){
         return this.data.get(x).get(y);

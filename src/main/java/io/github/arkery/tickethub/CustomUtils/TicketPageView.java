@@ -4,9 +4,6 @@ import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
@@ -44,6 +41,34 @@ public class TicketPageView {
             //60 characters per line
             for (int i = topOfPage; i < bottomOfPage; i++) {
 
+                player.spigot().sendMessage(new Clickable(
+                ChatColor.GRAY, 
+                displayTickets.get(i).getTicketID() +
+                    " " + displayTickets.get(i).getTicketStatus().toString() +
+                    " " + displayTickets.get(i).getTicketPriority().toString() +
+                    " " + displayTickets.get(i).getTicketCategory() +
+                    " " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()) +
+                    " " + dateFormat.format(displayTickets.get(i).getTicketDateCreated()),
+                displayTickets.get(i).getTicketID() +
+                    "\n" + displayTickets.get(i).getTicketTitle() +
+                    "\n" + displayTickets.get(i).getTicketStatus().toString() +
+                    "\n" + displayTickets.get(i).getTicketPriority().toString() +
+                    "\n" + displayTickets.get(i).getTicketCategory() +
+                    "\n" + displayTickets.get(i).getTicketDescription() +
+                    "\n" + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()) +
+                    "\n" + dateFormat.format(displayTickets.get(i).getTicketDateCreated()),
+                "/th details " + displayTickets.get(i).getTicketID(),
+                ClickEvent.Action.RUN_COMMAND
+                ).text());
+            }
+        } else {
+            player.spigot().sendMessage(new Clickable( ChatColor.RED, "Invalid Page!").text());
+        }
+    }
+}
+
+        /*
+
                 TextComponent ticketInfo = new TextComponent(
                         displayTickets.get(i).getTicketID() +
                                 " " + displayTickets.get(i).getTicketStatus().toString() +
@@ -65,9 +90,4 @@ public class TicketPageView {
                 ticketInfo.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/th details " + displayTickets.get(i).getTicketID()));
 
                 player.spigot().sendMessage(ticketInfo);
-            }
-        } else {
-            player.spigot().sendMessage(new Clickable( ChatColor.RED, "Invalid Page!").text());
-        }
-    }
-}
+        */
