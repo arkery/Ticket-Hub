@@ -2,6 +2,7 @@ package io.github.arkery.tickethub.Commands;
 
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
 import io.github.arkery.tickethub.CustomUtils.Clickable;
+import io.github.arkery.tickethub.CustomUtils.CommentsPageView;
 import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
 import io.github.arkery.tickethub.CustomUtils.Exceptions.TicketNotFoundException;
 import io.github.arkery.tickethub.CustomUtils.TicketPageView;
@@ -12,7 +13,6 @@ import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -129,18 +129,18 @@ public class Commands implements CommandExecutor {
         if(player.hasPermission("tickethub.player")){
             player.spigot().sendMessage(new Clickable(ChatColor.AQUA,"\nTicketHub Menu").text());
             player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   new", "Click here to create a new ticket", "/th new ", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " create a new ticket")).text());
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   mytickets", "Click here to see your current tickets", "/th mytickets (page)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See your tickets")).text());
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   details", "Click here to see individual ticket details", "/th details (ticket id)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See individual ticket details")).text());
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   mytickets", "Click here to see your current tickets", "/th mytickets ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See your tickets")).text());
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   details", "Click here to see individual ticket details", "/th details ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See individual ticket details")).text());
 
             if(player.hasPermission("tickethub.staff")){
                 player.spigot().sendMessage(new Clickable( ChatColor.AQUA,"Staff Menu").text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   stats", "Click here to see ticket    stats", "/th stats", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See Hub Statistics")).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   edit").add(new Clickable(ChatColor.BLUE, " Edit a ticket")).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   all", "Click here to all tickets", "/th all (page)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all tickets")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   all", "Click here to all tickets", "/th all ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all tickets")).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   filter").add(new Clickable(ChatColor.BLUE, " Filter all Tickets")).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   assigned", "Click here to your assigned tickets", "/th assigned (page)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all your assigned tickets")).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   close", "Click here to close a ticket", "/th close (ticket id)", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Close a ticket")).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   save", "Click here to see ticket stats", "/th save filename", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Save Tickets Manually")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   assigned", "Click here to your assigned tickets", "/th assigned ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all your assigned tickets")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   close", "Click here to close a ticket", "/th close ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Close a ticket")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   save", "Click here to see ticket stats", "/th save ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Save Tickets Manually")).text());
             }
         }else{
             player.spigot().sendMessage(new Clickable( ChatColor.RED, "You don't have permissions to do this!").text());
@@ -608,6 +608,40 @@ public class Commands implements CommandExecutor {
     }
 
     /**
+     * View a ticket's comments.
+     * Ticket must belong to the player or player must have permission: "tickethub.staff".
+     * /th comments (ticket id) (page)
+     * 
+     * @param player The player who's invoking this method
+     * @param args   args0 - comments | args1 - ticket id | args2 - page number
+     */
+    private void ticketViewComments(Player player, String[] args){
+        try{
+            Ticket viewingTicket = this.plugin.getTicketSystem().getTicket(args[1]); 
+            int page = 0; 
+
+            if(args.length > 2){
+                page = Integer.parseInt(args[2]); 
+            }
+
+            if(viewingTicket.getTicketComments().isEmpty() || viewingTicket.getTicketComments() == null){
+                player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nTicket has no comments! ").text());
+                return; 
+            }
+
+            new CommentsPageView().pageView(player, page, viewingTicket.getTicketComments());
+
+        }catch(TicketNotFoundException e){
+                player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
+        }catch(IndexOutOfBoundsException e){
+            player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry: Format as /th editassigned (ticket ID) (Person assigned to)").text());
+        }catch(NumberFormatException e){
+            player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry: Format as /th editassigned (ticket ID) (Person assigned to)").text());
+        }
+
+    }
+
+    /**
      * Hub statistics 
      * Player must have permission: "tickethub.staff"
      * /th stats
@@ -629,7 +663,7 @@ public class Commands implements CommandExecutor {
         
         }
         else {
-            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+            player.spigot().sendMessage(new Clickable( ChatColor.RED, "You don't have permissions to do this!").text());
         }
     }
 
@@ -658,7 +692,7 @@ public class Commands implements CommandExecutor {
             }
         }
         else{
-            player.sendMessage(ChatColor.RED + "\nYou do not have permissions to do this");
+            player.spigot().sendMessage(new Clickable( ChatColor.RED, "You don't have permissions to do this!").text());
         }
     }
 
