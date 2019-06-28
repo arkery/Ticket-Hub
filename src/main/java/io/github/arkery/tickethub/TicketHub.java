@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -40,6 +41,7 @@ public class TicketHub extends JavaPlugin implements Listener {
         this.getCommand("th").setExecutor(new Commands(this));
         //this.getCommand("ticketsystm").setExecutor(new Commands(this));
         Bukkit.getPluginManager().registerEvents(this, this);
+        this.alreadyOnline();
     }
 
     @Override
@@ -56,7 +58,7 @@ public class TicketHub extends JavaPlugin implements Listener {
     - Save all the tickets
     - Create a backup of all the tickets in the format of BackupMMddyyyy
      */
-    public void dailyMaintenance(){
+    private void dailyMaintenance(){
         Runnable job = () -> {
             DateFormat saveFormat = new SimpleDateFormat("MMddyyyy");
 
@@ -72,7 +74,7 @@ public class TicketHub extends JavaPlugin implements Listener {
     Creates default config file on initial startup with three categories: category1, category2 and category3
     If there is pre-existing config - load it into customCategories;
      */
-    public void createOrLoadConfig(){
+    private void createOrLoadConfig(){
         try{
             File file = new File(getDataFolder(), "config.yml");
             List<String> categoriesFromConfig = new ArrayList<>();
@@ -136,6 +138,25 @@ public class TicketHub extends JavaPlugin implements Listener {
             }
 
             player.getPlayer().sendMessage(ChatColor.AQUA + "TicketHub: You have " + assignedTickets + " Tickets Assigned to You");
+        }
+    }
+
+    /**
+     * Auto populates players that are already on the server and adds them to the existing players Bi-Map
+     * 
+     */
+    private void alreadyOnline(){
+        for(Player player : Bukkit.getOnlinePlayers()){
+            if(!this.TicketSystem.joinedTheServer(player.getPlayer())){
+                try{
+                    this.TicketSystem.addUser(player.getPlayer().getName(), player.getPlayer().getUniqueId());
+                }catch(AlreadyExistsException e){
+                    System.out.println("playerJoin Event attempting to add player despite player already existing!");
+                }
+            }else if(this.TicketSystem.joinedTheServer(player.getPlayer())){
+                //If they changed their name....
+                this.TicketSystem.maybeUpdateUser(player.getPlayer());
+            }
         }
     }
 }

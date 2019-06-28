@@ -81,8 +81,7 @@ public class DataCore implements Serializable {
             case RESOLVED:
                 this.resolved--;
                 break;
-            case CLOSED:
-                break;
+            
         }
         switch(newValue){
             case OPENED:
@@ -94,8 +93,7 @@ public class DataCore implements Serializable {
             case RESOLVED:
                 this.resolved++;
                 break;
-            case CLOSED:
-                break;
+            
         }
     }
 
@@ -172,8 +170,7 @@ public class DataCore implements Serializable {
             case RESOLVED:
                 this.resolved++;
                 break;
-            case CLOSED:
-                break;
+            
         }
     }
 }

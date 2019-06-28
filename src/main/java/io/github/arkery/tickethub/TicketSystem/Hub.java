@@ -131,12 +131,13 @@ public class Hub {
 
             }
 
+            /*
             //If the ticket status is set to close, immediately remove it.
             if(checkingThisTicket.getTicketStatus().equals(Status.CLOSED)){
                 this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey(),i.getValue()).getTicketPriority());
                 this.storedData.getAllTickets().remove(i.getKey(), i.getValue());
                 this.storedData.getTicketsToClose().remove(i.getKey());
-            }
+            }*/
 
             //If the status of the ticket is no longer resolved
             if(!this.storedData.getAllTickets().get(i.getKey(),i.getValue()).getTicketStatus().equals(Status.RESOLVED)){

@@ -46,8 +46,8 @@ public class createNewTicket extends MessagePrompt {
                         player.getUniqueId(),                                               //Assigned To
                         player.getUniqueId(),                                               //Creator
                         new Date(),                                                         //Date Created
-                        new Date(),                                                         //Date Updated
-                        new ArrayList<>()                                                   //Comments
+                        new Date()                                                          //Date Updated
+                        //new ArrayList<>()                                                   //Comments
                 );
 
                 this.plugin.getTicketSystem().addTicket(newTicket);

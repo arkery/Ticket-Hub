@@ -8,8 +8,6 @@ import org.bukkit.entity.Player;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @NoArgsConstructor
@@ -25,9 +23,6 @@ public class TicketPageView {
      */
     public void ticketPageView(Player player, int page, List<Ticket> displayTickets) {
 
-        displayTickets.sort(Comparator.comparing(Ticket::getTicketDateLastUpdated));
-        Collections.reverse(displayTickets);
-
         DateFormat dateFormat = new SimpleDateFormat("MM.dd");
         int totalPages = (int) Math.ceil((double) displayTickets.size() / 9);
         int topOfPage = (page - 1) * 9;
@@ -41,25 +36,32 @@ public class TicketPageView {
             //60 characters per line
             for (int i = topOfPage; i < bottomOfPage; i++) {
 
+                String ticketID = displayTickets.get(i).getTicketID(); 
+                if(ticketID.length() > 13){
+                    ticketID = ticketID.substring(0, 9) + "..."; 
+                }
+
                 player.spigot().sendMessage(new Clickable(
                 ChatColor.GRAY, 
-                displayTickets.get(i).getTicketID() +
+                    ticketID +
                     " " + displayTickets.get(i).getTicketStatus().toString() +
                     " " + displayTickets.get(i).getTicketPriority().toString() +
                     " " + displayTickets.get(i).getTicketCategory() +
                     " " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()) +
                     " " + dateFormat.format(displayTickets.get(i).getTicketDateCreated()),
                 displayTickets.get(i).getTicketID() +
-                    "\n" + displayTickets.get(i).getTicketTitle() +
-                    "\n" + displayTickets.get(i).getTicketStatus().toString() +
-                    "\n" + displayTickets.get(i).getTicketPriority().toString() +
-                    "\n" + displayTickets.get(i).getTicketCategory() +
-                    "\n" + displayTickets.get(i).getTicketDescription() +
-                    "\n" + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()) +
-                    "\n" + dateFormat.format(displayTickets.get(i).getTicketDateCreated()),
+                    "\n" + "Brief Details" +
+                    "\n" + "    Title: " + displayTickets.get(i).getTicketTitle() +
+                    "\n" + "    Status: " + displayTickets.get(i).getTicketStatus().toString() +
+                    "\n" + "    Priority: " + displayTickets.get(i).getTicketPriority().toString() +
+                    "\n" + "    Category: " + displayTickets.get(i).getTicketCategory() +
+                    "\n" + "    Last Updated On: " + dateFormat.format(displayTickets.get(i).getTicketDateLastUpdated()) +
+                    "\n" + "    Date Created:" + dateFormat.format(displayTickets.get(i).getTicketDateCreated()) +
+                    "\n" + "Click here to look at full ticket details and/or edit the ticket",
                 "/th details " + displayTickets.get(i).getTicketID(),
                 ClickEvent.Action.RUN_COMMAND
                 ).text());
+
             }
         } else {
             player.spigot().sendMessage(new Clickable( ChatColor.RED, "Invalid Page!").text());

@@ -41,7 +41,7 @@ public class DisplayTickets extends StringPrompt {
         this.viewingTickets = tickets;
         this.originalList = tickets;
         this.player = player;
-        this.dateSetting = DateSetting.DATEUPDATED;
+        this.dateSetting = DateSetting.UPDATED;
         this.orderSetting = OrderSetting.ASCENDING;
         this.page = 1;
 
@@ -56,7 +56,7 @@ public class DisplayTickets extends StringPrompt {
         this.viewingTickets = viewingTickets;
         this.originalList = originalList;
         this.player = player;
-        this.dateSetting = DateSetting.DATEUPDATED;
+        this.dateSetting = DateSetting.UPDATED;
         this.orderSetting = OrderSetting.ASCENDING;
         this.page = page;
 
@@ -125,7 +125,7 @@ public class DisplayTickets extends StringPrompt {
                 if(this.orderSetting.equals(OrderSetting.ASCENDING)){
                     Collections.reverse(this.viewingTickets);
                 }
-                this.dateSetting = DateSetting.DATECREATED;
+                this.dateSetting = DateSetting.CREATED;
                 return this;
             case "dateupdated":
                 this.viewingTickets = this.originalList;
@@ -133,7 +133,7 @@ public class DisplayTickets extends StringPrompt {
                 if(this.orderSetting.equals(OrderSetting.ASCENDING)){
                     Collections.reverse(this.viewingTickets);
                 }
-                this.dateSetting = DateSetting.DATEUPDATED;
+                this.dateSetting = DateSetting.UPDATED;
                 return this;
             case "nextpage":
                 if(this.page == totalPages){
