@@ -151,7 +151,8 @@ public class Hub {
      *
      * @throws IllegalArgumentException This is thrown when there are no conditions (conditions is empty)
      * @param conditions                Filtering conditions added by the user
-     *
+     * @param filtering                 The tickets that are to be filtered. 
+     * 
      * Possible Filter Conditions:
      *        Options.TicketCreator
      *        Options.TicketCategory
@@ -164,16 +165,16 @@ public class Hub {
      *
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
      */
-    public List<Ticket> filterTickets(EnumMap<Options, Object> conditions) throws IllegalArgumentException{
+    public List<Ticket> filterTickets(EnumMap<Options, Object> conditions, List<Ticket> filtering){
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
-        List<Ticket> ticketsAsList = this.storedData.getAllTickets().getAll();
+        //List<Ticket> filtering = this.storedData.getAllTickets().getAll();
 
         if(conditions.isEmpty() || !(conditions instanceof Map)){
-            throw new IllegalArgumentException("Filter Conditions are Empty");
+            return filtering; 
         }
 
         if(conditions.containsKey(Options.CREATOR)){
-
+            
             //ticketsAsList = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
             activeConditions.add(x -> x.getTicketCreator().equals(conditions.get(Options.CREATOR)));
         }
@@ -201,7 +202,7 @@ public class Hub {
             activeConditions.add(x -> x.getTicketAssignedTo().equals(conditions.get(Options.ASSIGNEDTO)));
         }
 
-        return ticketsAsList
+        return filtering
                 .stream()
                 .filter(activeConditions.stream().reduce(Predicate::and).orElse(x -> true))
                 .collect(Collectors.toList());

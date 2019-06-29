@@ -1,6 +1,7 @@
 package io.github.arkery.tickethub.CustomUtils;
 
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -8,7 +9,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-@NonNull @EqualsAndHashCode
+@NonNull @EqualsAndHashCode @NoArgsConstructor
 public class Clickable {
 
     private TextComponent textComponent;
@@ -25,12 +26,12 @@ public class Clickable {
     /**
      * Show Text with Color
      * 
-     * @param Color         Color to display it as
+     * @param aqua         Color to display it as
      * @param DisplayText   Text to display
      */
-    public Clickable(ChatColor Color, String DisplayText){
+    public Clickable(ChatColor aqua, String DisplayText){
         this.textComponent = new TextComponent(DisplayText);
-        this.textComponent.setColor(Color);
+        this.textComponent.setColor(aqua);
     }
 
     /**

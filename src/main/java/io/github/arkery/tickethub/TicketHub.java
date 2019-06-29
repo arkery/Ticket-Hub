@@ -131,9 +131,9 @@ public class TicketHub extends JavaPlugin implements Listener {
 
             EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
             conditions.put(Options.ASSIGNEDTO, player.getPlayer().getUniqueId());
-            int assignedTickets = this.TicketSystem.filterTickets(conditions).size();
-
-            if( this.TicketSystem.filterTickets(conditions).isEmpty()){
+            int assignedTickets = this.TicketSystem.filterTickets(conditions, this.TicketSystem.getStoredData().getAllTickets().getAll()).size();
+            
+            if( this.TicketSystem.filterTickets(conditions, this.TicketSystem.getStoredData().getAllTickets().getAll()).isEmpty()){
                 assignedTickets = 0;
             }
 

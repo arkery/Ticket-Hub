@@ -62,9 +62,9 @@ public class CommandTemplates{
             Collections.reverse(displayTickets);
         }
        
-        player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nDate Created", "Click here to sort by date created", "/th " + args[0] + " " + page + " created", ClickEvent.Action.RUN_COMMAND )
-            .add(new Clickable(ChatColor.AQUA, " Date Updated", "Click here to sort by date updated", "/th " + args[0] + " " + page + " updated", ClickEvent.Action.RUN_COMMAND))
-            .add(new Clickable( ChatColor.AQUA, " Tickets   [" + page + "/" + totalPages + "]"))
+        player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n(Created", "Click here to sort by date created", "/th " + args[0] + " " + page + " created", ClickEvent.Action.RUN_COMMAND )
+            .add(new Clickable(ChatColor.GOLD, " Updated )", "Click here to sort by date updated", "/th " + args[0] + " " + page + " updated", ClickEvent.Action.RUN_COMMAND))
+            .add(new Clickable( ChatColor.AQUA, " [" + page + "/" + totalPages + "]"))
             .text());
             new TicketPageView().ticketPageView(player, page, displayTickets);
 

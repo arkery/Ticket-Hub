@@ -1,5 +1,6 @@
 package io.github.arkery.tickethub.Commands;
 
+import io.github.arkery.tickethub.Commands.FilterTicketsConv.FilterMenu;
 import io.github.arkery.tickethub.Commands.NewTicketConv.titleNewTicket;
 import io.github.arkery.tickethub.CustomUtils.Clickable;
 import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
@@ -28,7 +29,6 @@ import java.util.UUID;
 
 public class Commands extends CommandTemplates implements CommandExecutor {
 
-    //private TicketHub plugin;
     private ConversationFactory conversationFactory;
     private static final DateFormat dateFormat = new SimpleDateFormat("MM.dd.yy");
 
@@ -62,12 +62,11 @@ public class Commands extends CommandTemplates implements CommandExecutor {
                     case "stats":
                         this.statistics(player);
                         break;
-                    case "edit":
-                        break;
                     case "all":
                         this.allTickets(player, args);
                         break;
                     case "filter":
+                        this.filterTickets(player);
                         break;
                     case "assigned":
                         this.assignedTickets(player, args);
@@ -130,15 +129,15 @@ public class Commands extends CommandTemplates implements CommandExecutor {
         if(player.hasPermission("tickethub.player")){
             player.spigot().sendMessage(new Clickable(ChatColor.AQUA,"\nTicketHub Menu").text());
             player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   new", "Click here to create a new ticket", "/th new ", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " create a new ticket")).text());
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   mytickets", "Click here to see your current tickets", "/th mytickets ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See your tickets")).text());
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   mytickets", "Click here to see your current tickets", "/th mytickets ", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See your tickets")).text());
             player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "   details", "Click here to see individual ticket details", "/th details ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See individual ticket details")).text());
 
             if(player.hasPermission("tickethub.staff")){
                 player.spigot().sendMessage(new Clickable( ChatColor.AQUA,"Staff Menu").text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   stats", "Click here to see ticket    stats", "/th stats", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See Hub Statistics")).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   all", "Click here to all tickets", "/th all ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all tickets")).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   filter").add(new Clickable(ChatColor.BLUE, " Filter all Tickets")).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   assigned", "Click here to your assigned tickets", "/th assigned ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " See all your assigned tickets")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   stats", "Click here to see ticket stats", "/th stats", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See Hub Statistics")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   all", "Click here to all tickets", "/th all ", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See all tickets")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   filter", "Click here to start filter view", "/th filter ", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " filter all tickets")).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   assigned", "Click here to your assigned tickets", "/th assigned ", ClickEvent.Action.RUN_COMMAND).add(new Clickable(ChatColor.BLUE, " See all your assigned tickets")).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   close", "Click here to close a ticket", "/th close ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Close a ticket")).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   save", "Click here to see ticket stats", "/th save ", ClickEvent.Action.SUGGEST_COMMAND).add(new Clickable(ChatColor.BLUE, " Save Tickets Manually")).text());
             }
@@ -159,16 +158,43 @@ public class Commands extends CommandTemplates implements CommandExecutor {
             Conversation conv = conversationFactory
                     .withFirstPrompt(new titleNewTicket(plugin))
                     .withLocalEcho(false)
-                    .withEscapeSequence("cancel")
                     .withTimeout(120)
                     .buildConversation(player);
             conv.begin();
         }
         else{
-            player.sendMessage(ChatColor.RED + "You do not have permissions to do this");
+            player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nYou don't have permissions to do this!").text());
         }
     }
 
+    /**
+     * View tickets in filter mode
+     * Player must have permission: "tickethub.staff".
+     * /th new
+     * 
+     * @param player the creator of the ticket
+     */
+    private void filterTickets(Player player){
+        if(player.hasPermission("tickethub.staff")){
+
+            List<Ticket> allTickets = this.plugin.getTicketSystem().getStoredData().getAllTickets().getAll(); 
+
+            if(allTickets.isEmpty() || allTickets == null){
+                player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nThere are no tickets!").text());
+                return; 
+            }
+
+            Conversation conv = conversationFactory
+                    .withFirstPrompt(new FilterMenu(plugin, player, allTickets))
+                    .withLocalEcho(false)
+                    .withTimeout(120)
+                    .buildConversation(player);
+            conv.begin();
+        }
+        else{
+            player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nYou don't have permissions to do this!").text());
+        }
+    }
 
     /**
      * All tickets belonging to the player who invoked this method.
@@ -204,12 +230,14 @@ public class Commands extends CommandTemplates implements CommandExecutor {
      * 
      * @param player the player who's invoking this method
      * @param args args0 - all | args1 - page (if applicable) | args2 - sort by (date created or date updated [by default, sort by date updated])
+     * 
      */
     private void allTickets(Player player, String[] args){
         if(player.hasPermission("tickethub.staff")){
             try{
-                
-                super.TicketListView(player, args, plugin.getTicketSystem().getStoredData().getAllTickets().getAll());
+                List<Ticket> tickets = plugin.getTicketSystem().getStoredData().getAllTickets().getAll();
+
+                super.TicketListView(player, args, tickets);
 
             }catch(NumberFormatException e){
                 player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
@@ -239,7 +267,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
                 EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
                 conditions.put(Options.ASSIGNEDTO, player.getUniqueId());
 
-                super.TicketListView(player, args, super.plugin.getTicketSystem().filterTickets(conditions));
+                super.TicketListView(player, args, super.plugin.getTicketSystem().filterTickets(conditions, super.plugin.getTicketSystem().getStoredData().getAllTickets().getAll()));
 
             }catch(NumberFormatException e){
                 player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nInvalid Entry: Format as /th assigned (page) ").text());
@@ -268,7 +296,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
                 Ticket displayTicket = super.plugin.getTicketSystem().getTicket(args[1]);
 
                 if(!displayTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")){
-                    player.sendMessage(ChatColor.RED + "You do not have permissions to view this ticket!");
+                    player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nYou don't have permissions to do this!").text());
                     return;
                 }
 
@@ -289,15 +317,17 @@ public class Commands extends CommandTemplates implements CommandExecutor {
             
                 player.spigot().sendMessage(new Clickable( ChatColor.AQUA, "\nDetails for Ticket: ").add(new Clickable(ChatColor.AQUA, displayTicket.getTicketID())).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "\n   Title: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketTitle(), "Click here to edit ticket title", "/th edittitle " + displayTicket.getTicketTitle(), ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "\n   Status: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketStatus().toString(), "Click here to edit ticket status (Opened InProgress Resolved) ", "/th editstatus ", ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Priority: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketPriority().toString(), "Click here to edit ticket priority (Low Medium High) ", "/th editpriority ", ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Category: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketCategory(), "Click here to edit ticket category (" + ticketCategoriesAsString + ")", "/th editcategory", ClickEvent.Action.SUGGEST_COMMAND)).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "\n   Status: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketStatus().toString(), "Click here to edit ticket status \n(Opened InProgress Resolved) ", "/th editstatus ", ClickEvent.Action.SUGGEST_COMMAND)).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Priority: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketPriority().toString(), "Click here to edit ticket priority \n(Low Medium High) ", "/th editpriority ", ClickEvent.Action.SUGGEST_COMMAND)).text());
+                player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Category: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketCategory(), "Click here to edit ticket category \n(" + ticketCategoriesAsString + ")", "/th editcategory", ClickEvent.Action.SUGGEST_COMMAND)).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Contacts:").add(new Clickable(ChatColor.BLUE, ticketContactsAsString, "Click here to edit ticket contacts ", "/th editcontacts " + ticketContactsAsString, ClickEvent.Action.SUGGEST_COMMAND)).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "\n   Description: ").add(new Clickable(ChatColor.BLUE, displayTicket.getTicketDescription(), "Click here to edit ticket description", "/th editdesc " + displayTicket.getTicketDescription(), ClickEvent.Action.SUGGEST_COMMAND)).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "\n   Creator: ").add(new Clickable(ChatColor.BLUE, super.plugin.getTicketSystem().getUserName(displayTicket.getTicketCreator()))).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Assigned To: ").add(new Clickable(ChatColor.BLUE, super.plugin.getTicketSystem().getUserName(displayTicket.getTicketAssignedTo()), "Click here to edit/change the person assigned to this ticket", "/th editassigned ", ClickEvent.Action.SUGGEST_COMMAND)).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Last Updated On: ").add(new Clickable(ChatColor.BLUE, dateFormat.format(displayTicket.getTicketDateLastUpdated()))).text());
                 player.spigot().sendMessage(new Clickable( ChatColor.GOLD, "   Created On: ").add(new Clickable(ChatColor.BLUE, dateFormat.format(displayTicket.getTicketDateCreated()))).text());
+
+                player.spigot().sendMessage(new Clickable(ChatColor.YELLOW, "\n\n   Close ticket", "Click here to close ticket (This will delete the ticket)", "/th close " + displayTicket.getTicketID(), ClickEvent.Action.SUGGEST_COMMAND).text());
 
             }catch(TicketNotFoundException e){
                 player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
@@ -329,7 +359,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
             String newTitle = ""; 
             
             if(!editingTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")){
-                player.sendMessage(ChatColor.RED + "You do not have permissions to view this ticket!");
+                player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nYou don't have permissions to do this!").text());
                 return;
             }
 
@@ -516,7 +546,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
             String newDescription = ""; 
             
             if(!editingTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")){
-                player.sendMessage(ChatColor.RED + "You do not have permissions to view this ticket!");
+                player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nYou don't have permissions to do this!").text());
                 return;
             }
 
@@ -636,17 +666,17 @@ public class Commands extends CommandTemplates implements CommandExecutor {
 
             Ticket editingTicket = super.plugin.getTicketSystem().getTicket(args[1]);
             if(!editingTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")){
-                player.sendMessage(ChatColor.RED + "You do not have permissions to close this ticket!");
+                player.spigot().sendMessage(new Clickable( ChatColor.RED, "You don't have permissions to do this!").text());
                 return;
             }
 
             super.plugin.getTicketSystem().removeTicket(editingTicket.getTicketID());
 
+
         }catch(TicketNotFoundException e){
-            player.sendMessage(ChatColor.RED + "Could not find ticket!");
+            player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
         }catch(IndexOutOfBoundsException e){
-            player.sendMessage(ChatColor.RED + "Please enter in the format of "
-                    + ChatColor.DARK_GREEN + "/th close (Ticket ID)");
+            player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry: Format as /th close (ticket id) ").text());
         }
     }
 
