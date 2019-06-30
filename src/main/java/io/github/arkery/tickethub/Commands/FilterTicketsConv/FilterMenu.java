@@ -148,6 +148,7 @@ public class FilterMenu extends StringPrompt {
                 this.dateSetting = DateSetting.UPDATED;
                 return this; 
             case "cancel":
+                this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nExiting Filter View").text());
                 return END_OF_CONVERSATION; 
             default:
                 try{

@@ -26,12 +26,12 @@ public class Clickable {
     /**
      * Show Text with Color
      * 
-     * @param aqua         Color to display it as
+     * @param Color         Color to display it as
      * @param DisplayText   Text to display
      */
-    public Clickable(ChatColor aqua, String DisplayText){
+    public Clickable(ChatColor Color, String DisplayText){
         this.textComponent = new TextComponent(DisplayText);
-        this.textComponent.setColor(aqua);
+        this.textComponent.setColor(Color);
     }
 
     /**
