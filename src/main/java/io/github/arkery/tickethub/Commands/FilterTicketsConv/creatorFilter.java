@@ -1,42 +1,52 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
+import io.github.arkery.tickethub.CustomUtils.Clickable;
+import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
+import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 
 import java.util.EnumMap;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class creatorFilter extends StringPrompt {
 
     private TicketHub plugin;
+    private Player player; 
     private EnumMap<Options, Object> filterConditions;
+    private DateSetting dateSetting;
+    private int page; 
 
     @Override
     public String getPromptText(ConversationContext conv) {
 
-        return ChatColor.AQUA + "Enter the username of the ticket creator to add as a filter condition";
+        this.player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nEnter the username of the ticket creator or enter 'cancel' to cancel adding").text());
+        return "";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-        Player creator = Bukkit.getOfflinePlayer((UUID) this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().getValue(answer)).getPlayer();
 
-        if(creator.hasPlayedBefore()){
-            this.filterConditions.put(Options.CREATOR, creator.getUniqueId());
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
-        }
-        else{
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "This person has not joined this server!");
+        try{
+
+            if(answer.equalsIgnoreCase("cancel")){
+                this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Creator To Filter").text());
+                return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+            }
+
+            this.filterConditions.put(Options.CREATOR, this.plugin.getTicketSystem().getUserUUID(answer));
+            return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+            
+        }catch(PlayerNotFoundException e){
+            this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nThis person has not joined the server!").text());
             return this;
         }
-
     }
 }

@@ -37,34 +37,20 @@ public class createNewTicket extends MessagePrompt {
 
                 Ticket newTicket = new Ticket(
                          player.getName() + dateFormat.format(new Date()),           //ID
-                        (String) conv.getSessionData(Options.TITLE),                  //TITLE
+                        (String) conv.getSessionData(Options.TITLE),                        //TITLE
                         Status.OPENED,                                                      //Status
-                        (String) conv.getSessionData(Options.CATEGORY),               //Category
-                        (Priority) conv.getSessionData(Options.PRIORITY),             //Priority
-                        (ArrayList) conv.getSessionData(Options.CONTACTS),            //Contacts
-                        (String) conv.getSessionData(Options.DESCRIPTION),            //Description
+                        (String) conv.getSessionData(Options.CATEGORY),                     //Category
+                        (Priority) conv.getSessionData(Options.PRIORITY),                   //Priority
+                        (ArrayList) conv.getSessionData(Options.CONTACTS),                  //Contacts
+                        (String) conv.getSessionData(Options.DESCRIPTION),                  //Description
                         player.getUniqueId(),                                               //Assigned To
                         player.getUniqueId(),                                               //Creator
                         new Date(),                                                         //Date Created
-                        new Date(),                                                         //Date Updated
-                        new ArrayList<>()                                                   //Comments
+                        new Date()                                                          //Date Updated
+                        //new ArrayList<>()                                                   //Comments
                 );
 
-                HashMap<String, Ticket> playerTickets = new HashMap<>();
-
-                //Check if the player has other tickets belonging to them
-                if(plugin.getTicketSystem().getStoredData().getAllTickets().containsKey(player.getUniqueId())){
-                    playerTickets = this.plugin.getTicketSystem().getStoredData().getAllTickets().get(player.getUniqueId());
-                }
-
-
-                //Add the ticket into the Hub
-                playerTickets.put(newTicket.getTicketID(), newTicket);
-                plugin.getTicketSystem().getStoredData().getAllTickets().put(player.getUniqueId(), playerTickets);
-
-                //Update Hub Statistics
-                plugin.getTicketSystem().getStoredData().addNewPriorityStats((Priority) conv.getSessionData(Options.PRIORITY));
-                plugin.getTicketSystem().getStoredData().addnewStatusStats(Status.OPENED);
+                this.plugin.getTicketSystem().addTicket(newTicket);
                 return ChatColor.GREEN + "\nTicket has now been created!" + " Ticket ID: " + ChatColor.AQUA + player.getName() + dateFormat.format(new Date());
             }
             else{

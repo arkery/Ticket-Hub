@@ -1,5 +1,5 @@
 name: TicketHub
-version: 1.1
+version: 0.5
 author: arkery
 main: io.github.arkery.tickethub.TicketHub
 api-version: 1.13
@@ -7,3 +7,4 @@ description: Ticket Management Plugin for Spigot based servers
 
 commands:
   th:
+    aliases: {ticket, ticketsystem, tickethub}

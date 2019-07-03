@@ -1,14 +1,17 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
-import io.github.arkery.tickethub.Commands.EditTicketConv.OptionToEditMore;
+import io.github.arkery.tickethub.CustomUtils.Clickable;
+import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
+import org.bukkit.entity.Player;
 
 import java.util.EnumMap;
 
@@ -16,39 +19,43 @@ import java.util.EnumMap;
 public class priorityFilter extends StringPrompt {
 
     private TicketHub plugin;
+    private Player player; 
     private EnumMap<Options, Object> filterConditions;
-
+    private DateSetting dateSetting;
+    private int page; 
 
     @Override
     public String getPromptText(ConversationContext conv) {
-          conv.getForWhom().sendRawMessage(ChatColor.GOLD + "Priority Options: [ "
-                + Priority.LOW.toString()
-                + " | " + Priority.MEDIUM.toString()
-                + " | " + Priority.HIGH.toString()
-                + " ]");
-        return ChatColor.GOLD + "Enter priority to add to filter condition";
+        
+        this.player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\nPriority Options: LOW MEDIUM HIGH").text());
+        this.player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nEnter the priority to add to filter or enter 'cancel' to cancel adding").text());
+        return "";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
 
-        if(answer.equalsIgnoreCase(Priority.LOW.toString())){
-            this.filterConditions.put(Options.PRIORITY, Priority.LOW);
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
+        Priority filterPriority = Priority.LOW; 
 
+        switch(answer.toLowerCase()){
+            case "low":
+                filterPriority = Priority.LOW; 
+                break;
+            case "medium":
+                filterPriority = Priority.MEDIUM; 
+                break;
+            case "high":
+                filterPriority = Priority.HIGH; 
+                break;
+            case "cancel":
+                this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Priority To Filter").text());
+                return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+            default:
+                this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry!").text());
+                return this;
         }
-        else if(answer.equalsIgnoreCase(Priority.MEDIUM.toString())){
-            this.filterConditions.put(Options.PRIORITY, Priority.MEDIUM);
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
-        }
-        else if(answer.equalsIgnoreCase(Priority.HIGH.toString())){
-            this.filterConditions.put(Options.PRIORITY, Priority.HIGH);
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
-        }
-        else{
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");
-            return this;
-        }
+        this.filterConditions.put(Options.PRIORITY, filterPriority);
+        return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
     }
 
 }

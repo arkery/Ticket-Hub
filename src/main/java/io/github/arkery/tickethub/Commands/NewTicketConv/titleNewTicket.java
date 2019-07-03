@@ -16,7 +16,7 @@ public class titleNewTicket extends StringPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        return ChatColor.GOLD + "Enter the title of your ticket: ";
+        return "\n" + ChatColor.GOLD + "Enter the title of your new ticket: ";
     }
 
     @Override
@@ -24,4 +24,5 @@ public class titleNewTicket extends StringPrompt {
         conv.setSessionData(Options.TITLE, answer);
         return new priorityNewTicket(plugin);
     }
+
 }

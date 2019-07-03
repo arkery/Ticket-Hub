@@ -1,14 +1,17 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
+import io.github.arkery.tickethub.CustomUtils.Clickable;
+import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
-import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
+import org.bukkit.entity.Player;
 
 import java.util.EnumMap;
 
@@ -16,35 +19,43 @@ import java.util.EnumMap;
 public class statusFilter extends StringPrompt {
 
     private TicketHub plugin;
+    private Player player; 
     private EnumMap<Options, Object> filterConditions;
-
+    private DateSetting dateSetting;
+    private int page; 
 
     @Override
     public String getPromptText(ConversationContext conv) {
-        conv.getForWhom().sendRawMessage(ChatColor.GOLD + "Status Options: [ "
-                + Status.OPENED.toString()
-                + " | " + Status.INPROGRESS.toString()
-                + " | " + Status.RESOLVED.toString()
-                + " ]");
-        return ChatColor.GOLD + "Enter status to add to filter condition";
+        
+        this.player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\nSTATUS Options: OPENED INPROGRESS RESOLVED").text());
+        this.player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nEnter the status to add to filter or enter 'cancel' to cancel adding").text());
+        return "";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
 
-        if (answer.equalsIgnoreCase(Status.OPENED.toString())) {
-            this.filterConditions.put(Options.STATUS, Status.OPENED);
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
+        Status filterStatus = Status.OPENED; 
 
-        } else if (answer.equalsIgnoreCase(Priority.MEDIUM.toString())) {
-            this.filterConditions.put(Options.STATUS, Status.INPROGRESS);
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
-        } else if (answer.equalsIgnoreCase(Priority.HIGH.toString())) {
-            this.filterConditions.put(Options.STATUS, Status.RESOLVED);
-            return new OptionForMoreConditions(this.plugin, this.filterConditions);
-        } else {
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");
-            return this;
+        switch(answer.toLowerCase()){
+            case "opened":
+                filterStatus = Status.OPENED; 
+                break;
+            case "inprogress":
+                filterStatus = Status.INPROGRESS; 
+                break;
+            case "resolved":
+                filterStatus = Status.RESOLVED; 
+                break;
+            case "cancel":
+                this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Status To Filter").text());
+                return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+            default:
+                this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry!").text());
+                return this;
         }
+        this.filterConditions.put(Options.STATUS, filterStatus);
+        return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
     }
+
 }
