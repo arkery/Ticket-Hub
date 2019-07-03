@@ -3,7 +3,6 @@ package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 import io.github.arkery.tickethub.CustomUtils.Clickable;
 import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
-import io.github.arkery.tickethub.TicketSystem.Ticket;
 import io.github.arkery.tickethub.TicketHub;
 import lombok.AllArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
@@ -17,14 +16,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.EnumMap;
-import java.util.List;
 
 @AllArgsConstructor
 public class dateupdatedFilter extends StringPrompt {
 
     private TicketHub plugin;
     private Player player; 
-    private List<Ticket> displayList; //This must stay unordered
     private EnumMap<Options, Object> filterConditions;
     private DateSetting dateSetting;
     private int page; 
@@ -44,11 +41,11 @@ public class dateupdatedFilter extends StringPrompt {
 
             if(answer.equalsIgnoreCase("cancel")){
                 this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Assigned To Filter").text());
-                return new FilterMenu(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             }
 
             this.filterConditions.put(Options.DATEUPDATED, dateFormat.parse(answer));
-            return new FilterMenu(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+            return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             
         }catch(ParseException e){
             this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid date format!").text());

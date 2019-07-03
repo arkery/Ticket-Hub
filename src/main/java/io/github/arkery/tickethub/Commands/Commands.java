@@ -158,7 +158,6 @@ public class Commands extends CommandTemplates implements CommandExecutor {
             Conversation conv = conversationFactory
                     .withFirstPrompt(new titleNewTicket(plugin))
                     .withLocalEcho(false)
-                    .withTimeout(120)
                     .buildConversation(player);
             conv.begin();
         }
@@ -187,7 +186,6 @@ public class Commands extends CommandTemplates implements CommandExecutor {
             Conversation conv = conversationFactory
                     .withFirstPrompt(new FilterMenu(plugin, player, allTickets))
                     .withLocalEcho(false)
-                    .withTimeout(120)
                     .buildConversation(player);
             conv.begin();
         }
@@ -626,6 +624,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
 
     /**
      * Manually backup and save tickets into a separate ticket .json file.
+     * It will also save all the current tickets in the main .json file.
      * Player must have permission: "tickethub.staff".
      * /th save (name).
      * 
@@ -642,6 +641,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
                 }
 
                 super.plugin.getTicketSystem().saveTickets(args[1]);
+                super.plugin.getTicketSystem().saveTickets("");
                 player.spigot().sendMessage(new Clickable(ChatColor.GREEN, "\nTickets saved as " + args[1] + ".json !").text());
 
             }catch(IndexOutOfBoundsException e){
@@ -671,7 +671,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
             }
 
             super.plugin.getTicketSystem().removeTicket(editingTicket.getTicketID());
-
+            player.spigot().sendMessage(new Clickable( ChatColor.LIGHT_PURPLE, "Ticket " + editingTicket.getTicketID() + "is now closed").text());
 
         }catch(TicketNotFoundException e){
             player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());

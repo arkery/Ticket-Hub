@@ -6,7 +6,6 @@ import io.github.arkery.tickethub.TicketSystem.Ticket;
 import io.github.arkery.tickethub.TicketHub;
 import io.github.arkery.tickethub.CustomUtils.Clickable;
 import io.github.arkery.tickethub.CustomUtils.TicketPageView;
-import lombok.AllArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 
@@ -20,7 +19,6 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 
-@AllArgsConstructor
 public class FilterMenu extends StringPrompt {
     
     private TicketHub plugin;
@@ -46,6 +44,15 @@ public class FilterMenu extends StringPrompt {
         this.dateSetting = DateSetting.UPDATED; 
         this.filterConditions = new EnumMap<>(Options.class);
         this.page = 1; 
+    }
+
+    public FilterMenu(TicketHub plugin, Player player, EnumMap<Options, Object> filterConditions, DateSetting dateSetting, int page){
+        this.plugin = plugin; 
+        this.player = player; 
+        this.displayList = this.plugin.getTicketSystem().getStoredData().getAllTickets().getAll(); 
+        this.filterConditions = filterConditions; 
+        this.dateSetting = dateSetting; 
+        this.page = page; 
     }
 
     @Override
@@ -87,11 +94,18 @@ public class FilterMenu extends StringPrompt {
         }
         
         try{
-            this.TicketListView(this.plugin.getTicketSystem().filterTickets(this.filterConditions, this.displayList));
-            this.player.spigot().sendMessage(conditions.add(StatusCondition).add(" ").add(PriorityCondition).add(" ").add(CategoryCondition).add(" ").add(ContactCondition).add(" ").add(DateCreated).add(" ").add(DateUpdated).add(" ").add(Creator).add(" ").add(AssignedTo).text());
-            this.player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\nEnter 'cancel' to exit filter view").text());
+            List<Ticket> sortedTickets = this.plugin.getTicketSystem().filterTickets(this.filterConditions, this.displayList);
+            if(sortedTickets.isEmpty()){
+                player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nThere are no tickets!").text());
+            }
+            else{
+                this.TicketListView(sortedTickets);
+            }
         }catch(NullPointerException e){
             player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nThere are no tickets!").text());
+        }finally{
+            this.player.spigot().sendMessage(conditions.add(StatusCondition).add(" ").add(PriorityCondition).add(" ").add(CategoryCondition).add(" ").add(ContactCondition).add(" ").add(DateCreated).add(" ").add(DateUpdated).add(" ").add(Creator).add(" ").add(AssignedTo).text());
+            this.player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\nEnter 'cancel' to exit filter view").text());
         }
 
         return ""; 
@@ -102,21 +116,21 @@ public class FilterMenu extends StringPrompt {
 
         switch(answer.toLowerCase()){
             case "category":
-                return new categoryFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new categoryFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "status":
-                return new statusFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new statusFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "priority":
-                return new priorityFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new priorityFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "contact":
-                return new contactFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new contactFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "datecreated":
-                return new datecreatedFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new datecreatedFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "dateupdated":
-                return new dateupdatedFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new dateupdatedFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "assignedto":
-                return new assignedtoFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new assignedtoFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "creator":
-                return new creatorFilter(this.plugin, this.player, this.displayList, this.filterConditions, this.dateSetting, this.page);
+                return new creatorFilter(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             case "rstatus":
                 this.filterConditions.remove(Options.STATUS); 
                 return this; 
