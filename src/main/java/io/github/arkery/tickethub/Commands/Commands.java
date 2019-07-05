@@ -32,12 +32,10 @@ public class Commands extends CommandTemplates implements CommandExecutor {
     private ConversationFactory conversationFactory;
     private static final DateFormat dateFormat = new SimpleDateFormat("MM.dd.yy");
 
-
     public Commands(TicketHub plugin){
         super(plugin); 
         this.conversationFactory = new ConversationFactory(plugin);
     }
-
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {

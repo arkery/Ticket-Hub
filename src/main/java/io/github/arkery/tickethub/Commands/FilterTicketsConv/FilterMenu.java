@@ -165,12 +165,17 @@ public class FilterMenu extends StringPrompt {
                 this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nExiting Filter View").text());
                 return END_OF_CONVERSATION; 
             default:
-                try{
-                    this.page = Integer.parseInt(answer); 
-                }catch(NumberFormatException e){
-                    player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nInvalid Entry").text());
+                if(answer.charAt(1) == '/'){
+                    return END_OF_CONVERSATION; 
                 }
-                return this;
+                else{
+                    try{
+                        this.page = Integer.parseInt(answer); 
+                    }catch(NumberFormatException e){
+                        player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nInvalid Entry").text());
+                    }
+                    return this;
+                }
         }
     }
 
@@ -201,18 +206,26 @@ public class FilterMenu extends StringPrompt {
             new TicketPageView().ticketPageView(player, page, displayListView);
 
     //Navigation Arrows
-        if(page != 1 ){
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "<---", "Click here to go back to previous page", "" + (page--), ClickEvent.Action.RUN_COMMAND ).text());
-        }else{
-            player.spigot().sendMessage(new Clickable("    ").text()); 
+        int next = page++; 
+        int prev = page--; 
+        if(page !=1 && page != totalPages){
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", "" + prev, ClickEvent.Action.RUN_COMMAND )
+            .add("      ")
+            .add(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", "" + next , ClickEvent.Action.RUN_COMMAND ))
+            .text());
         }
-
-        player.spigot().sendMessage(new Clickable("                                                    ").text()); 
-
-        if(page != totalPages){
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", "" + (page++), ClickEvent.Action.RUN_COMMAND ).text());
-        }else{
-            player.spigot().sendMessage(new Clickable("    ").text()); 
+        else{
+            if(page != 1 ){ 
+                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", "" + prev, ClickEvent.Action.RUN_COMMAND ).text());
+            }else{
+                player.spigot().sendMessage(new Clickable("    ").text()); 
+            }
+    
+            if(page != totalPages){
+                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n--->", "Click here to go to next page", "" + next , ClickEvent.Action.RUN_COMMAND ).text());
+            }else{
+                player.spigot().sendMessage(new Clickable("    ").text()); 
+            }
         }
     }
 }

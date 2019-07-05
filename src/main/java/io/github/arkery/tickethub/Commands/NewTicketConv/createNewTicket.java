@@ -4,7 +4,10 @@ import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
+import io.github.arkery.tickethub.CustomUtils.Clickable;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
+import net.md_5.bungee.api.chat.ClickEvent;
+
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.MessagePrompt;
@@ -51,7 +54,26 @@ public class createNewTicket extends MessagePrompt {
                 );
 
                 this.plugin.getTicketSystem().addTicket(newTicket);
-                return ChatColor.GREEN + "\nTicket has now been created!" + " Ticket ID: " + ChatColor.AQUA + player.getName() + dateFormat.format(new Date());
+
+
+                player.spigot().sendMessage(new Clickable(
+                net.md_5.bungee.api.ChatColor.GREEN, 
+                    "\nTicket has now been created!" + " Ticket ID: " + player.getName() + dateFormat.format(new Date()),
+                newTicket.getTicketID() +
+                    "\n" + "Brief Details" +
+                    "\n" + "    Title: " + newTicket.getTicketTitle() +
+                    "\n" + "    Status: " + newTicket.getTicketStatus().toString() +
+                    "\n" + "    Priority: " + newTicket.getTicketPriority().toString() +
+                    "\n" + "    Category: " + newTicket.getTicketCategory() +
+                    "\n" + "    Last Updated On: " + dateFormat.format(newTicket.getTicketDateLastUpdated()) +
+                    "\n" + "    Date Created:" + dateFormat.format(newTicket.getTicketDateCreated()) +
+                    "\n" + "Click here to look at full ticket details and/or edit the ticket",
+                "/th details " + newTicket.getTicketID(),
+                ClickEvent.Action.RUN_COMMAND
+                ).text());
+
+                //return ChatColor.GREEN + "\nTicket has now been created!" + " Ticket ID: " + ChatColor.AQUA + player.getName() + dateFormat.format(new Date());
+                return ""; 
             }
             else{
                 return ChatColor.RED + "Unable to retrieve data for ticket creation";

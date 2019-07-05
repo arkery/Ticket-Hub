@@ -69,18 +69,28 @@ public class CommandTemplates{
             new TicketPageView().ticketPageView(player, page, displayTickets);
 
     //Navigation Arrows
-        if(page != 1 ){
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "<---", "Click here to go back to previous page", "/th " + args[0] + " " + (page--) + " " + setting.toString().toLowerCase(), ClickEvent.Action.RUN_COMMAND ).text());
-        }else{
-            player.spigot().sendMessage(new Clickable("    ").text()); 
+        int next = page + 1; 
+        int prev = page - 1; 
+        if(page !=1 && page != totalPages){
+
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", "/th " + args[0] + " " + prev + " " + setting.toString().toLowerCase(), ClickEvent.Action.RUN_COMMAND )
+            .add("         ")
+            .add(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", "/th " + args[0] + " " + next + " " + setting.toString().toLowerCase(), ClickEvent.Action.RUN_COMMAND ))
+            .text());
         }
-
-        player.spigot().sendMessage(new Clickable("                                                    ").text()); 
-
-        if(page != totalPages){
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", "/th " + args[0] + " " + (page++) + " " + setting.toString().toLowerCase(), ClickEvent.Action.RUN_COMMAND ).text());
-        }else{
-            player.spigot().sendMessage(new Clickable("    ").text()); 
+        else{
+            if(page != 1 ){
+                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", "/th " + args[0] + " " + prev + " " + setting.toString().toLowerCase(), ClickEvent.Action.RUN_COMMAND ).text());
+            }else{
+                player.spigot().sendMessage(new Clickable("    ").text()); 
+            }
+            
+            if(page != totalPages){
+                //player.spigot().sendMessage(new Clickable("").text()); 
+                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", "/th " + args[0] + " " + next + " " + setting.toString().toLowerCase(), ClickEvent.Action.RUN_COMMAND ).text());
+            }else{
+                player.spigot().sendMessage(new Clickable("    ").text()); 
+            }
         }
     }
 }

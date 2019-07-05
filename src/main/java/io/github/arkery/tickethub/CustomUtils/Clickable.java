@@ -64,16 +64,16 @@ public class Clickable {
     /**
      * Text with Color & Click Event Action + Hover Text Message
      * 
-     * @param Color         Text Color
+     * @param gray         Text Color
      * @param DisplayText   Text to display
      * @param HoverText     Text Upon Hover
      * @param Command       Command that is run or suggested
      * @param ClickAction   Action upon Click (Suggest or Run)
      */
-    public Clickable(ChatColor Color, String DisplayText, String HoverText, String Command, ClickEvent.Action ClickAction){
+    public Clickable(ChatColor gray, String DisplayText, String HoverText, String Command, ClickEvent.Action ClickAction){
 
         this.textComponent = new TextComponent(DisplayText);
-        this.textComponent.setColor(Color);
+        this.textComponent.setColor(gray);
         this.textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(HoverText).create()));
         this.textComponent.setClickEvent(new ClickEvent(ClickAction, Command));
     }
