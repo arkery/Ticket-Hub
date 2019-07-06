@@ -27,6 +27,7 @@ public class Hub {
     private DataCore storedData;
     private File ticketFolder;
     private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    private boolean debug = false;
 
     public Hub(File pluginFolder){
         this.ticketFolder = new File(pluginFolder + "/Tickets");
@@ -148,8 +149,8 @@ public class Hub {
 
     /**
      * Filters tickets based on conditions inputted by user
+     * Sequential loops O(n).
      *
-     * @throws IllegalArgumentException This is thrown when there are no conditions (conditions is empty)
      * @param conditions                Filtering conditions added by the user
      * @param filtering                 The tickets that are to be filtered. 
      * 
@@ -164,17 +165,118 @@ public class Hub {
      *        Options.TicketAssignedTo
      *
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
+     *                                  OR the original list if there were no conditions inputted.
      */
     public List<Ticket> filterTickets(EnumMap<Options, Object> conditions, List<Ticket> filtering){
+
+        List<Ticket> filtered = filtering;
+        List<Ticket> temp = new ArrayList<>();
+
+        if(filtered.isEmpty() && this.debug){
+            System.out.println("beginning of alg: empty");
+        }
+
+        if(conditions.isEmpty() || !(conditions instanceof Map)){
+            return filtering;
+        }
+
+        if(conditions.containsKey(Options.CREATOR)){
+
+            filtered = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
+        }
+        if(conditions.containsKey(Options.CATEGORY)){
+
+            for(Ticket i: filtered){
+                if(i.getTicketCategory().equals(conditions.get(Options.CATEGORY))){
+                    temp.add(i);
+                }
+            }
+
+            filtered = temp;
+            temp = new ArrayList<>();
+
+        }
+        if(conditions.containsKey(Options.STATUS)){
+
+            for(Ticket i: filtered){
+                if(i.getTicketStatus().equals(conditions.get(Options.STATUS))){
+                    temp.add(i);
+                }
+            }
+
+            filtered = temp;
+            temp = new ArrayList<>();
+
+        }
+        if(conditions.containsKey(Options.PRIORITY)){
+
+            for(Ticket i: filtered){
+                if(i.getTicketPriority().equals( conditions.get(Options.PRIORITY))){
+                    temp.add(i);
+                }
+            }
+            filtered = temp;
+            temp = new ArrayList<>();
+        }
+        if(conditions.containsKey(Options.CONTACT)){
+
+            for(Ticket i: filtered){
+                if(i.getTicketContacts().contains(conditions.get(Options.CONTACT))){
+                    temp.add(i);
+                }
+            }
+            filtered = temp;
+            temp = new ArrayList<>();
+        }
+        if(conditions.containsKey(Options.DATECREATED)){
+
+            //activeConditions.add(x -> x.getTicketDateCreated().equals(conditions.get(Options.DATECREATED)));
+            for(Ticket i: filtered){
+                if(dateFormat.format(i.getTicketDateCreated()).equals(dateFormat.format(conditions.get(Options.DATECREATED)))){
+                    temp.add(i);
+                }
+            }
+            filtered = temp;
+            temp = new ArrayList<>();
+        }
+        if(conditions.containsKey(Options.DATEUPDATED)){
+
+            //activeConditions.add(x -> x.getTicketDateLastUpdated().equals(conditions.get(Options.DATEUPDATED)));
+            for(Ticket i: filtered){
+                if(dateFormat.format(i.getTicketDateLastUpdated()).equals(dateFormat.format(conditions.get(Options.DATEUPDATED)))){
+                    temp.add(i);
+                }
+            }
+            filtered = temp;
+            temp = new ArrayList<>();
+        }
+        if(conditions.containsKey(Options.ASSIGNEDTO)){
+
+            for(Ticket i: filtered){
+                if(i.getTicketAssignedTo().equals(conditions.get(Options.ASSIGNEDTO))){
+                    temp.add(i);
+                }
+            }
+            filtered = temp;
+            temp = new ArrayList<>();
+        }
+
+        if(filtered.isEmpty() && this.debug){
+            System.out.println("end of alg: empty");
+        }
+
+        return filtered;
+
+        /*
         List<Predicate<Ticket>> activeConditions = new ArrayList<>();
         //List<Ticket> filtering = this.storedData.getAllTickets().getAll();
 
         if(conditions.isEmpty() || !(conditions instanceof Map)){
-            return filtering; 
+            return filtering;
         }
 
         if(conditions.containsKey(Options.CREATOR)){
-            
+
             //ticketsAsList = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
             activeConditions.add(x -> x.getTicketCreator().equals(conditions.get(Options.CREATOR)));
         }
@@ -206,6 +308,7 @@ public class Hub {
                 .stream()
                 .filter(activeConditions.stream().reduce(Predicate::and).orElse(x -> true))
                 .collect(Collectors.toList());
+         */
     }
 
 

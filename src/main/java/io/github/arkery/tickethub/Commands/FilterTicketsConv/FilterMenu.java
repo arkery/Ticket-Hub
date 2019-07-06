@@ -165,17 +165,14 @@ public class FilterMenu extends StringPrompt {
                 this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nExiting Filter View").text());
                 return END_OF_CONVERSATION; 
             default:
-                if(answer.charAt(1) == '/'){
-                    return END_OF_CONVERSATION; 
+
+                try{
+                    this.page = Integer.parseInt(answer);
+                }catch(NumberFormatException e){
+                    player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nInvalid Entry").text());
                 }
-                else{
-                    try{
-                        this.page = Integer.parseInt(answer); 
-                    }catch(NumberFormatException e){
-                        player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nInvalid Entry").text());
-                    }
-                    return this;
-                }
+                return this;
+
         }
     }
 

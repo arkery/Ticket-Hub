@@ -39,7 +39,7 @@ public class categoryFilter extends StringPrompt {
     public Prompt acceptInput(ConversationContext conv, String answer) {
         if(this.plugin.getCustomCategories().contains(answer.toLowerCase())){
 
-            filterConditions.put(Options.CATEGORY, answer.toLowerCase());
+            this.filterConditions.put(Options.CATEGORY, answer.toLowerCase());
             return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             
         }

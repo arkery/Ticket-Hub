@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.EnumMap;
 
 @AllArgsConstructor
@@ -44,7 +45,8 @@ public class datecreatedFilter extends StringPrompt {
                 return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             }
 
-            this.filterConditions.put(Options.DATECREATED, dateFormat.parse(answer));
+            Date dateCreatedCondition = dateFormat.parse(answer);
+            this.filterConditions.put(Options.DATECREATED, dateCreatedCondition);
             return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             
         }catch(ParseException e){

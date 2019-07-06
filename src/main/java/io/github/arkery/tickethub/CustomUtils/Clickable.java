@@ -64,7 +64,7 @@ public class Clickable {
     /**
      * Text with Color & Click Event Action + Hover Text Message
      * 
-     * @param gray         Text Color
+     * @param gray          Text Color
      * @param DisplayText   Text to display
      * @param HoverText     Text Upon Hover
      * @param Command       Command that is run or suggested
@@ -82,7 +82,7 @@ public class Clickable {
      * Add String to TextComponent (Like String's +)
      * 
      * @param text  String to Add
-     * @return      This Class 
+     * @return      This Object 
      */
     public Clickable add(String text){
         this.textComponent.addExtra(text);
@@ -93,7 +93,7 @@ public class Clickable {
      * Add TextComponents to each other
      * 
      * @param text  TextComponent to add
-     * @return      This Class
+     * @return      This Object
      */
     public Clickable add(TextComponent text){
         this.textComponent.addExtra(text);
@@ -104,7 +104,7 @@ public class Clickable {
      * Add Clickable to this Clickable
      *      
      * @param text  Clickable to add
-     * @return      This Class
+     * @return      This Object
      */
     public Clickable add(Clickable text){
         this.textComponent.addExtra(text.text());
@@ -114,7 +114,7 @@ public class Clickable {
     /**
      * Retrieve this Text component
      * 
-     * @return  This class's Text Component
+     * @return  This object's Text Component
      */
     public TextComponent text(){
         return this.textComponent;
