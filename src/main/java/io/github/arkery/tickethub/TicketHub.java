@@ -29,6 +29,7 @@ public class TicketHub extends JavaPlugin implements Listener {
 
     private Hub TicketSystem;
     private List<String> customCategories;
+    private int longestCategory; 
 
     @Override
     public void onEnable(){
@@ -97,12 +98,21 @@ public class TicketHub extends JavaPlugin implements Listener {
             }
 
             System.out.println("TicketHub: Loading Plugin Config");
+            
             StringTokenizer st = new StringTokenizer(categories);
 
             while(st.hasMoreTokens()){
                 categoriesFromConfig.add(st.nextToken().toLowerCase());
             }
             this.customCategories = categoriesFromConfig;
+
+            this.longestCategory = 0; 
+            
+            for(String i: this.customCategories){
+                if(i.length() > this.longestCategory){
+                    this.longestCategory = i.length(); 
+                }
+            }
 
         }catch(NullPointerException e) {
             e.printStackTrace();

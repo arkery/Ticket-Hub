@@ -200,7 +200,7 @@ public class FilterMenu extends StringPrompt {
             .add(new Clickable(ChatColor.GOLD, " Updated )", "Click here to sort by date updated", "updated", ClickEvent.Action.RUN_COMMAND))
             .add(new Clickable( ChatColor.AQUA, " [" + page + "/" + totalPages + "]"))
             .text());
-            new TicketPageView().ticketPageView(player, page, displayListView);
+            new TicketPageView().ticketPageView(player, page, displayListView, this.plugin.getLongestCategory());
 
     //Navigation Arrows
         int next = page++; 

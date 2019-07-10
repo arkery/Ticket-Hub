@@ -41,6 +41,5 @@ public class Ticket implements Serializable {
    private UUID ticketCreator;
    private Date ticketDateCreated;
    private Date ticketDateLastUpdated;
-   //private List<String> ticketComments;
 }
 

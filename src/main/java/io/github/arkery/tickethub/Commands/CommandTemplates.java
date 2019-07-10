@@ -66,7 +66,7 @@ public class CommandTemplates{
             .add(new Clickable(ChatColor.GOLD, " Updated )", "Click here to sort by date updated", "/th " + args[0] + " " + page + " updated", ClickEvent.Action.RUN_COMMAND))
             .add(new Clickable( ChatColor.AQUA, " [" + page + "/" + totalPages + "]"))
             .text());
-            new TicketPageView().ticketPageView(player, page, displayTickets);
+            new TicketPageView().ticketPageView(player, page, displayTickets, this.plugin.getLongestCategory());
 
     //Navigation Arrows
         int next = page + 1; 
