@@ -27,6 +27,7 @@ public class FilterMenu extends StringPrompt {
     private EnumMap<Options, Object> filterConditions;
     private DateSetting dateSetting;
     private int page; 
+    private int totalPages; 
 
     private static final Clickable onStatusCondition = new Clickable(ChatColor.GOLD, "Status", "Click here to remove Status Filter", "rstatus", ClickEvent.Action.RUN_COMMAND);
     private static final Clickable onPriorityCondition = new Clickable(ChatColor.GOLD, "Priority", "Click here to remove Priority Filter", "rpriority", ClickEvent.Action.RUN_COMMAND);
@@ -43,7 +44,8 @@ public class FilterMenu extends StringPrompt {
         this.displayList = displayList; 
         this.dateSetting = DateSetting.UPDATED; 
         this.filterConditions = new EnumMap<>(Options.class);
-        this.page = 1; 
+        this.page = 1;
+        this.totalPages = (int) Math.ceil((double) this.displayList.size() / 10); 
     }
 
     public FilterMenu(TicketHub plugin, Player player, EnumMap<Options, Object> filterConditions, DateSetting dateSetting, int page){
@@ -53,11 +55,17 @@ public class FilterMenu extends StringPrompt {
         this.filterConditions = filterConditions; 
         this.dateSetting = dateSetting; 
         this.page = page; 
+        this.totalPages = (int) Math.ceil((double) this.displayList.size() / 10);
     }
 
     @Override
     public String getPromptText(ConversationContext conv) {
         
+        if(this.page > this.totalPages){
+            this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry").text());
+            return ""; 
+        }
+
         Clickable conditions = new Clickable(""); 
         Clickable StatusCondition = new Clickable(ChatColor.GRAY, "Status", "Click here to apply Status Filter", "status", ClickEvent.Action.RUN_COMMAND);
         Clickable PriorityCondition = new Clickable(ChatColor.GRAY, "Priority", "Click here to apply Priority Filter", "priority", ClickEvent.Action.RUN_COMMAND);
@@ -183,8 +191,6 @@ public class FilterMenu extends StringPrompt {
             return;
         }
 
-        int totalPages = (int) Math.ceil((double) this.displayList.size() / 9);
-
         if(this.dateSetting.equals(DateSetting.CREATED)){
             displayListView.sort(Comparator.comparing(Ticket::getTicketDateCreated));
             Collections.reverse(displayListView);
@@ -196,30 +202,31 @@ public class FilterMenu extends StringPrompt {
             dateSetting = DateSetting.UPDATED; 
         }
        
-        player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n(Created", "Click here to sort by date created", "created", ClickEvent.Action.RUN_COMMAND )
+        player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n(Created |", "Click here to sort by date created", "created", ClickEvent.Action.RUN_COMMAND )
             .add(new Clickable(ChatColor.GOLD, " Updated )", "Click here to sort by date updated", "updated", ClickEvent.Action.RUN_COMMAND))
-            .add(new Clickable( ChatColor.AQUA, " [" + page + "/" + totalPages + "]"))
+            .add(new Clickable( ChatColor.AQUA, " [" + this.page + "/" + this.totalPages + "]"))
             .text());
-            new TicketPageView().ticketPageView(player, page, displayListView, this.plugin.getLongestCategory());
+            new TicketPageView().ticketPageView(player, page, displayListView);
 
     //Navigation Arrows
-        int next = page++; 
-        int prev = page--; 
-        if(page !=1 && page != totalPages){
-            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", "" + prev, ClickEvent.Action.RUN_COMMAND )
-            .add("      ")
-            .add(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", "" + next , ClickEvent.Action.RUN_COMMAND ))
+        int next = this.page + 1; //bungee does not play nice with direct increments in Clickable
+        int prev = this.page - 1; 
+        if(this.page !=1 && this.page != totalPages){
+
+            player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", String.valueOf(prev), ClickEvent.Action.RUN_COMMAND )
+            .add("         ")
+            .add(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", String.valueOf(next), ClickEvent.Action.RUN_COMMAND ))
             .text());
         }
         else{
-            if(page != 1 ){ 
-                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", "" + prev, ClickEvent.Action.RUN_COMMAND ).text());
+            if(this.page != 1 ){
+                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n<---", "Click here to go back to previous page", String.valueOf(prev), ClickEvent.Action.RUN_COMMAND ).text());
             }else{
                 player.spigot().sendMessage(new Clickable("    ").text()); 
             }
-    
-            if(page != totalPages){
-                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n--->", "Click here to go to next page", "" + next , ClickEvent.Action.RUN_COMMAND ).text());
+            
+            if(this.page != totalPages){
+                player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", String.valueOf(next) , ClickEvent.Action.RUN_COMMAND ).text());
             }else{
                 player.spigot().sendMessage(new Clickable("    ").text()); 
             }

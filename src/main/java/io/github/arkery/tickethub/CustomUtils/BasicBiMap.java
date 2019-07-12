@@ -118,11 +118,7 @@ public class BasicBiMap<A, B> implements Serializable {
      * @return    true if found, false if not
      */
     public boolean containsKey(A key){
-        if(this.KeyToValue.containsKey(key) && this.ValueToKey.containsValue(key)){
-            return true;
-        }else{
-            return false;
-        }
+        return this.KeyToValue.containsKey(key) && this.ValueToKey.containsValue(key);
     }
 
     /**
@@ -132,11 +128,7 @@ public class BasicBiMap<A, B> implements Serializable {
      * @return      true if found, false if not
      */
     public boolean containsValue(B value){
-        if(this.ValueToKey.containsKey(value) && this.KeyToValue.containsValue(value)){
-            return true;
-        }else{
-            return false;
-        }
+        return this.ValueToKey.containsKey(value) && this.KeyToValue.containsValue(value);
     }
 
     /**
@@ -160,8 +152,6 @@ public class BasicBiMap<A, B> implements Serializable {
         else{
             return false;
         }
-
-
     }
 
 }

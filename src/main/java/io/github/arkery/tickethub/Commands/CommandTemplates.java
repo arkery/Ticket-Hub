@@ -29,7 +29,7 @@ public class CommandTemplates{
      * @throws IndexOutOfBoundsException Thrown if They forgot parts of the command.
      * @throws NullPointerException      Thrown if accessing data is not initialized. 
      */
-    protected void TicketListView(Player player, String[] args,  List<Ticket> displayTickets) throws NumberFormatException, IndexOutOfBoundsException, NullPointerException {
+    protected void TicketListView(Player player, String[] args, List<Ticket> displayTickets) throws NumberFormatException, IndexOutOfBoundsException, NullPointerException {
 
         if(displayTickets.isEmpty()){
             player.spigot().sendMessage(new Clickable( ChatColor.RED, "\nThere are no tickets!").text());
@@ -38,11 +38,15 @@ public class CommandTemplates{
 
         DateSetting setting = DateSetting.UPDATED;
         int page = 1;
-        int totalPages = (int) Math.ceil((double) displayTickets.size() / 9);
+        int totalPages = (int) Math.ceil((double) displayTickets.size() / 10);
 
         //If player did include page number and sort setting when running command. 
         if(args.length > 1){
             page = Integer.parseInt(args[1]);
+
+            if(page > totalPages){
+                return; 
+            }
         }
 
         if(args.length == 3){
@@ -62,14 +66,14 @@ public class CommandTemplates{
             Collections.reverse(displayTickets);
         }
        
-        player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n(Created", "Click here to sort by date created", "/th " + args[0] + " " + page + " created", ClickEvent.Action.RUN_COMMAND )
+        player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\n(Created |", "Click here to sort by date created", "/th " + args[0] + " " + page + " created", ClickEvent.Action.RUN_COMMAND )
             .add(new Clickable(ChatColor.GOLD, " Updated )", "Click here to sort by date updated", "/th " + args[0] + " " + page + " updated", ClickEvent.Action.RUN_COMMAND))
             .add(new Clickable( ChatColor.AQUA, " [" + page + "/" + totalPages + "]"))
             .text());
-            new TicketPageView().ticketPageView(player, page, displayTickets, this.plugin.getLongestCategory());
+            new TicketPageView().ticketPageView(player, page, displayTickets);
 
     //Navigation Arrows
-        int next = page + 1; 
+        int next = page + 1; //bungee does not play nice with direct increments in Clickable
         int prev = page - 1; 
         if(page !=1 && page != totalPages){
 
@@ -86,7 +90,6 @@ public class CommandTemplates{
             }
             
             if(page != totalPages){
-                //player.spigot().sendMessage(new Clickable("").text()); 
                 player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "--->", "Click here to go to next page", "/th " + args[0] + " " + next + " " + setting.toString().toLowerCase(), ClickEvent.Action.RUN_COMMAND ).text());
             }else{
                 player.spigot().sendMessage(new Clickable("    ").text()); 

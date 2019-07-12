@@ -242,8 +242,8 @@ public class Commands extends CommandTemplates implements CommandExecutor {
     private void allTickets(Player player, String[] args) {
         if (player.hasPermission("tickethub.staff")) {
             try {
-                List<Ticket> tickets = plugin.getTicketSystem().getStoredData().getAllTickets().getAll();
 
+                List<Ticket> tickets = plugin.getTicketSystem().getStoredData().getAllTickets().getAll();
                 super.TicketListView(player, args, tickets);
 
             } catch (NumberFormatException e) {
@@ -299,22 +299,19 @@ public class Commands extends CommandTemplates implements CommandExecutor {
         if (player.hasPermission("tickethub.player")) {
             try {
                 Ticket displayTicket = super.plugin.getTicketSystem().getTicket(args[1]);
+                String ticketContactsAsString = "None";
+                String ticketCategoriesAsString = "";
 
                 if (!displayTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")) {
                     player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nYou don't have permissions to do this!").text());
                     return;
                 }
-
-                String ticketContactsAsString = "";
-                if (displayTicket.getTicketContacts().isEmpty() || displayTicket.getTicketContacts() == null) {
-                    ticketContactsAsString = "None";
-                } else {
+                if (!displayTicket.getTicketContacts().isEmpty() && displayTicket.getTicketContacts() != null) {
                     for (UUID i : displayTicket.getTicketContacts()) {
                         ticketContactsAsString += " " + super.plugin.getTicketSystem().getUserName(i);
                     }
                 }
-
-                String ticketCategoriesAsString = "";
+            
                 for (String i : super.plugin.getCustomCategories()) {
                     ticketCategoriesAsString += i + " ";
 
@@ -642,7 +639,7 @@ public class Commands extends CommandTemplates implements CommandExecutor {
                 }
 
                 super.plugin.getTicketSystem().saveTickets(args[1]);
-                super.plugin.getTicketSystem().saveTickets("");
+                super.plugin.getTicketSystem().saveTickets("tickets");
                 player.spigot().sendMessage(new Clickable(ChatColor.GREEN, "\nTickets saved as " + args[1] + ".json !").text());
 
             } catch (IndexOutOfBoundsException e) {

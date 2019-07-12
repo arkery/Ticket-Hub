@@ -1,7 +1,5 @@
 package io.github.arkery.tickethub.CustomUtils;
 
-import io.github.arkery.tickethub.Enums.Priority;
-import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
@@ -23,12 +21,13 @@ public class TicketPageView {
      * @param page           the command input
      * @param displayTickets list to display as
      */
-    public void ticketPageView(Player player, int page, List<Ticket> displayTickets, int longestCategory) {
+    public void ticketPageView(Player player, int page, List<Ticket> displayTickets) {
 
         DateFormat dateFormat = new SimpleDateFormat("MM.dd");
-        int totalPages = (int) Math.ceil((double) displayTickets.size() / 9);
-        int topOfPage = (page - 1) * 9;
-        int bottomOfPage = 9 * page - 1;
+        int entriesPerPage = 10; 
+        int totalPages = (int) Math.ceil((double) displayTickets.size() / entriesPerPage);
+        int topOfPage = (page - 1) * entriesPerPage;
+        int bottomOfPage = entriesPerPage * page - 1;
 
         if (page > 0 && page <= totalPages) {
             if (displayTickets.size() < topOfPage + 9) {
@@ -47,25 +46,22 @@ public class TicketPageView {
                 }
 
                 //Resize Priority
-                if(displayTickets.get(i).getTicketPriority().equals(Priority.LOW)){
-                    ticketPriority = displayTickets.get(i).getTicketPriority().toString() + "    ";
-                }
-                if(displayTickets.get(i).getTicketPriority().equals(Priority.HIGH)){
-                    ticketPriority = displayTickets.get(i).getTicketPriority().toString() + "   ";
+                if(ticketPriority.length() >= 3){
+                    ticketPriority = ticketPriority.substring(0, 3);
                 }
 
                 //Resize Status
-                if(displayTickets.get(i).getTicketStatus().equals(Status.OPENED)){
-                    ticketStatus = displayTickets.get(i).getTicketStatus().toString() + "      ";
-                }
-                if(displayTickets.get(i).getTicketStatus().equals(Status.RESOLVED)){
-                    ticketStatus = displayTickets.get(i).getTicketStatus().toString() + "   ";
+                if(ticketStatus.length() >=5){
+                    ticketStatus = ticketStatus.substring(0, 6);
                 }
 
                 //Resize Category
-                if(ticketCategory.length() < longestCategory){
-                    for(int j = 0 ; j < longestCategory - ticketCategory.length() + 1; i++){
-                        ticketCategory+= " "; 
+                if(ticketCategory.length() >=5){
+                    ticketCategory = ticketCategory.substring(0, 5);
+                }
+                if(ticketCategory.length() < 5){
+                    for(int j = 0; j < 5 - ticketCategory.length(); j++){
+                        ticketCategory += " "; 
                     }
                 }
 

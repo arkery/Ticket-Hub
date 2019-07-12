@@ -35,13 +35,10 @@ public class Hub {
     /**
      * saves the tickets offline
      *
-     * @param name
+     * @param name Name of .json file to be saved as
      */
     @Synchronized
     public void saveTickets(String name){
-        if(name.equalsIgnoreCase("")){
-            name = "tickets";
-        }
         try{
 
             if(!ticketFolder.isDirectory()){
@@ -68,6 +65,7 @@ public class Hub {
             }
 
             File storedTicketsFile = new File(ticketFolder + "/" + "tickets.json");
+            
             if(!storedTicketsFile.isFile()){
                 System.out.println("TicketHub: No Pre-existing Tickets Found");
                 return;
@@ -130,15 +128,6 @@ public class Hub {
 
             }
 
-            /*
-            //If the ticket status is set to close, immediately remove it.
-            if(checkingThisTicket.getTicketStatus().equals(Status.CLOSED)){
-                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey(),i.getValue()).getTicketPriority());
-                this.storedData.getAllTickets().remove(i.getKey(), i.getValue());
-                this.storedData.getTicketsToClose().remove(i.getKey());
-            }*/
-
-            //If the status of the ticket is no longer resolved
             if(!this.storedData.getAllTickets().get(i.getKey(),i.getValue()).getTicketStatus().equals(Status.RESOLVED)){
                 this.storedData.getTicketsToClose().remove(i.getKey());
             }
@@ -147,7 +136,7 @@ public class Hub {
 
     /**
      * Filters tickets based on conditions inputted by user
-     * Sequential loops O(n).
+     * Sequential loops O(n). Exception with Getting Ticket Creator. 
      *
      * @param conditions                Filtering conditions added by the user
      * @param filtering                 The tickets that are to be filtered. 
@@ -189,8 +178,7 @@ public class Hub {
                     temp.add(i);
                 }
             }
-
-            filtered = temp;
+           filtered = temp;
             temp = new ArrayList<>();
 
         }
@@ -351,7 +339,6 @@ public class Hub {
         return ticket;
     }
 
-
     /**
      * Add a ticket
      * Automatically tries to update ticket if it detects that ticket already exists.
@@ -385,11 +372,13 @@ public class Hub {
             this.storedData.updateStatusStats(this.storedData
                             .getAllTickets()
                             .get(ticket.getTicketCreator(), ticket.getTicketID()).getTicketStatus()
-                            , ticket.getTicketStatus());
+                            , 
+                            ticket.getTicketStatus());
             this.storedData.updatePriorityStats(this.storedData
                             .getAllTickets()
                             .get(ticket.getTicketCreator()
-                            , ticket.getTicketID()).getTicketPriority(),
+                            , 
+                            ticket.getTicketID()).getTicketPriority(),
                             ticket.getTicketPriority());
             this.storedData.getAllTickets().replace(ticket.getTicketCreator(), ticket.getTicketID(), ticket);
 
@@ -494,15 +483,8 @@ public class Hub {
      * @return          True if the have, False if they haven't
      */
     public boolean joinedTheServer(Player player){
-        if (this.storedData.getPlayerIdentifiers()
-                .containsValue(player.getUniqueId())
-                && this.storedData.getPlayerIdentifiers()
-                .containsKey(player.getName())) {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.storedData.getPlayerIdentifiers().containsValue(player.getUniqueId())
+                   && this.storedData.getPlayerIdentifiers().containsKey(player.getName());
     }
 
 
@@ -513,12 +495,7 @@ public class Hub {
      * @return                  True if the have, False if they haven't
      */
     public boolean joinedTheServer(String playerUsername){
-        if (this.storedData.getPlayerIdentifiers().containsKey(playerUsername)) {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.storedData.getPlayerIdentifiers().containsKey(playerUsername);
     }
 
     /**
@@ -528,14 +505,6 @@ public class Hub {
      * @return              True if the have, False if they haven't
      */
     public boolean joinedTheServer(UUID playerUUID){
-        if (this.storedData.getPlayerIdentifiers().containsValue(playerUUID)) {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.storedData.getPlayerIdentifiers().containsValue(playerUUID); 
     }
-
-
-
 }
