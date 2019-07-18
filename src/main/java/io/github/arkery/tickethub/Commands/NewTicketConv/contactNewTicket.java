@@ -8,19 +8,20 @@ import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class contactNewTicket extends StringPrompt {
 
     private TicketHub plugin;
     private boolean first;
-    private ArrayList<UUID> contacts;
+    private Set<UUID> contacts;
 
     public contactNewTicket(TicketHub plugin, boolean first){
         this.plugin = plugin;
         this.first = first;
-        this.contacts = new ArrayList<>();
+        this.contacts = new HashSet<>();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class contactNewTicket extends StringPrompt {
             }
 
         }else if(!answer.equalsIgnoreCase("none") && !first){
-            contacts = (ArrayList) conv.getSessionData(Options.CONTACTS);
+            contacts = (Set) conv.getSessionData(Options.CONTACTS);
 
             if(!this.plugin.getTicketSystem().getStoredData().getPlayerIdentifiers().containsKey(answer)) {
                 conv.getForWhom().sendRawMessage(ChatColor.RED + answer + " has not joined the server before!");

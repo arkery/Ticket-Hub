@@ -1,6 +1,6 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
-import io.github.arkery.tickethub.CustomUtils.Clickable;
+import io.github.arkery.tickethub.CustomUtils.ChatText;
 import io.github.arkery.tickethub.CustomUtils.Exceptions.PlayerNotFoundException;
 import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
@@ -27,7 +27,7 @@ public class contactFilter extends StringPrompt {
     @Override
     public String getPromptText(ConversationContext conv) {
 
-        this.player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nEnter the username of the contact person or enter 'cancel' to cancel adding").text());
+        this.player.spigot().sendMessage(new ChatText(ChatColor.AQUA, "\nEnter the username of the contact person or enter 'cancel' to cancel adding").text());
         return "";
     }
 
@@ -35,17 +35,15 @@ public class contactFilter extends StringPrompt {
     public Prompt acceptInput(ConversationContext conv, String answer) {
 
         try{
-
             if(answer.equalsIgnoreCase("cancel")){
-                this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Contact To Filter").text());
-                return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+                this.player.spigot().sendMessage(new ChatText(ChatColor.DARK_PURPLE, "\nBack to Filter View").text());
+                return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             }
-
             this.filterConditions.put(Options.CONTACT, this.plugin.getTicketSystem().getUserUUID(answer));
-            return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+            return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             
         }catch(PlayerNotFoundException e){
-            this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nThis person has not joined the server!").text());
+            this.player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nThis person has not joined the server!").text());
             return this;
         }
     }

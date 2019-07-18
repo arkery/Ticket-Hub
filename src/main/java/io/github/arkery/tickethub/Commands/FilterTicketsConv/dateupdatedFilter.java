@@ -1,6 +1,6 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
-import io.github.arkery.tickethub.CustomUtils.Clickable;
+import io.github.arkery.tickethub.CustomUtils.ChatText;
 import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
@@ -24,31 +24,28 @@ public class dateupdatedFilter extends StringPrompt {
     private Player player; 
     private EnumMap<Options, Object> filterConditions;
     private DateSetting dateSetting;
-    private int page; 
+    private int page;
+
     private static final DateFormat dateFormat = new SimpleDateFormat("MM.dd.yyyy");
 
     @Override
     public String getPromptText(ConversationContext conv) {
 
-        this.player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nEnter the date updated in the form MM.DD.YYYY or enter 'cancel' to cancel adding").text());
+        this.player.spigot().sendMessage(new ChatText(ChatColor.AQUA, "\nEnter the date updated in the form MM.DD.YYYY or enter 'cancel' to cancel adding").text());
         return "";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
-
         try{
-
             if(answer.equalsIgnoreCase("cancel")){
-                this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Assigned To Filter").text());
-                return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+                this.player.spigot().sendMessage(new ChatText(ChatColor.DARK_PURPLE, "\nBack to Filter View").text());
+                return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             }
-
             this.filterConditions.put(Options.DATEUPDATED, dateFormat.parse(answer));
-            return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
-            
+            return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
         }catch(ParseException e){
-            this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid date format!").text());
+            this.player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid date format!").text());
             return this;
         }
     }

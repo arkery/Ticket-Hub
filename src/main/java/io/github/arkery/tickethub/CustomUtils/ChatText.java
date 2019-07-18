@@ -10,7 +10,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 @NonNull @EqualsAndHashCode @NoArgsConstructor
-public class Clickable {
+public class ChatText {
 
     private TextComponent textComponent;
 
@@ -19,7 +19,7 @@ public class Clickable {
      * 
      * @param DisplayText Text to show
      */
-    public Clickable(String DisplayText){
+    public ChatText(String DisplayText){
         this.textComponent = new TextComponent(DisplayText);
     }
 
@@ -29,7 +29,7 @@ public class Clickable {
      * @param Color         Color to display it as
      * @param DisplayText   Text to display
      */
-    public Clickable(ChatColor Color, String DisplayText){
+    public ChatText(ChatColor Color, String DisplayText){
         this.textComponent = new TextComponent(DisplayText);
         this.textComponent.setColor(Color);
     }
@@ -41,7 +41,7 @@ public class Clickable {
      * @param DisplayText   Text to display
      * @param HoverText     Text shown upon hover
      */
-    public Clickable(ChatColor Color, String DisplayText, String HoverText){
+    public ChatText(ChatColor Color, String DisplayText, String HoverText){
         this.textComponent = new TextComponent(DisplayText);
         this.textComponent.setColor(Color);
         this.textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(HoverText).create()));
@@ -55,7 +55,7 @@ public class Clickable {
      * @param Command       Command Run or Suggested
      * @param ClickAction   Action upon Click (Suggest or Run)
      */
-    public Clickable(ChatColor Color, String DisplayText, String Command, ClickEvent.Action ClickAction){
+    public ChatText(ChatColor Color, String DisplayText, String Command, ClickEvent.Action ClickAction){
         this.textComponent = new TextComponent(DisplayText);
         this.textComponent.setColor(Color);
         this.textComponent.setClickEvent(new ClickEvent(ClickAction, Command));
@@ -70,7 +70,7 @@ public class Clickable {
      * @param Command       Command that is run or suggested
      * @param ClickAction   Action upon Click (Suggest or Run)
      */
-    public Clickable(ChatColor gray, String DisplayText, String HoverText, String Command, ClickEvent.Action ClickAction){
+    public ChatText(ChatColor gray, String DisplayText, String HoverText, String Command, ClickEvent.Action ClickAction){
 
         this.textComponent = new TextComponent(DisplayText);
         this.textComponent.setColor(gray);
@@ -84,7 +84,7 @@ public class Clickable {
      * @param text  String to Add
      * @return      This Object 
      */
-    public Clickable add(String text){
+    public ChatText add(String text){
         this.textComponent.addExtra(text);
         return this;
     }
@@ -95,18 +95,18 @@ public class Clickable {
      * @param text  TextComponent to add
      * @return      This Object
      */
-    public Clickable add(TextComponent text){
+    public ChatText add(TextComponent text){
         this.textComponent.addExtra(text);
         return this;
     }
 
     /**
-     * Add Clickable to this Clickable
+     * Add ChatText to this ChatText
      *      
-     * @param text  Clickable to add
+     * @param text  ChatText to add
      * @return      This Object
      */
-    public Clickable add(Clickable text){
+    public ChatText add(ChatText text){
         this.textComponent.addExtra(text.text());
         return this;
     }

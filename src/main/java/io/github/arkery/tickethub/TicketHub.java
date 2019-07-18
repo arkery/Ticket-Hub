@@ -5,6 +5,7 @@ import io.github.arkery.tickethub.CustomUtils.Exceptions.AlreadyExistsException;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketSystem.Hub;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,23 +26,28 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class TicketHub extends JavaPlugin implements Listener {
 
-    private Hub TicketSystem;
-    private List<String> customCategories;
+    private Hub ticketSystem = new Hub(); 
+    private Set<String> customCategories = new HashSet<>();
+    private String customCategoriesDisplay = "";
+    private final File ticketFolder = new File(this.getDataFolder() + "/Tickets"); 
+    private final String ticketFile = "tickets"; //This should not have .json
 
     @Override
     public void onEnable(){
-        System.out.println("Starting Plugin: TicketHub | By Arkery");
-        this.TicketSystem = new Hub(this.getDataFolder());
-        this.customCategories = new ArrayList<>();
-        this.createOrLoadConfig();
-        this.TicketSystem.loadTickets();
+        System.out.println("Starting Plugin: TicketHub");
+        this.LoadConfig();
+        this.ticketSystem.loadTickets(this.ticketFile, this.ticketFolder);
         this.dailyMaintenance();
         this.getCommand("th").setExecutor(new Commands(this));
-        //this.getCommand("ticketsystm").setExecutor(new Commands(this));
         Bukkit.getPluginManager().registerEvents(this, this);
         this.alreadyOnline();
+
+        for(String i : this.customCategories){
+            this.customCategoriesDisplay += " " +  i;
+        }
     }
 
     @Override
@@ -49,36 +55,33 @@ public class TicketHub extends JavaPlugin implements Listener {
         System.out.println("Stopping Plugin: TicketHub | By Arkery");
         this.saveConfig();
         System.out.println("TicketHub: Saving Tickets");
-        this.TicketSystem.saveTickets("");
+        this.ticketSystem.saveTickets(ticketFile, this.ticketFolder);
     }
 
-    /*
-    Every day:
-    - Check Resolved Tickets if they are past a week - if they are, delete them
-    - Save all the tickets
-    - Create a backup of all the tickets in the format of BackupMMddyyyy
+    /**
+     * Every day: Check resolved tickets if they are past one week - close them if they are. 
+     * Save Tickets and create a backup daily. 
      */
     private void dailyMaintenance(){
         Runnable job = () -> {
             DateFormat saveFormat = new SimpleDateFormat("MMddyyyy");
 
-            this.TicketSystem.saveTickets("tickets");
-            this.TicketSystem.saveTickets("Backup" + saveFormat.format(new Date()));
-            this.TicketSystem.checkTickets();
+            this.ticketSystem.saveTickets(this.ticketFile, this.ticketFolder); 
+            this.ticketSystem.saveTickets(saveFormat.format(new Date()), new File(this.ticketFolder + "/Backups"));
+            this.ticketSystem.checkTickets();
         };
         ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
         ScheduledFuture<?> scheduledFuture = service.scheduleAtFixedRate(job, 0, 1, TimeUnit.DAYS);
     }
 
-    /*
-    Creates default config file on initial startup with three categories: category1, category2 and category3
-    If there is pre-existing config - load it into customCategories;
+  
+    /**
+     * Load config. Create default if it doesn't exist
      */
-    private void createOrLoadConfig(){
+    private void LoadConfig(){
         try{
             File file = new File(getDataFolder(), "config.yml");
-            List<String> categoriesFromConfig = new ArrayList<>();
-
+            //List<String> categoriesFromConfig = new ArrayList<>();
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
@@ -87,27 +90,24 @@ public class TicketHub extends JavaPlugin implements Listener {
                 saveDefaultConfig();
                 this.getConfig().set("categories", "category1 category2 category3");
                 saveConfig();
-
             }
 
             String categories = this.getConfig().getString("categories");
-
             if(categories.equals("") || categories.isEmpty()){
                 this.getConfig().set("categories", "category1 category2 category3");
             }
 
-            System.out.println("TicketHub: Loading Plugin Config");
+            System.out.println("[TicketHub] Loading Plugin Config");
             
             StringTokenizer st = new StringTokenizer(categories);
-
             while(st.hasMoreTokens()){
-                categoriesFromConfig.add(st.nextToken().toLowerCase());
+                this.customCategories.add(st.nextToken().toLowerCase());
             }
-            this.customCategories = categoriesFromConfig;
+            //this.customCategories = categoriesFromConfig;
 
         }catch(NullPointerException e) {
             e.printStackTrace();
-            getLogger().info("Unable to generate Config");
+            System.out.println("[TicketHub] Unable to create config file");
         }
     }
 
@@ -115,29 +115,26 @@ public class TicketHub extends JavaPlugin implements Listener {
     public void playerJoin(PlayerJoinEvent player){
 
         //<String, Value>
-        if(!this.TicketSystem.joinedTheServer(player.getPlayer())){
+        if(!this.ticketSystem.joinedTheServer(player.getPlayer())){
             try{
-                this.TicketSystem.addUser(player.getPlayer().getName(), player.getPlayer().getUniqueId());
+                this.ticketSystem.addUser(player.getPlayer().getName(), player.getPlayer().getUniqueId());
             }catch(AlreadyExistsException e){
                 System.out.println("playerJoin Event attempting to add player despite player already existing!");
             }
-        }else if(this.TicketSystem.joinedTheServer(player.getPlayer())){
+        }else if(this.ticketSystem.joinedTheServer(player.getPlayer())){
             //If they changed their name....
-            this.TicketSystem.maybeUpdateUser(player.getPlayer());
+            this.ticketSystem.maybeUpdateUser(player.getPlayer());
         }
-
 
         //On join, if they are staff - ping them how many tickets they have assigned to them.
         if(player.getPlayer().hasPermission("tickethub.staff")){
 
             EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
             conditions.put(Options.ASSIGNEDTO, player.getPlayer().getUniqueId());
-            int assignedTickets = this.TicketSystem.filterTickets(conditions, this.TicketSystem.getStoredData().getAllTickets().getAll()).size();
-            
-            if( this.TicketSystem.filterTickets(conditions, this.TicketSystem.getStoredData().getAllTickets().getAll()).isEmpty()){
-                assignedTickets = 0;
-            }
-
+            int assignedTickets = 0; 
+            try{
+                assignedTickets = this.ticketSystem.filterTickets(conditions).size(); 
+            }catch(NullPointerException e){ assignedTickets = 0; }
             player.getPlayer().sendMessage(ChatColor.AQUA + "TicketHub: You have " + assignedTickets + " Tickets Assigned to You");
         }
     }
@@ -148,15 +145,15 @@ public class TicketHub extends JavaPlugin implements Listener {
      */
     private void alreadyOnline(){
         for(Player player : Bukkit.getOnlinePlayers()){
-            if(!this.TicketSystem.joinedTheServer(player.getPlayer())){
+            if(!this.ticketSystem.joinedTheServer(player.getPlayer())){
                 try{
-                    this.TicketSystem.addUser(player.getPlayer().getName(), player.getPlayer().getUniqueId());
+                    this.ticketSystem.addUser(player.getPlayer().getName(), player.getPlayer().getUniqueId());
                 }catch(AlreadyExistsException e){
                     System.out.println("playerJoin Event attempting to add player despite player already existing!");
                 }
-            }else if(this.TicketSystem.joinedTheServer(player.getPlayer())){
+            }else if(this.ticketSystem.joinedTheServer(player.getPlayer())){
                 //If they changed their name....
-                this.TicketSystem.maybeUpdateUser(player.getPlayer());
+                this.ticketSystem.maybeUpdateUser(player.getPlayer());
             }
         }
     }

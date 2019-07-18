@@ -21,7 +21,7 @@
 
     <groupId>io.github.arkery</groupId>
     <artifactId>TicketHub</artifactId>
-    <version>0.5</version>
+    <version>0.7</version>
 
     <repositories>
         <repository>
@@ -49,6 +49,7 @@
             <artifactId>gson</artifactId>
             <version>2.8.5</version>
         </dependency>
+
     </dependencies>
 </project>
 

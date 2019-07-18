@@ -8,24 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-/*
-An Individual Ticket - All info on the ticket:
-
-Ticket ID
-Title
-Priority - LOW, MEDIUM, HIGH, CRITICAL
-Category - Custom Categories by User input
-Additional Contact - player UUID
-Description
-Assigned To - player UUID
-Creator - player UUID
-Date Created - the date the ticket was made
-Date Updated - the last time the ticket was updated/edited
-*/
+import java.util.*;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Ticket implements Serializable {
@@ -35,7 +18,7 @@ public class Ticket implements Serializable {
    private Status ticketStatus;
    private String ticketCategory;
    private Priority ticketPriority;
-   private List<UUID> ticketContacts;
+   private Set<UUID> ticketContacts;
    private String ticketDescription;
    private UUID ticketAssignedTo;
    private UUID ticketCreator;

@@ -9,6 +9,7 @@ import io.github.arkery.tickethub.CustomUtils.Exceptions.TicketNotFoundException
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Status;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Synchronized;
 import org.bukkit.entity.Player;
@@ -20,76 +21,73 @@ import java.util.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Hub {
 
-    private DataCore storedData;
-    private File ticketFolder;
+    private HubCore storedData = new HubCore();
     private static final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-    private boolean debug = false;
-
-    public Hub(File pluginFolder){
-        this.ticketFolder = new File(pluginFolder + "/Tickets");
-        this.storedData = new DataCore();
-    }
 
     /**
-     * saves the tickets offline
-     *
-     * @param name Name of .json file to be saved as
+     * Saves tickets into file
+     * 
+     * @param fileName The name of the save file
+     * @param saveLocationFolder The folder location that the save file is contained in
      */
     @Synchronized
-    public void saveTickets(String name){
+    public void saveTickets(String fileName, File saveLocationFolder){
         try{
 
-            if(!ticketFolder.isDirectory()){
-                System.out.println("TicketHub: Creating the Ticket Folder");
-                ticketFolder.mkdir();
+            if(!saveLocationFolder.isDirectory()){
+                System.out.println("[TicketHub] Creating Folder");
+                saveLocationFolder.mkdir();
             }
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            FileWriter save = new FileWriter(new File(ticketFolder + "/" + name + ".json"));
+            FileWriter save = new FileWriter(new File(saveLocationFolder + "/" + fileName + ".json"));
             save.write(gson.toJson(storedData));
             save.close();
-        }catch(IOException e) {e.printStackTrace();}
+        }catch(IOException e) {System.out.println("[TicketHub] Failed to save file"); e.printStackTrace();}
     }
 
     /**
-     * Loads any existing tickets into the plugin
+     * Loads File into Plugin (save)
+     * 
+     * @param fileName the file to be loaded - should be "tickets" + .json
+     * @param loadLocationFolder the folder that the file is in
      */
-    public void loadTickets(){
+    public void loadTickets(String fileName, File loadLocationFolder){
         try{
 
-            if(!ticketFolder.isDirectory()){
-                System.out.println("TicketHub: Creating the Ticket Folder");
-                ticketFolder.mkdir();
+            if(!loadLocationFolder.isDirectory()){
+                System.out.println("[TicketHub] Creating the Ticket Folder");
+                loadLocationFolder.mkdir();
             }
 
-            File storedTicketsFile = new File(ticketFolder + "/" + "tickets.json");
+            File storedTicketsFile = new File(loadLocationFolder + "/" + "tickets.json");
             
             if(!storedTicketsFile.isFile()){
-                System.out.println("TicketHub: No Pre-existing Tickets Found");
+                System.out.println("[TicketHub] No Pre-existing Tickets Found");
                 return;
             }
-            else if(storedTicketsFile.length()== 0){
-                System.out.println("TicketHub: File is empty! Ignoring Loading");
+            if(storedTicketsFile.length()== 0){
+                System.out.println("[TicketHub] File is empty! Ignoring Loading");
                 return;
             }
 
             //Deserialize the ticketHub
-            System.out.println("TicketHub: Loading in Ticket Data");
+            System.out.println("[TicketHub] Loading in Ticket Data");
             FileReader savedTickets = new FileReader(storedTicketsFile);
             Gson gson = new Gson();
-            this.storedData = gson.fromJson(savedTickets, DataCore.class);
+            this.storedData = gson.fromJson(savedTickets, HubCore.class);
 
         }catch(FileNotFoundException e) {
-            System.out.println("TicketHub: Folder not found, creating Folder");
-            ticketFolder.mkdir();
+            System.out.println("[TicketHub] Folder not found, creating Folder");
+            loadLocationFolder.mkdir();
         }catch(JsonIOException e){
-            System.out.println("TicketHub: Unable to load in Tickets");
+            System.out.println("[TicketHub] Unable to load in Tickets");
             e.printStackTrace();
         }
     }
-
 
     /**
      * Checks all tickets that are stored and deletes the ones that have been resolved for more than a week
@@ -99,7 +97,7 @@ public class Hub {
     public void checkTickets(){
 
         if(this.storedData.getTicketsToClose().isEmpty()){
-            System.out.println("TicketHub: No tickets to delete");
+            System.out.println("[TicketHub] No tickets to delete");
             return;
         }
 
@@ -107,28 +105,23 @@ public class Hub {
 
             //x - uuid
             //y - string
-            Ticket checkingThisTicket = this.storedData.getAllTickets().get(i.getKey(), i.getValue());
+            Ticket checkingThisTicket = this.storedData.getStoredTickets().get(i.getValue());
             Calendar c = Calendar.getInstance();
             c.setTime(checkingThisTicket.getTicketDateLastUpdated());
             c.add(Calendar.DATE, 7);
 
             //If after seven days, the ticket is resolved and there are no updates - remove it.
-            if(checkingThisTicket.getTicketStatus().equals(Status.RESOLVED) &&
-                    dateFormat.format(c.getTime()).equals(dateFormat.format(new Date()))){
-
-                //Decrement Hub Statistic Values since ticket is being removed
-                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(i.getKey(), i.getValue()).getTicketPriority());
-                this.storedData.removeStatusStats(this.storedData.getAllTickets().get(i.getKey(), i.getValue()).getTicketStatus());
+            if(checkingThisTicket.getTicketStatus().equals(Status.RESOLVED) && dateFormat.format(c.getTime()).equals(dateFormat.format(new Date()))){
 
                 //Remove the ticket
-                this.storedData.getAllTickets().remove(i.getKey(), i.getValue());
+                this.storedData.getStoredTickets().remove(i.getKey(), i.getValue());
 
                 //Now that it has been removed from the hub, remove it from the list of tickets to close
                 this.storedData.getTicketsToClose().remove(i.getKey());
-
             }
 
-            if(!this.storedData.getAllTickets().get(i.getKey(),i.getValue()).getTicketStatus().equals(Status.RESOLVED)){
+            //If the status is no longer set to resolved, remove it from the list of tickets to close
+            if(!this.storedData.getStoredTickets().get(i.getValue()).getTicketStatus().equals(Status.RESOLVED)){
                 this.storedData.getTicketsToClose().remove(i.getKey());
             }
         }
@@ -136,10 +129,9 @@ public class Hub {
 
     /**
      * Filters tickets based on conditions inputted by user
-     * Sequential loops O(n). Exception with Getting Ticket Creator. 
      *
      * @param conditions                Filtering conditions added by the user
-     * @param filtering                 The tickets that are to be filtered. 
+     * @throws NullPointerException     Thrown if there are no tickets or if for some reason tickets aren't initialized. 
      * 
      * Possible Filter Conditions:
      *        Options.TicketCreator
@@ -154,147 +146,210 @@ public class Hub {
      * @return                          An UNSORTED List containing tickets that fulfill the conditions inputted by the user
      *                                  OR the original list if there were no conditions inputted.
      */
-    public List<Ticket> filterTickets(EnumMap<Options, Object> conditions, List<Ticket> filtering){
+    public List<Ticket> filterTickets(EnumMap<Options, Object> conditions) throws NullPointerException {
 
-        List<Ticket> filtered = filtering;
-        List<Ticket> temp = new ArrayList<>();
+        List<Ticket> filtered = new ArrayList<>(this.storedData.getStoredTickets().values()); 
 
-        if(filtered.isEmpty() && this.debug){
-            System.out.println("beginning of alg: empty");
-        }
+        if(conditions.isEmpty() || conditions == null){ return filtered; }
 
-        if(conditions.isEmpty() || !(conditions instanceof Map)){
-            return filtering;
-        }
-
-        if(conditions.containsKey(Options.CREATOR)){
-
-            filtered = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
-        }
-        if(conditions.containsKey(Options.CATEGORY)){
-
-            for(Ticket i: filtered){
-                if(i.getTicketCategory().equals(conditions.get(Options.CATEGORY))){
-                    temp.add(i);
-                }
+        for(Map.Entry<Options, Object> i: conditions.entrySet()){
+            
+            if(filtered.size() < 10000){
+                filtered = this.filterSingleProcess(i.getKey(), i.getValue(), filtered);
             }
-           filtered = temp;
-            temp = new ArrayList<>();
-
-        }
-        if(conditions.containsKey(Options.STATUS)){
-
-            for(Ticket i: filtered){
-                if(i.getTicketStatus().equals(conditions.get(Options.STATUS))){
-                    temp.add(i);
-                }
+            else{
+                filtered = this.filterMultiProcess(i.getKey(), i.getValue(), filtered);
             }
-
-            filtered = temp;
-            temp = new ArrayList<>();
-
-        }
-        if(conditions.containsKey(Options.PRIORITY)){
-
-            for(Ticket i: filtered){
-                if(i.getTicketPriority().equals( conditions.get(Options.PRIORITY))){
-                    temp.add(i);
-                }
-            }
-            filtered = temp;
-            temp = new ArrayList<>();
-        }
-        if(conditions.containsKey(Options.CONTACT)){
-
-            for(Ticket i: filtered){
-                if(i.getTicketContacts().contains(conditions.get(Options.CONTACT))){
-                    temp.add(i);
-                }
-            }
-            filtered = temp;
-            temp = new ArrayList<>();
-        }
-        if(conditions.containsKey(Options.DATECREATED)){
-
-            //activeConditions.add(x -> x.getTicketDateCreated().equals(conditions.get(Options.DATECREATED)));
-            for(Ticket i: filtered){
-                if(dateFormat.format(i.getTicketDateCreated()).equals(dateFormat.format(conditions.get(Options.DATECREATED)))){
-                    temp.add(i);
-                }
-            }
-            filtered = temp;
-            temp = new ArrayList<>();
-        }
-        if(conditions.containsKey(Options.DATEUPDATED)){
-
-            //activeConditions.add(x -> x.getTicketDateLastUpdated().equals(conditions.get(Options.DATEUPDATED)));
-            for(Ticket i: filtered){
-                if(dateFormat.format(i.getTicketDateLastUpdated()).equals(dateFormat.format(conditions.get(Options.DATEUPDATED)))){
-                    temp.add(i);
-                }
-            }
-            filtered = temp;
-            temp = new ArrayList<>();
-        }
-        if(conditions.containsKey(Options.ASSIGNEDTO)){
-
-            for(Ticket i: filtered){
-                if(i.getTicketAssignedTo().equals(conditions.get(Options.ASSIGNEDTO))){
-                    temp.add(i);
-                }
-            }
-            filtered = temp;
-            temp = new ArrayList<>();
         }
 
-        if(filtered.isEmpty() && this.debug){
-            System.out.println("end of alg: empty");
+        if(filtered.isEmpty() || filtered == null){
+            throw new NullPointerException(); 
         }
 
         return filtered;
+    }
 
-        /*
-        List<Predicate<Ticket>> activeConditions = new ArrayList<>();
-        //List<Ticket> filtering = this.storedData.getAllTickets().getAll();
+    /**
+     * Helper to filter tickets. Single Thread. Linear Search Filter.
+     *
+     * @param filterOption      Condition to filter
+     * @param filterOptionValue Value stored at condition
+     * @param toBeFiltered      List to filter
+     * @return                  The filtered list (unordered)
+     */
+    private List<Ticket> filterSingleProcess(Options filterOption, Object filterOptionValue, List<Ticket> toBeFiltered){
+        List<Ticket> temp = new ArrayList<>();
 
-        if(conditions.isEmpty() || !(conditions instanceof Map)){
-            return filtering;
+        for(Ticket i: toBeFiltered){
+            switch(filterOption){
+                case CREATOR:
+                    if(i.getTicketCreator().equals(filterOptionValue)){
+                        temp.add(i);
+                    }
+                case CATEGORY:
+                    if(i.getTicketCategory().equals(filterOptionValue)){
+                        temp.add(i);
+                    }
+                    break;
+                case STATUS:
+                    if(i.getTicketStatus().equals(filterOptionValue)){
+                        temp.add(i);
+                    }
+                    break;
+                case PRIORITY:
+                    if(i.getTicketPriority().equals(filterOptionValue)){
+                        temp.add(i);
+                    }
+                    break;
+                case CONTACT:
+                    if(i.getTicketContacts().contains(filterOptionValue)){
+                        temp.add(i);
+                    }
+                    break;
+                case DATECREATED:
+                    if(dateFormat.format(i.getTicketDateCreated()).equals(dateFormat.format(filterOptionValue))){
+                        temp.add(i);
+                    }
+                    break;
+                case DATEUPDATED:
+                    if(dateFormat.format(i.getTicketDateLastUpdated()).equals(dateFormat.format(filterOptionValue))){
+                        temp.add(i);
+                    }
+                    break;
+                case ASSIGNEDTO:
+                    if(i.getTicketAssignedTo().equals(filterOptionValue)){
+                        temp.add(i);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
-        if(conditions.containsKey(Options.CREATOR)){
+        return temp;
+    }
 
-            //ticketsAsList = this.storedData.getAllTickets().getAllX((UUID) conditions.get(Options.CREATOR));
-            activeConditions.add(x -> x.getTicketCreator().equals(conditions.get(Options.CREATOR)));
-        }
-        else if(conditions.containsKey(Options.CATEGORY)){
-            activeConditions.add(x -> x.getTicketCategory().equals(conditions.get(Options.CATEGORY)));
-        }
-        else if(conditions.containsKey(Options.STATUS)){
-            activeConditions.add(x -> x.getTicketStatus().equals(conditions.get(Options.STATUS)));
-        }
-        else if(conditions.containsKey(Options.PRIORITY)){
-            activeConditions.add(x -> x.getTicketPriority().equals(conditions.get(Options.PRIORITY)));
-        }
-        else if(conditions.containsKey(Options.CONTACT)){
-            activeConditions.add(x -> x.getTicketContacts().contains(conditions.get(Options.CONTACT)));
-        }
-        else if(conditions.containsKey(Options.DATECREATED)){
-            //activeConditions.add(x -> x.getTicketDateCreated().equals(conditions.get(Options.DATECREATED)));
-            activeConditions.add(x -> dateFormat.format(x.getTicketDateCreated()).equals(dateFormat.format(conditions.get(Options.DATECREATED))));
-        }
-        else if(conditions.containsKey(Options.DATEUPDATED)){
-            //activeConditions.add(x -> x.getTicketDateLastUpdated().equals(conditions.get(Options.DATEUPDATED)));
-            activeConditions.add(x -> dateFormat.format(x.getTicketDateLastUpdated()).equals(dateFormat.format(conditions.get(Options.DATEUPDATED))));
-        }
-        else if(conditions.containsKey(Options.ASSIGNEDTO)){
-            activeConditions.add(x -> x.getTicketAssignedTo().equals(conditions.get(Options.ASSIGNEDTO)));
+
+    /**
+     * Helper to filter Tickets. Multi Threaded.
+     * 
+     * @param filterOption      Condition to filter
+     * @param filterOptionValue Value stored at the Condition
+     * @param toBeFiltered      List to filter
+     * @return                  The filtered list (unordered)
+     */
+    private List<Ticket> filterMultiProcess(Options filterOption, Object filterOptionValue, List<Ticket> toBeFiltered){
+        List<Ticket> temp = Collections.synchronizedList(new ArrayList<>());  
+
+        Thread part1 = new Thread(() -> {
+            for(int i = 0; i < toBeFiltered.size()/2; i++){
+                switch(filterOption){
+                    case CREATOR:
+                        if(toBeFiltered.get(i).getTicketCreator().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                    case CATEGORY:
+                        if(toBeFiltered.get(i).getTicketCategory().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case STATUS:
+                        if(toBeFiltered.get(i).getTicketStatus().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case PRIORITY:
+                        if(toBeFiltered.get(i).getTicketPriority().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case CONTACT:
+                        if(toBeFiltered.get(i).getTicketContacts().contains(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case DATECREATED:
+                        if(dateFormat.format(toBeFiltered.get(i).getTicketDateCreated()).equals(dateFormat.format(filterOptionValue))){
+                            temp.add(toBeFiltered.get(i)); ;
+                        }
+                        break;
+                    case DATEUPDATED:
+                        if(dateFormat.format(toBeFiltered.get(i).getTicketDateLastUpdated()).equals(dateFormat.format(filterOptionValue))){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case ASSIGNEDTO:
+                        if(toBeFiltered.get(i).getTicketAssignedTo().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        Thread part2 = new Thread(() -> {
+            for(int i = (toBeFiltered.size()/2) + 1; i < toBeFiltered.size(); i++){
+                switch(filterOption){
+                    case CREATOR:
+                        if(toBeFiltered.get(i).getTicketCreator().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                    case CATEGORY:
+                        if(toBeFiltered.get(i).getTicketCategory().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case STATUS:
+                        if(toBeFiltered.get(i).getTicketStatus().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case PRIORITY:
+                        if(toBeFiltered.get(i).getTicketPriority().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case CONTACT:
+                        if(toBeFiltered.get(i).getTicketContacts().contains(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case DATECREATED:
+                        if(dateFormat.format(toBeFiltered.get(i).getTicketDateCreated()).equals(dateFormat.format(filterOptionValue))){
+                            temp.add(toBeFiltered.get(i)); ;
+                        }
+                        break;
+                    case DATEUPDATED:
+                        if(dateFormat.format(toBeFiltered.get(i).getTicketDateLastUpdated()).equals(dateFormat.format(filterOptionValue))){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    case ASSIGNEDTO:
+                        if(toBeFiltered.get(i).getTicketAssignedTo().equals(filterOptionValue)){
+                            temp.add(toBeFiltered.get(i)); 
+                        }
+                        break;
+                    default:
+                        break; 
+                }
+            }
+        });
+
+        part1.start();
+        part2.start(); 
+
+        try{
+            part1.join(); 
+            part2.join(); 
+        }catch(InterruptedException e){
+            System.out.println("[TicketHub] Error, Plugin failed to filter list. Sending back original List");
+            Thread.currentThread().interrupt();
+            return toBeFiltered; 
         }
 
-        return filtering
-                .stream()
-                .filter(activeConditions.stream().reduce(Predicate::and).orElse(x -> true))
-                .collect(Collectors.toList());
-         */
+        return temp; 
     }
 
 
@@ -306,37 +361,10 @@ public class Hub {
      * @return                          The ticket that the player is looking for
      */
     public Ticket getTicket(String TicketID) throws TicketNotFoundException{
-        boolean found = true;
-        Ticket ticket = new Ticket();
-        String playerName = TicketID.substring(0, TicketID.length() - 12);
-        UUID playerUUID = new UUID(0L, 0L);
-
-        if(!this.storedData.getPlayerIdentifiers().containsKey(playerName)){
-            found = false;
+        if(!this.storedData.getStoredTickets().containsKey(TicketID)){
+            throw new TicketNotFoundException(); 
         }
-        else{
-            playerUUID = this.storedData.getPlayerIdentifiers().getValue(playerName);
-        }
-
-        if(!this.storedData.getAllTickets().contains(playerUUID, TicketID)){
-            found = false;
-        }
-
-        //Try backup linear search.
-        if(!found){
-
-            for(Ticket i: this.storedData.getAllTickets().getAll()){
-                if(i.getTicketID().equals(TicketID)){
-                    ticket = i;
-                    return ticket;
-                }
-            }
-            throw new TicketNotFoundException("Data not found");
-        }
-
-        ticket = this.storedData.getAllTickets().get(playerUUID, TicketID);
-
-        return ticket;
+        return this.storedData.getStoredTickets().get(TicketID); 
     }
 
     /**
@@ -346,16 +374,14 @@ public class Hub {
      * @param newTicket Ticket to add
      */
     public void addTicket(Ticket newTicket){
-        if(!this.storedData.getAllTickets().contains(newTicket.getTicketCreator(), newTicket.getTicketID())){
-            this.storedData.getAllTickets().add(newTicket.getTicketCreator(), newTicket.getTicketID(), newTicket);
-            this.storedData.addNewPriorityStats(newTicket.getTicketPriority());
-            this.storedData.addnewStatusStats(newTicket.getTicketStatus());
+        if(!this.storedData.getStoredTickets().containsKey(newTicket.getTicketID())){
+            this.storedData.getStoredTickets().put(newTicket.getTicketID(), newTicket);
         }
         else{
             try{
                 this.updateTicket(newTicket);
             }catch(TicketNotFoundException e){
-                System.out.println("Plugin Attempted to Update Ticket when TicketID doesn't exist!");
+                System.out.println("[TicketHub] Plugin Attempted to Update Ticket when TicketID doesn't exist!");
             }
         }
     }
@@ -367,21 +393,8 @@ public class Hub {
      * @throws TicketNotFoundException  Thrown if the existing ticket is not found;
      */
     public void updateTicket(Ticket ticket) throws TicketNotFoundException{
-        if(this.storedData.getAllTickets().contains(ticket.getTicketCreator(), ticket.getTicketID())){
-
-            this.storedData.updateStatusStats(this.storedData
-                            .getAllTickets()
-                            .get(ticket.getTicketCreator(), ticket.getTicketID()).getTicketStatus()
-                            , 
-                            ticket.getTicketStatus());
-            this.storedData.updatePriorityStats(this.storedData
-                            .getAllTickets()
-                            .get(ticket.getTicketCreator()
-                            , 
-                            ticket.getTicketID()).getTicketPriority(),
-                            ticket.getTicketPriority());
-            this.storedData.getAllTickets().replace(ticket.getTicketCreator(), ticket.getTicketID(), ticket);
-
+        if(this.storedData.getStoredTickets().containsKey(ticket.getTicketID())){
+            this.storedData.getStoredTickets().replace(ticket.getTicketID(), ticket);
         }
         else{
             throw new TicketNotFoundException();
@@ -395,19 +408,8 @@ public class Hub {
      * @throws TicketNotFoundException  Thrown if plugin can't find the given Ticket ID:
      */
     public void removeTicket(String ticketID) throws TicketNotFoundException{
-        String playername = ticketID.substring(0, ticketID.length() - 12);
-        if(this.storedData.getPlayerIdentifiers().containsKey(playername)){
-           
-            if(this.storedData.getAllTickets().contains(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID)){
-            
-                Ticket removingTicket = this.getTicket(ticketID);
-                this.storedData.removeStatusStats(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketStatus());
-                this.storedData.removePriorityStats(this.storedData.getAllTickets().get(this.storedData.getPlayerIdentifiers().getValue(playername), ticketID).getTicketPriority());
-                this.storedData.getAllTickets().remove(removingTicket.getTicketCreator(), removingTicket.getTicketID());
-            }
-            else{
-                throw new TicketNotFoundException();
-            }
+        if(this.storedData.getStoredTickets().containsKey(ticketID)){
+            this.storedData.getStoredTickets().remove(ticketID); 
         }
         else{
             throw new TicketNotFoundException();
@@ -474,7 +476,6 @@ public class Hub {
             this.storedData.getPlayerIdentifiers().replaceKey(player.getPlayer().getUniqueId(), player.getPlayer().getName());
         }
     }
-
 
     /**
      * Has the player joined the server?

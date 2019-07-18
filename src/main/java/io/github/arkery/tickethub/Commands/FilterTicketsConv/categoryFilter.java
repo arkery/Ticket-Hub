@@ -1,9 +1,9 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
+import io.github.arkery.tickethub.CustomUtils.ChatText;
 import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.TicketHub;
-import io.github.arkery.tickethub.CustomUtils.Clickable;
 import lombok.AllArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 
@@ -25,30 +25,23 @@ public class categoryFilter extends StringPrompt {
 
     @Override
     public String getPromptText(ConversationContext conv) {
-
-        String all = "";
-        for(String i : this.plugin.getCustomCategories()){
-            all += " " +  i;
-        }
-        this.player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\nCategory Options: ").add(new Clickable(ChatColor.AQUA, all)).text());
-        this.player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nEnter the category to add as filter condition or enter 'cancel' to cancel adding").text());
+        this.player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\nCategory Options: ").add(new ChatText(ChatColor.AQUA, this.plugin.getCustomCategoriesDisplay())).text());
+        this.player.spigot().sendMessage(new ChatText(ChatColor.AQUA, "\nEnter the category to add as filter condition or enter 'cancel' to cancel adding").text());
         return "";
     }
 
     @Override
     public Prompt acceptInput(ConversationContext conv, String answer) {
         if(this.plugin.getCustomCategories().contains(answer.toLowerCase())){
-
             this.filterConditions.put(Options.CATEGORY, answer.toLowerCase());
-            return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
-            
+            return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
         }
         else if(answer.equalsIgnoreCase("cancel")){
-            this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Assigned To Filter").text());
-            return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+            this.player.spigot().sendMessage(new ChatText(ChatColor.DARK_PURPLE, "\nBack to Filter View").text());
+            return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
         }
         else{
-            conv.getForWhom().sendRawMessage(ChatColor.RED + "Invalid Entry");
+            conv.getForWhom().sendRawMessage(ChatColor.RED + "\nInvalid Entry");
             return this;
         }
     }

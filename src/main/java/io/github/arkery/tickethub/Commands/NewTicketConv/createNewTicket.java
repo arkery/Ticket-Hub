@@ -1,10 +1,10 @@
 package io.github.arkery.tickethub.Commands.NewTicketConv;
 
+import io.github.arkery.tickethub.CustomUtils.ChatText;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Priority;
 import io.github.arkery.tickethub.Enums.Status;
 import io.github.arkery.tickethub.TicketHub;
-import io.github.arkery.tickethub.CustomUtils.Clickable;
 import io.github.arkery.tickethub.TicketSystem.Ticket;
 import net.md_5.bungee.api.chat.ClickEvent;
 
@@ -44,7 +44,7 @@ public class createNewTicket extends MessagePrompt {
                         Status.OPENED,                                                      //Status
                         (String) conv.getSessionData(Options.CATEGORY),                     //Category
                         (Priority) conv.getSessionData(Options.PRIORITY),                   //Priority
-                        (ArrayList) conv.getSessionData(Options.CONTACTS),                  //Contacts
+                        (Set) conv.getSessionData(Options.CONTACTS),                        //Contacts
                         (String) conv.getSessionData(Options.DESCRIPTION),                  //Description
                         player.getUniqueId(),                                               //Assigned To
                         player.getUniqueId(),                                               //Creator
@@ -55,8 +55,7 @@ public class createNewTicket extends MessagePrompt {
 
                 this.plugin.getTicketSystem().addTicket(newTicket);
 
-
-                player.spigot().sendMessage(new Clickable(
+                player.spigot().sendMessage(new ChatText(
                 net.md_5.bungee.api.ChatColor.GREEN, 
                     "\nTicket has now been created!" + " Ticket ID: " + player.getName() + dateFormat.format(new Date()),
                 newTicket.getTicketID() +

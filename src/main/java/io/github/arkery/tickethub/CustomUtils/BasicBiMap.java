@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Hackish Bi Directional Map
@@ -14,8 +15,8 @@ import java.util.HashMap;
 @NoArgsConstructor
 public class BasicBiMap<A, B> implements Serializable {
 
-    private HashMap<A, B> KeyToValue = new HashMap<>();
-    private HashMap<B, A> ValueToKey = new HashMap<>();
+    private Map<A, B> KeyToValue = new HashMap<>();
+    private Map<B, A> ValueToKey = new HashMap<>();
 
     /**
      * Replace a key by searching map with the value
@@ -137,6 +138,8 @@ public class BasicBiMap<A, B> implements Serializable {
      * @return The amount of entries (Excluding duplicates)
      */
     public int size(){
+
+        if(this.KeyToValue == null && this.ValueToKey == null){ return 0; }
         return this.KeyToValue.size();
     }
 
@@ -146,12 +149,7 @@ public class BasicBiMap<A, B> implements Serializable {
      * @return true if empty, false if not.
      */
     public boolean isEmpty(){
-        if(this.KeyToValue.size() == 0 && this.ValueToKey.size() == 0){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return this.KeyToValue.size() == 0 && this.ValueToKey.size() == 0;
     }
 
 }

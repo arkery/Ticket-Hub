@@ -1,6 +1,6 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
-import io.github.arkery.tickethub.CustomUtils.Clickable;
+import io.github.arkery.tickethub.CustomUtils.ChatText;
 import io.github.arkery.tickethub.Enums.DateSetting;
 import io.github.arkery.tickethub.Enums.Options;
 import io.github.arkery.tickethub.Enums.Status;
@@ -27,8 +27,8 @@ public class statusFilter extends StringPrompt {
     @Override
     public String getPromptText(ConversationContext conv) {
         
-        this.player.spigot().sendMessage(new Clickable(ChatColor.GOLD, "\nSTATUS Options: OPENED INPROGRESS RESOLVED").text());
-        this.player.spigot().sendMessage(new Clickable(ChatColor.AQUA, "\nEnter the status to add to filter or enter 'cancel' to cancel adding").text());
+        this.player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\nSTATUS Options: OPENED INPROGRESS RESOLVED").text());
+        this.player.spigot().sendMessage(new ChatText(ChatColor.AQUA, "\nEnter the status to add to filter or enter 'cancel' to cancel adding").text());
         return "";
     }
 
@@ -48,14 +48,14 @@ public class statusFilter extends StringPrompt {
                 filterStatus = Status.RESOLVED; 
                 break;
             case "cancel":
-                this.player.spigot().sendMessage(new Clickable(ChatColor.DARK_PURPLE, "\nCancelling adding Status To Filter").text());
-                return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+                this.player.spigot().sendMessage(new ChatText(ChatColor.DARK_PURPLE, "\nBack to Filter View").text());
+                return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
             default:
-                this.player.spigot().sendMessage(new Clickable(ChatColor.RED, "\nInvalid Entry!").text());
+                this.player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry!").text());
                 return this;
         }
         this.filterConditions.put(Options.STATUS, filterStatus);
-        return new FilterMenu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
+        return new Menu(this.plugin, this.player, this.filterConditions, this.dateSetting, this.page);
     }
 
 }
