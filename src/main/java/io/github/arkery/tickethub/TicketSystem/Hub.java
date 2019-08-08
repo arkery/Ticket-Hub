@@ -147,13 +147,10 @@ public class Hub {
      *                                  OR the original list if there were no conditions inputted.
      */
     public List<Ticket> filterTickets(EnumMap<Options, Object> conditions) throws NullPointerException {
-
         List<Ticket> filtered = new ArrayList<>(this.storedData.getStoredTickets().values()); 
-
         if(conditions.isEmpty() || conditions == null){ return filtered; }
 
         for(Map.Entry<Options, Object> i: conditions.entrySet()){
-            
             if(filtered.size() < 10000){
                 filtered = this.filterSingleProcess(i.getKey(), i.getValue(), filtered);
             }
@@ -161,11 +158,9 @@ public class Hub {
                 filtered = this.filterMultiProcess(i.getKey(), i.getValue(), filtered);
             }
         }
-
         if(filtered.isEmpty() || filtered == null){
             throw new NullPointerException(); 
         }
-
         return filtered;
     }
 
@@ -352,6 +347,9 @@ public class Hub {
         return temp; 
     }
 
+    private List<Ticket> filterIteration(int start, int end, List<Ticket> targetList){
+        
+    }
 
     /**
      * Searches and gets a for a single ticket within all the stored Tickets

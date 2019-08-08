@@ -1,6 +1,5 @@
 package io.github.arkery.tickethub.Commands.FilterTicketsConv;
 
-import io.github.arkery.tickethub.Commands.FilterTicketsConv.*;
 import io.github.arkery.tickethub.CustomUtils.ChatText;
 import io.github.arkery.tickethub.CustomUtils.TicketListView;
 import io.github.arkery.tickethub.Enums.DateSetting;
@@ -58,6 +57,7 @@ public class Menu extends StringPrompt {
             List<Ticket> displayList = this.plugin.getTicketSystem().filterTickets(this.filterConditions);
             int totalPages = (int) Math.ceil((double) displayList.size() / 10);
             if(this.page > totalPages){ this.page = totalPages; }
+            player.spigot().sendMessage(new ChatText(ChatColor.AQUA, "\nMatches: " + displayList.size()).text());
             new TicketListView(this.player, displayList, this.dateSetting, this.page, totalPages).display();
         }catch(NullPointerException e){
             this.player.spigot().sendMessage(new ChatText( ChatColor.RED, "\nThere are no tickets!").text());

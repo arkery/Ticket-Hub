@@ -41,92 +41,88 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
 
-        if (commandSender instanceof Player) {
-            Player player = (Player) commandSender;
-
-            //If player is already in a conversation - abandon it if they try to run commands. This is admittedly bad code.
-            try {
-                this.conv.abandon(); //This will trigger NullPointer
-                player.spigot().sendMessage(new ChatText(ChatColor.DARK_PURPLE, "\nExiting Filter/Ticket Creation").text());
-                this.conv = null;
-            }catch (NullPointerException e) {
-
-            //This occurs since there is no conversation that started.
-                if(this.debug){
-                    System.out.println("TicketHub: Plugin attempted to abandon conversation when there wasn't one running " +
-                            "- This is by intent");
-                }
-            }
-
-            if (args.length == 0) {
-                this.mainCommand(player);
-            } else {
-                switch (args[0].toLowerCase()) {
-                    case "new":
-                        this.createNewTicket(player);
-                        break;
-                    case "mytickets":
-                        this.myTickets(player, args);
-                        break;
-                    case "details":
-                        this.ticketDetails(player, args);
-                        break;
-                    case "stats":
-                        //this.statistics(player);
-                        break;
-                    case "all":
-                        this.allTickets(player, args);
-                        break;
-                    case "filter":
-                        this.filterTickets(player);
-                        break;
-                    case "assigned":
-                        this.assignedTickets(player, args);
-                        break;
-                    case "save":
-                        this.manualBackUpTickets(player, args);
-                        break;
-                    case "close":
-                        this.closeTicket(player, args);
-                        break;
-                    case "edittitle":
-                        this.ticketEditTitle(player, args);
-                        this.ticketDetails(player, args);
-                        break;
-                    case "editstatus":
-                        this.ticketEditStatus(player, args);
-                        this.ticketDetails(player, args);
-                        break;
-                    case "editpriority":
-                        this.ticketEditPriority(player, args);
-                        this.ticketDetails(player, args);
-                        break;
-                    case "editcategory":
-                        this.ticketEditCategory(player, args);
-                        this.ticketDetails(player, args);
-                        break;
-                    case "editcontacts":
-                        this.ticketEditContacts(player, args);
-                        this.ticketDetails(player, args);
-                        break;
-                    case "editdesc":
-                        this.ticketEditDescription(player, args);
-                        this.ticketDetails(player, args);
-                        break;
-                    case "editassigned":
-                        this.ticketEditAssignedTo(player, args);
-                        this.ticketDetails(player, args);
-                        break;
-                    default:
-                        this.mainCommand(player);
-                        break;
-                }
-            }
-
-        } else {
+        if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("TicketHub: This command is only supported by players");
+            return false; 
         }
 
+        Player player = (Player) commandSender;
+        //If player is already in a conversation - abandon it if they try to run commands. This is admittedly bad code.
+        try {
+            this.conv.abandon(); //This will trigger NullPointer
+            player.spigot().sendMessage(new ChatText(ChatColor.DARK_PURPLE, "\nExiting Filter/Ticket Creation").text());
+            this.conv = null;
+        }catch (NullPointerException e) {
+            if(this.debug){
+                System.out.println("TicketHub: Plugin attempted to abandon conversation when there wasn't one running " +
+                        "- This is by intent");
+            }
+        }
+
+        if (args.length == 0) {
+            this.mainCommand(player);
+        } else {
+            switch (args[0].toLowerCase()) {
+                case "new":
+                    this.createNewTicket(player);
+                    break;
+                case "mytickets":
+                    this.myTickets(player, args);
+                    break;
+                case "details":
+                    this.ticketDetails(player, args);
+                    break;
+                case "stats":
+                    //this.statistics(player);
+                    break;
+                case "all":
+                    this.allTickets(player, args);
+                    break;
+                case "filter":
+                    this.filterTickets(player);
+                    break;
+                case "assigned":
+                    this.assignedTickets(player, args);
+                    break;
+                case "save":
+                    this.manualBackUpTickets(player, args);
+                    break;
+                case "close":
+                    this.closeTicket(player, args);
+                    break;
+                case "edittitle":
+                    this.ticketEditTitle(player, args);
+                    this.ticketDetails(player, args);
+                    break;
+                case "editstatus":
+                    this.ticketEditStatus(player, args);
+                    this.ticketDetails(player, args);
+                    break;
+                case "editpriority":
+                    this.ticketEditPriority(player, args);
+                    this.ticketDetails(player, args);
+                    break;
+                case "editcategory":
+                    this.ticketEditCategory(player, args);
+                    this.ticketDetails(player, args);
+                    break;
+                case "editcontacts":
+                    this.ticketEditContacts(player, args);
+                    this.ticketDetails(player, args);
+                    break;
+                case "editdesc":
+                    this.ticketEditDescription(player, args);
+                    this.ticketDetails(player, args);
+                    break;
+                case "editassigned":
+                    this.ticketEditAssignedTo(player, args);
+                    this.ticketDetails(player, args);
+                    break;
+                default:
+                    this.mainCommand(player);
+                    break;
+            }
+        }
         return false;
     }
 
@@ -165,16 +161,16 @@ public class Commands implements CommandExecutor {
      * @param player the creator of the ticket
      */
     private void createNewTicket(Player player) {
-        if (player.hasPermission("tickethub.player")) {
-            this.conv = this.conversationFactory
+        if(!player.hasPermission("tickethub.player")){
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
+            return; 
+        }
+        this.conv = this.conversationFactory
                     .withFirstPrompt(new titleNewTicket(plugin))
                     .withLocalEcho(false)
                     .thatExcludesNonPlayersWithMessage("TicketHub: This command is only supported by players")
                     .buildConversation(player);
-            this.conv.begin();
-        } else {
-            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
-        }
+        this.conv.begin();
     }
 
     /**
@@ -185,16 +181,16 @@ public class Commands implements CommandExecutor {
      * @param player the creator of the ticket
      */
     private void filterTickets(Player player) {
-        if (player.hasPermission("tickethub.staff")) {
-            this.conv = this.conversationFactory
+        if (!player.hasPermission("tickethub.staff")) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
+            return;
+        }
+        this.conv = this.conversationFactory
                     .withFirstPrompt(new Menu(this.plugin, player))
                     .withLocalEcho(false)
                     .thatExcludesNonPlayersWithMessage("TicketHub: This command is only supported by players")
                     .buildConversation(player);
-            this.conv.begin();
-        } else {
-            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
-        }
+        this.conv.begin();
     }
 
     /**
@@ -205,44 +201,44 @@ public class Commands implements CommandExecutor {
      * @param args   the command called | args0 - mytickets | args1 - page number (if applicable) | args2 - sort setting (created update)
      */
     private void myTickets(Player player, String[] args) {
-        if (player.hasPermission("tickethub.player")) {
-            try {
-
-                //Filter all tickets for those assigned to the player
-                EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
-                conditions.put(Options.CREATOR, player.getUniqueId());
-
-                List<Ticket> tickets = this.plugin.getTicketSystem().filterTickets(conditions);
-                DateSetting dateSetting = DateSetting.UPDATED;
-                int page = 1;
-                int totalPages = (int) Math.ceil((double) tickets.size() / 10);
-
-                if(args.length > 1){
-                    page = Integer.parseInt(args[1]);
-                    if(page > totalPages){
-                        return;
-                    }
-                }
-
-                if(args.length == 3){
-                    if(args[2].toLowerCase().equals("created")){
-                        dateSetting = DateSetting.CREATED;
-                    }
-                    else if(args[2].toLowerCase().equals("updated")){
-                        dateSetting = DateSetting.UPDATED;
-                    }
-                }
-
-                new TicketListView(player, tickets, args[0], dateSetting, page, totalPages).display();
-            } catch (NumberFormatException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th mytickets (page) ").text());
-            } catch (NullPointerException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nThere are no tickets!").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
-            }
-        } else {
+        if(!player.hasPermission("tickethub.player")){
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
+            return; 
+        }
+
+        try {
+            //Filter all tickets for those assigned to the player
+            EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
+            conditions.put(Options.CREATOR, player.getUniqueId());
+
+            List<Ticket> tickets = this.plugin.getTicketSystem().filterTickets(conditions);
+            DateSetting dateSetting = DateSetting.UPDATED;
+            int page = 1;
+            int totalPages = (int) Math.ceil((double) tickets.size() / 10);
+
+            if(args.length > 1){
+                page = Integer.parseInt(args[1]);
+                if(page > totalPages){
+                    return;
+                }
+            }
+
+            if(args.length == 3){
+                if(args[2].toLowerCase().equals("created")){
+                    dateSetting = DateSetting.CREATED;
+                }
+                else if(args[2].toLowerCase().equals("updated")){
+                    dateSetting = DateSetting.UPDATED;
+                }
+            }
+
+            new TicketListView(player, tickets, args[0], dateSetting, page, totalPages).display();
+        } catch (NumberFormatException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th mytickets (page) ").text());
+        } catch (NullPointerException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nThere are no tickets!").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
         }
     }
 
@@ -256,40 +252,39 @@ public class Commands implements CommandExecutor {
      * @param args   args0 - all | args1 - page (if applicable) | args2 - sort by (date created or date updated [by default, sort by date updated])
      */
     private void allTickets(Player player, String[] args) {
-        if (player.hasPermission("tickethub.staff")) {
-            try {
-
-                List<Ticket> tickets = new ArrayList<>(plugin.getTicketSystem().getStoredData().getStoredTickets().values());
-                DateSetting dateSetting = DateSetting.UPDATED;
-                int page = 1;
-                int totalPages = (int) Math.ceil((double) tickets.size() / 10);
-
-                if(args.length > 1){
-                    page = Integer.parseInt(args[1]);
-                    if(page > totalPages){
-                        return;
-                    }
-                }
-
-                if(args.length == 3){
-                    if(args[2].toLowerCase().equals("created")){
-                        dateSetting = DateSetting.CREATED;
-                    }
-                    else if(args[2].toLowerCase().equals("updated")){
-                        dateSetting = DateSetting.UPDATED;
-                    }
-                }
-
-                new TicketListView(player, tickets, args[0], dateSetting, page, totalPages).display();
-            } catch (NumberFormatException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
-            } catch (NullPointerException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nThere are no tickets!").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
-            }
-        } else {
+        if(!player.hasPermission("tickethub.staff")) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
+            return; 
+        }
+        try {
+            List<Ticket> tickets = new ArrayList<>(plugin.getTicketSystem().getStoredData().getStoredTickets().values());
+            DateSetting dateSetting = DateSetting.UPDATED;
+            int page = 1;
+            int totalPages = (int) Math.ceil((double) tickets.size() / 10);
+
+            if(args.length > 1){
+                page = Integer.parseInt(args[1]);
+                if(page > totalPages){
+                    return;
+                }
+            }
+
+            if(args.length == 3){
+                if(args[2].toLowerCase().equals("created")){
+                    dateSetting = DateSetting.CREATED;
+                }
+                else if(args[2].toLowerCase().equals("updated")){
+                    dateSetting = DateSetting.UPDATED;
+                }
+            }
+
+            new TicketListView(player, tickets, args[0], dateSetting, page, totalPages).display();
+        } catch (NumberFormatException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
+        } catch (NullPointerException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nThere are no tickets!").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
         }
     }
 
@@ -302,47 +297,49 @@ public class Commands implements CommandExecutor {
      * @param args   args0 - assigned | args1 - page (if applicable) | args2 - sorting order
      */
     private void assignedTickets(Player player, String[] args) {
-        if (player.hasPermission("tickethub.staff")) {
-            try {
-                //Filter all tickets for those assigned to the player
-                EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
-                conditions.put(Options.ASSIGNEDTO, player.getUniqueId());
-
-                List<Ticket> tickets = this.plugin.getTicketSystem().filterTickets(conditions);
-                DateSetting dateSetting = DateSetting.UPDATED;
-                int page = 1;
-                int totalPages = (int) Math.ceil((double) tickets.size() / 10);
-
-                if(args.length > 1){
-                    page = Integer.parseInt(args[1]);
-                    if(page > totalPages){
-                        page = totalPages;
-                    }
-                    if(page <= 0){
-                        page = 1;
-                    }
-                }
-
-                if(args.length == 3){
-                    if(args[2].toLowerCase().equals("created")){
-                        dateSetting = DateSetting.CREATED;
-                    }
-                    else if(args[2].toLowerCase().equals("updated")){
-                        dateSetting = DateSetting.UPDATED;
-                    }
-                }
-
-                new TicketListView(player, tickets, args[0], dateSetting, page, totalPages).display(); 
-            } catch (NumberFormatException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th assigned (page) ").text());
-            } catch (NullPointerException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nThere are no tickets!").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
-            }
-        } else {
+        if(!player.hasPermission("tickethub.staff")) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
+            return; 
         }
+
+        try {
+            //Filter all tickets for those assigned to the player
+            EnumMap<Options, Object> conditions = new EnumMap<>(Options.class);
+            conditions.put(Options.ASSIGNEDTO, player.getUniqueId());
+
+            List<Ticket> tickets = this.plugin.getTicketSystem().filterTickets(conditions);
+            DateSetting dateSetting = DateSetting.UPDATED;
+            int page = 1;
+            int totalPages = (int) Math.ceil((double) tickets.size() / 10);
+
+            if(args.length > 1){
+                page = Integer.parseInt(args[1]);
+                if(page > totalPages){
+                    page = totalPages;
+                }
+                if(page <= 0){
+                    page = 1;
+                }
+            }
+
+            if(args.length == 3){
+                if(args[2].toLowerCase().equals("created")){
+                    dateSetting = DateSetting.CREATED;
+                }
+                else if(args[2].toLowerCase().equals("updated")){
+                    dateSetting = DateSetting.UPDATED;
+                }
+            }
+
+            new TicketListView(player, tickets, args[0], dateSetting, page, totalPages).display(); 
+        } catch (NumberFormatException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th assigned (page) ").text());
+        } catch (NullPointerException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nThere are no tickets!").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th all (page) ").text());
+        }
+        
     }
 
     /**
@@ -354,47 +351,46 @@ public class Commands implements CommandExecutor {
      * @param args   args0 - details | args1 - ticketid
      */
     private void ticketDetails(Player player, String[] args) {
-        if (player.hasPermission("tickethub.player")) {
-            try {
-                Ticket displayTicket = this.plugin.getTicketSystem().getTicket(args[1]);
-                String ticketContactsAsString = "None";
-
-                if (!displayTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")) {
-                    player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
-                    return;
-                }
-                if (!displayTicket.getTicketContacts().isEmpty() && displayTicket.getTicketContacts() != null) {
-                    for (UUID i : displayTicket.getTicketContacts()) {
-                        ticketContactsAsString += " " + this.plugin.getTicketSystem().getUserName(i);
-                    }
-                }
-
-                player.spigot().sendMessage(new ChatText(ChatColor.AQUA, "\nDetails for Ticket: ").add(new ChatText(ChatColor.AQUA, displayTicket.getTicketID())).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Title: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketTitle(), "Click here to edit ticket title", "/th edittitle " + displayTicket.getTicketID() + " " + displayTicket.getTicketTitle(), ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Status: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketStatus().toString(), "Click here to edit ticket status \n(Opened InProgress Resolved) ", "/th editstatus " + displayTicket.getTicketID() + " ", ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Priority: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketPriority().toString(), "Click here to edit ticket priority \n(Low Medium High) ", "/th editpriority " + displayTicket.getTicketID() + " ", ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Category: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketCategory(), "Click here to edit ticket category \n(" + this.plugin.getCustomCategoriesDisplay() + ")", "/th editcategory " + displayTicket.getTicketID() + " ", ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Contacts: ").add(new ChatText(ChatColor.BLUE, ticketContactsAsString, "Click here to edit ticket contacts ", "/th editcontacts " + ticketContactsAsString, ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Description: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketDescription(), "Click here to edit ticket description", "/th editdesc " + displayTicket.getTicketID() + " " + displayTicket.getTicketDescription(), ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Creator: ").add(new ChatText(ChatColor.BLUE, this.plugin.getTicketSystem().getUserName(displayTicket.getTicketCreator()))).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Assigned To: ").add(new ChatText(ChatColor.BLUE, this.plugin.getTicketSystem().getUserName(displayTicket.getTicketAssignedTo()), "Click here to edit/change the person assigned to this ticket", "/th editassigned ", ClickEvent.Action.SUGGEST_COMMAND)).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Last Updated On: ").add(new ChatText(ChatColor.BLUE, dateFormat.format(displayTicket.getTicketDateLastUpdated()))).text());
-                player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Created On: ").add(new ChatText(ChatColor.BLUE, dateFormat.format(displayTicket.getTicketDateCreated()))).text());
-
-                player.spigot().sendMessage(new ChatText(ChatColor.YELLOW, "\n\n   Close ticket", "Click here to close ticket (This will delete the ticket)", "/th close " + displayTicket.getTicketID(), ClickEvent.Action.SUGGEST_COMMAND).text());
-
-            } catch (TicketNotFoundException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th details (ticket ID) ").text());
-            } catch (PlayerNotFoundException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Person was not found! ").text());
-
-            }
-        } else {
-            player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
+        if(!player.hasPermission("tickethub.staff")) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
+            return; 
         }
+        try {
+            Ticket displayTicket = this.plugin.getTicketSystem().getTicket(args[1]);
+            String ticketContactsAsString = "None";
 
+            if (!displayTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")) {
+                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nYou don't have permissions to do this!").text());
+                return;
+            }
+            if (!displayTicket.getTicketContacts().isEmpty() && displayTicket.getTicketContacts() != null) {
+                for (UUID i : displayTicket.getTicketContacts()) {
+                    ticketContactsAsString += " " + this.plugin.getTicketSystem().getUserName(i);
+                }
+            }
+
+            player.spigot().sendMessage(new ChatText(ChatColor.AQUA, "\nDetails for Ticket: ").add(new ChatText(ChatColor.AQUA, displayTicket.getTicketID())).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Title: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketTitle(), "Click here to edit ticket title", "/th edittitle " + displayTicket.getTicketID() + " " + displayTicket.getTicketTitle(), ClickEvent.Action.SUGGEST_COMMAND)).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Status: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketStatus().toString(), "Click here to edit ticket status \n(Opened InProgress Resolved) ", "/th editstatus " + displayTicket.getTicketID() + " ", ClickEvent.Action.SUGGEST_COMMAND)).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Priority: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketPriority().toString(), "Click here to edit ticket priority \n(Low Medium High) ", "/th editpriority " + displayTicket.getTicketID() + " ", ClickEvent.Action.SUGGEST_COMMAND)).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Category: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketCategory(), "Click here to edit ticket category \n(" + this.plugin.getCustomCategoriesDisplay() + ")", "/th editcategory " + displayTicket.getTicketID() + " ", ClickEvent.Action.SUGGEST_COMMAND)).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Contacts: ").add(new ChatText(ChatColor.BLUE, ticketContactsAsString, "Click here to edit ticket contacts ", "/th editcontacts " + ticketContactsAsString, ClickEvent.Action.SUGGEST_COMMAND)).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Description: ").add(new ChatText(ChatColor.BLUE, displayTicket.getTicketDescription(), "Click here to edit ticket description", "/th editdesc " + displayTicket.getTicketID() + " " + displayTicket.getTicketDescription(), ClickEvent.Action.SUGGEST_COMMAND)).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "\n   Creator: ").add(new ChatText(ChatColor.BLUE, this.plugin.getTicketSystem().getUserName(displayTicket.getTicketCreator()))).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Assigned To: ").add(new ChatText(ChatColor.BLUE, this.plugin.getTicketSystem().getUserName(displayTicket.getTicketAssignedTo()), "Click here to edit/change the person assigned to this ticket", "/th editassigned ", ClickEvent.Action.SUGGEST_COMMAND)).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Last Updated On: ").add(new ChatText(ChatColor.BLUE, dateFormat.format(displayTicket.getTicketDateLastUpdated()))).text());
+            player.spigot().sendMessage(new ChatText(ChatColor.GOLD, "   Created On: ").add(new ChatText(ChatColor.BLUE, dateFormat.format(displayTicket.getTicketDateCreated()))).text());
+
+            player.spigot().sendMessage(new ChatText(ChatColor.YELLOW, "\n\n   Close ticket", "Click here to close ticket (This will delete the ticket)", "/th close " + displayTicket.getTicketID(), ClickEvent.Action.SUGGEST_COMMAND).text());
+
+        } catch (TicketNotFoundException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th details (ticket ID) ").text());
+        } catch (PlayerNotFoundException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Person was not found! ").text());
+        }
+        
     }
 
     /**
@@ -430,7 +426,6 @@ public class Commands implements CommandExecutor {
         } catch (IndexOutOfBoundsException e) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th edittitle (ticket ID) (New Title)").text());
         }
-
     }
 
     /**
@@ -442,31 +437,31 @@ public class Commands implements CommandExecutor {
      * @param args   args0 - editstatus | args1 - ticket id | args2 - new ticket status
      */
     private void ticketEditStatus(Player player, String[] args) {
-        if (player.hasPermission("tickethub.staff")) {
-            try {
-                Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
-                switch (args[2].toLowerCase()) {
-                    case "opened":
-                        editingTicket.setTicketStatus(Status.OPENED);
-                        break;
-                    case "inprogress":
-                        editingTicket.setTicketStatus(Status.INPROGRESS);
-                        break;
-                    case "resolved":
-                        editingTicket.setTicketStatus(Status.RESOLVED);
-                        break;
-                }
-                editingTicket.setTicketDateLastUpdated(new Date());
-                this.plugin.getTicketSystem().updateTicket(editingTicket);
-                player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Status Updated! ").text());
-
-            } catch (TicketNotFoundException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editstatus (ticket ID) (New Status)").text());
-            }
-        } else {
+        if (!player.hasPermission("tickethub.staff")) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
+            return; 
+        }
+        try {
+            Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
+            switch (args[2].toLowerCase()) {
+                case "opened":
+                    editingTicket.setTicketStatus(Status.OPENED);
+                    break;
+                case "inprogress":
+                    editingTicket.setTicketStatus(Status.INPROGRESS);
+                    break;
+                case "resolved":
+                    editingTicket.setTicketStatus(Status.RESOLVED);
+                    break;
+            }
+            editingTicket.setTicketDateLastUpdated(new Date());
+            this.plugin.getTicketSystem().updateTicket(editingTicket);
+            player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Status Updated! ").text());
+
+        } catch (TicketNotFoundException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editstatus (ticket ID) (New Status)").text());
         }
     }
 
@@ -479,27 +474,27 @@ public class Commands implements CommandExecutor {
      * @param args   args0 - editcategory | args1 - ticket id | args2 - new ticket category
      */
     private void ticketEditCategory(Player player, String[] args) {
-        if (player.hasPermission("tickethub.staff")) {
-            try {
-                Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
-
-                if (!this.plugin.getCustomCategories().contains(args[2].toLowerCase())) {
-                    player.spigot().sendMessage(new ChatText(ChatColor.RED, "Invalid Category!").text());
-                    return;
-                }
-
-                editingTicket.setTicketCategory(args[2].toLowerCase());
-                editingTicket.setTicketDateLastUpdated(new Date());
-                this.plugin.getTicketSystem().updateTicket(editingTicket);
-                player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Priority Updated! ").text());
-
-            } catch (TicketNotFoundException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editcategory (ticket ID) (New Category)").text());
-            }
-        } else {
+        if (!player.hasPermission("tickethub.staff")) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
+            return; 
+        }
+        try {
+            Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
+
+            if (!this.plugin.getCustomCategories().contains(args[2].toLowerCase())) {
+                player.spigot().sendMessage(new ChatText(ChatColor.RED, "Invalid Category!").text());
+                return;
+            }
+
+            editingTicket.setTicketCategory(args[2].toLowerCase());
+            editingTicket.setTicketDateLastUpdated(new Date());
+            this.plugin.getTicketSystem().updateTicket(editingTicket);
+            player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Priority Updated! ").text());
+
+        } catch (TicketNotFoundException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editcategory (ticket ID) (New Category)").text());
         }
     }
 
@@ -512,31 +507,30 @@ public class Commands implements CommandExecutor {
      * @param args   args0 - editpriority | args1 - ticket id | args2 - new ticket priority
      */
     private void ticketEditPriority(Player player, String[] args) {
-        if (player.hasPermission("tickethub.staff")) {
-            try {
-                Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
-                switch (args[2].toLowerCase()) {
-                    case "low":
-                        editingTicket.setTicketPriority(Priority.LOW);
-                        break;
-                    case "medium":
-                        editingTicket.setTicketPriority(Priority.MEDIUM);
-                        break;
-                    case "high":
-                        editingTicket.setTicketPriority(Priority.HIGH);
-                        break;
-                }
-                editingTicket.setTicketDateLastUpdated(new Date());
-                this.plugin.getTicketSystem().updateTicket(editingTicket);
-                player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Priority Updated! ").text());
-
-            } catch (TicketNotFoundException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editpriority (ticket ID) (New Priority)").text());
-            }
-        } else {
+        if (!player.hasPermission("tickethub.staff")) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
+            return; 
+        }
+        try {
+            Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
+            switch (args[2].toLowerCase()) {
+                case "low":
+                    editingTicket.setTicketPriority(Priority.LOW);
+                    break;
+                case "medium":
+                    editingTicket.setTicketPriority(Priority.MEDIUM);
+                    break;
+                case "high":
+                    editingTicket.setTicketPriority(Priority.HIGH);
+                    break;
+            }
+            editingTicket.setTicketDateLastUpdated(new Date());
+            this.plugin.getTicketSystem().updateTicket(editingTicket);
+            player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Priority Updated! ").text());
+        } catch (TicketNotFoundException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editpriority (ticket ID) (New Priority)").text());
         }
     }
 
@@ -558,7 +552,6 @@ public class Commands implements CommandExecutor {
                 player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
                 return;
             }
-
             if (args.length > 5) {
                 player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: You can only have three contacts!").text());
             }
@@ -566,12 +559,10 @@ public class Commands implements CommandExecutor {
             for (int i = 2; i < args.length; i++) {
                 newContacts.add(this.plugin.getTicketSystem().getUserUUID(args[i]));
             }
-
             editingTicket.setTicketContacts(newContacts);
             editingTicket.setTicketDateLastUpdated(new Date());
             this.plugin.getTicketSystem().updateTicket(editingTicket);
             player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Title Updated! ").text());
-
         } catch (TicketNotFoundException e) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
         } catch (IndexOutOfBoundsException e) {
@@ -625,24 +616,24 @@ public class Commands implements CommandExecutor {
      * @param args   args0 - editcontacts | args1 - ticket id | args2 - new assigned person
      */
     private void ticketEditAssignedTo(Player player, String[] args) {
-        if (player.hasPermission("tickethub.staff")) {
-            try {
-                Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
-
-                editingTicket.setTicketAssignedTo(this.plugin.getTicketSystem().getUserUUID(args[1]));
-                editingTicket.setTicketDateLastUpdated(new Date());
-                this.plugin.getTicketSystem().updateTicket(editingTicket);
-                player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Title Updated! ").text());
-
-            } catch (TicketNotFoundException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editassigned (ticket ID) (Person assigned to)").text());
-            } catch (PlayerNotFoundException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: One of the contacts did not join the server! ").text());
-            }
-        } else {
+        if (!player.hasPermission("tickethub.staff")) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
+            return; 
+        }
+        try {
+            Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
+
+            editingTicket.setTicketAssignedTo(this.plugin.getTicketSystem().getUserUUID(args[1]));
+            editingTicket.setTicketDateLastUpdated(new Date());
+            this.plugin.getTicketSystem().updateTicket(editingTicket);
+            player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTicket Title Updated! ").text());
+
+        } catch (TicketNotFoundException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Ticket was not found! ").text());
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th editassigned (ticket ID) (Person assigned to)").text());
+        } catch (PlayerNotFoundException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: One of the contacts did not join the server! ").text());
         }
     }
 
@@ -683,27 +674,27 @@ public class Commands implements CommandExecutor {
      */
     private void manualBackUpTickets(Player player, String[] args) {
 
-        if (player.hasPermission("tickethub.staff")) {
-            try {
-                if (args.length > 2) {
-                    player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th save (file name) ").text());
-                    return;
-                }
-                if(args.length == 1){
-                    this.plugin.getTicketSystem().saveTickets(this.plugin.getTicketFile(), this.plugin.getTicketFolder());
-                    player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nAll Tickets have been saved!").text());
-                    return;
-                }
-
-                this.plugin.getTicketSystem().saveTickets(args[1], new File(this.plugin.getTicketFolder() + "/Backups"));
-                this.plugin.getTicketSystem().saveTickets(this.plugin.getTicketFile(), this.plugin.getTicketFolder());
-                player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTickets saved as " + args[1] + ".json !").text());
-
-            } catch (IndexOutOfBoundsException e) {
-                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th save (file name) ").text());
-            }
-        } else {
+        if (!player.hasPermission("tickethub.staff")) {
             player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
+            return;
+        }
+        try {
+            if (args.length > 2) {
+                player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th save (file name) ").text());
+                return;
+            }
+            if(args.length == 1){
+                this.plugin.getTicketSystem().saveTickets(this.plugin.getTicketFile(), this.plugin.getTicketFolder());
+                player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nAll Tickets have been saved!").text());
+                return;
+            }
+
+            this.plugin.getTicketSystem().saveTickets(args[1], new File(this.plugin.getTicketFolder() + "/Backups"));
+            this.plugin.getTicketSystem().saveTickets(this.plugin.getTicketFile(), this.plugin.getTicketFolder());
+            player.spigot().sendMessage(new ChatText(ChatColor.GREEN, "\nTickets saved as " + args[1] + ".json !").text());
+
+        } catch (IndexOutOfBoundsException e) {
+            player.spigot().sendMessage(new ChatText(ChatColor.RED, "\nInvalid Entry: Format as /th save (file name) ").text());
         }
     }
 
@@ -717,7 +708,6 @@ public class Commands implements CommandExecutor {
      */
     private void closeTicket(Player player, String[] args) {
         try {
-
             Ticket editingTicket = this.plugin.getTicketSystem().getTicket(args[1]);
             if (!editingTicket.getTicketCreator().equals(player.getUniqueId()) && !player.hasPermission("tickethub.staff")) {
                 player.spigot().sendMessage(new ChatText(ChatColor.RED, "You don't have permissions to do this!").text());
